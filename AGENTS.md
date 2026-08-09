@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -75,7 +75,7 @@ The app follows a feature-based architecture where each feature is self-containe
 - **journal/** - Core journaling features with full workflow from movie selection to saving
   - `controllers/` - `journal_state.dart` (SceneItem + JournalState model), `journal_mode.dart` (JournalMode enum + JournalModeNotifier), `journal.dart` (JournalController + provider; re-exports the other two, so `controllers/journal.dart` remains the one import for journal state), `journals.dart` (JournalsState list)
   - `screens/` - Journaling (main editor), JournalComplete (post-save success screen), JournalContent (view saved journal), MoviePreview, ThoughtsScreen (`thoughts.dart`), CaptionEditor. Note `ThoughtsScreen` (screen) and `ThoughtsEditor` (widget, below) are different classes — don't confuse them.
-  - `widgets/` - SectionSeparator (the thin rule between JournalingScreen sections — extracted from `journaling.dart`, spelling fixed from `SectionSeperator`), EmotionsSelectorButton, EmotionsSelectorBottomSheet, ScenesSelector (whose selected-scene card is `SelectedSceneCard`), ScenesSelectSheet (whose grid tile is `SceneGridTile`), SceneCard, ReviewItem, ReviewsBottomSheet (opened only via `ReviewsBottomSheet.show(context)` — ThoughtsScreen and ReviewsFloatingButton share it), ThoughtsEditor, AiReferencesAccordion, JournalContentMoreMenu, and `journal_actions.dart` — a set of shared helper functions (`editJournal`, `shareJournal`, `confirmDeleteJournal`, `deleteJournal`) that encapsulate the domain actions a journal can undergo. Reused by both the more-menu on `JournalContent` and the long-press menu on `JournalCard`. The helpers own the *domain action* (load state / navigate to editor, confirm dialog, Supabase delete + toast, navigate to `TicketPosterPickerScreen`) but intentionally leave post-action navigation (e.g. popping after delete) to the caller, since that depends on which screen initiated the action.
+  - `widgets/` - RatingSelector (10-heart rating), EmotionsSelectorButton, EmotionsSelectorBottomSheet, ScenesSelector (whose selected-scene card is `SelectedSceneCard`), ScenesSelectSheet (whose grid tile is `SceneGridTile`), SceneCard, ReviewItem, ReviewsBottomSheet (opened only via `ReviewsBottomSheet.show(context)` — ThoughtsScreen and ReviewsFloatingButton share it), ThoughtsEditor, AiReferencesAccordion, JournalContentMoreMenu, and `journal_actions.dart` — a set of shared helper functions (`editJournal`, `shareJournal`, `confirmDeleteJournal`, `deleteJournal`) that encapsulate the domain actions a journal can undergo. Reused by both the more-menu on `JournalContent` and the long-press menu on `JournalCard`. The helpers own the *domain action* (load state / navigate to editor, confirm dialog, Supabase delete + toast, navigate to `TicketPosterPickerScreen`) but intentionally leave post-action navigation (e.g. popping after delete) to the caller, since that depends on which screen initiated the action.
 
 - **movie/** - Movie data management with repository pattern
   - `controllers/` - MovieDetailController, MovieImagesController, SearchMovieController
@@ -170,7 +170,7 @@ Uses **Riverpod** for state management:
 
 2. **Journal Creation**:
    - Select movie → MoviePreview → Start journaling → Journaling screen
-   - Select emotions (EmotionsSelectorBottomSheet) → Select scenes (ScenesSelectSheet) → Write thoughts (ThoughtsEditor)
+   - Rate the movie (RatingSelector) → Select emotions (EmotionsSelectorBottomSheet) → Select scenes (ScenesSelectSheet) → Write thoughts (ThoughtsEditor)
    - Optionally fetch AI-curated reviews (ReviewsBottomSheet via `quesgen_dio_client.dart`)
    - Add caption (CaptionEditor) → Save to Supabase (via `SupabaseDbManager`) with the caller's user id → JournalCompleteScreen (animated success screen with journal card preview, "Share Ticket" and "View Journal" buttons)
    - Optional: "Share Ticket" → ShareTicketScreen → flippable movie ticket (poster front / details back with film strip perforations) → "Save Image" captures ticket as PNG via `RepaintBoundary` → saves to gallery via `gal` package
@@ -496,7 +496,7 @@ Feature lives under `lib/features/share/`. Flow: callers → `TicketPosterPicker
 - Lint configuration in `analysis_options.yaml`
 - **`analyzer.exclude: build/**` is load-bearing.** Swift Package Manager checks out the *full pub source* of the Firebase plugins — including their own mockito-based `test/` dirs — into `build/{ios,macos}/SourcePackages/`. Without the exclude, `flutter analyze` reports ~950 errors from third-party test files (`undefined_function: when/verify/anyNamed`) after any iOS/macOS build. Deleting `build/` also clears them, but they come back on the next build.
 
-## Claude Code Configuration
+## Agent Configuration
 
 ### Directory Structure
 ```
@@ -517,16 +517,20 @@ Feature lives under `lib/features/share/`. Flow: callers → `TicketPosterPicker
     │   └── SKILL.md                 # App Store Connect / TestFlight deploy flow
     └── supabase-migration/
         └── SKILL.md                 # Firebase→Supabase bridge + cutover runbook
+
+.agents/
+└── skills -> ../.claude/skills      # Codex-compatible skill discovery
 ```
 
 ### Hooks
 - **pre-commit-test.sh** — A `PreToolUse` hook on the `Bash` tool that intercepts `git commit` commands. Runs `flutter test` before allowing the commit. If tests fail, the commit is blocked with test output shown as the reason. Non-commit Bash commands pass through unaffected.
-- **stop-update-claude-md.sh** — A `Stop` hook that nudges doc updates only for **significant, doc-worthy** code changes (not every edit — padding the docs for trivial fixes breeds rot). It scopes to `lib/**/*.dart` (excluding `*.g.dart` and `firebase_options.dart`; test-only and config changes never trigger it) plus `pubspec.yaml`. A change is "significant" if it adds a new `lib/` Dart file, touches ≥ `DOC_HOOK_MIN_LINES` lines (default 80, tunable via env var), or changes a dependency in `pubspec.yaml`. The two docs are required independently by relevance: **CLAUDE.md** (architecture/internals) is required for any significant change; **README.md** (user-facing) is required *only* when a brand-new feature directory appears under `lib/features/` or `pubspec.yaml` changes. Internal tweaks to existing screens/widgets never demand a README edit. When a required doc is missing the hook blocks (exit 2) and lists the relevant files; otherwise it passes (exit 0).
+- **stop-update-claude-md.sh** — A `Stop` hook that nudges doc updates only for **significant, doc-worthy** code changes (not every edit — padding the docs for trivial fixes breeds rot). It scopes to `lib/**/*.dart` (excluding `*.g.dart` and `firebase_options.dart`; test-only and config changes never trigger it) plus `pubspec.yaml`. A change is "significant" if it adds a new `lib/` Dart file, touches ≥ `DOC_HOOK_MIN_LINES` lines (default 80, tunable via env var), or changes a dependency in `pubspec.yaml`. The two docs are required independently by relevance: **AGENTS.md** (architecture/internals; `CLAUDE.md` is a compatibility symlink) is required for any significant change; **README.md** (user-facing) is required *only* when a brand-new feature directory appears under `lib/features/` or `pubspec.yaml` changes. Internal tweaks to existing screens/widgets never demand a README edit. When a required doc is missing the hook blocks (exit 2) and lists the relevant files; otherwise it passes (exit 0).
 - **stop-sync-tests.sh** — A `Stop` hook that ensures unit tests stay in sync with source code. When `.dart` files under `lib/` are modified, it checks if the corresponding test file (`test/` mirror with `_test.dart` suffix) was also modified. If a source file has an existing test that wasn't updated, the hook blocks (exit 2) and lists the stale source→test pairs. Source files without existing tests are mentioned as an FYI but don't block on their own. Once the stale tests are updated, the hook passes (exit 0).
 - Hooks are registered in `settings.local.json` under the `hooks.PreToolUse` and `hooks.Stop` keys (gitignored, local to each developer)
 
 ### Skills
+- `.claude/skills` is canonical so Claude Code sees a real directory. Codex discovers the same files through the tracked `.agents/skills` symlink; Codex explicitly supports symlinked skill folders.
 - **journal-data-access** — Documents the Riverpod provider architecture for journal data. Covers the three core providers (`journalControllerProvider`, `journalsControllerProvider`, `journalModeProvider`), `ref.watch` vs `ref.read` patterns, CRUD operations, create vs edit mode, and AsyncValue handling. Reference file includes full JournalState fields and the Postgres `journals` schema.
 - **flutter-animation-testing** — Pitfalls and patterns for testing Flutter animations. Covers: (1) `animateTo` vs `animateBack` status corruption (`animateTo(0.0)` leaves `isCompleted=true`), (2) `pumpAndSettle` not advancing past `Future.delayed` timers, (3) `pumpAndSettle` exiting between chained async animations. Includes a checklist and explicit-pump patterns.
 - **deploy** — The App Store Connect / TestFlight deploy flow (`./deploy.sh`), its one-time credential setup, and upload troubleshooting.
-- **supabase-migration** — The transitional Firebase→Supabase runbook: the anonymous-account bridge, the credential-less session, the device-bound failure mode, the `migration/` scripts, and the order to delete it all in. Extracted from CLAUDE.md so it loads only when the migration is actually in play. **Delete at the Firestore freeze.**
+- **supabase-migration** — The transitional Firebase→Supabase runbook: the anonymous-account bridge, the credential-less session, the device-bound failure mode, the `migration/` scripts, and the order to delete it all in. Extracted from AGENTS.md so it loads only when the migration is actually in play. **Delete at the Firestore freeze.**

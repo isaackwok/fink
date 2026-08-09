@@ -8,6 +8,7 @@
 | `tmdbId` | `int` | `0` | TMDB movie identifier |
 | `movieTitle` | `String` | `''` | Display title of the movie |
 | `moviePoster` | `String` | `''` | TMDB poster URL path |
+| `rating` | `int` | `0` | Enjoyment rating from 1–10; `0` means unselected |
 | `emotions` | `List<Emotion>` | `[]` | Up to 3 selected emotions |
 | `selectedScenes` | `List<SceneItem>` | `[]` | Movie stills with optional captions |
 | `selectedRefs` | `List<Review>` | `[]` | AI-curated reviews (from Letterboxd/Reddit) |
@@ -50,6 +51,7 @@ Excludes the `id` field. Excludes user-set timestamps.
   "tmdbId": 550,
   "movieTitle": "Fight Club",
   "moviePoster": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+  "rating": 8,
   "emotions": ["joyful", "inspired"],
   "selectedScenes": [
     { "path": "/scene1.jpg", "caption": "This moment" }
@@ -81,6 +83,7 @@ user_id          uuid not null references auth.users (id) on delete cascade
 tmdb_id          integer not null
 movie_title      text not null default ''
 movie_poster     text not null default ''
+rating           smallint not null default 0 check (rating between 0 and 10)
 emotions         text[] not null default '{}'
 selected_scenes  jsonb not null default '[]'   -- [{path, caption?}]
 selected_refs    jsonb not null default '[]'   -- [{text, source}]
