@@ -16,20 +16,6 @@ class EmotionsSelectorButton extends StatelessWidget {
     this.readonly = false,
   });
 
-  // Configuration map for button states
-  static const Map<String, dynamic> _buttonConfig = {
-    'empty': {
-      'svgPath': 'assets/images/emotion_face.svg',
-      'icon': Icons.arrow_forward,
-      'iconOpacity': 0.3,
-    },
-    'selected': {
-      'svgPath': 'assets/images/emotion_face.svg',
-      'icon': Icons.edit,
-      'iconOpacity': 1.0,
-    },
-  };
-
   /// Determines the gradient colors based on the energy mix of selected emotions
   LinearGradient _getEnergyGradientColors(List<Emotion> selectedEmotions) {
     if (selectedEmotions.isEmpty) {
@@ -38,6 +24,12 @@ class EmotionsSelectorButton extends StatelessWidget {
         begin: Alignment.topRight,
         end: Alignment.bottomLeft,
         colors: [Color(0xFF545454), Color(0xFF545454)],
+      );
+    }
+
+    if (selectedEmotions.every((e) => e.group == 'Perspectives')) {
+      return const LinearGradient(
+        colors: [Color(0xFFDDDDDD), Color(0xFFDDDDDD)],
       );
     }
 
@@ -78,7 +70,7 @@ class EmotionsSelectorButton extends StatelessWidget {
   }
 
   static const _sentenceStyle = TextStyle(
-    color: Colors.white,
+    color: Color(0xFFDDDDDD),
     fontSize: 14,
     fontWeight: FontWeight.w500,
     fontFamily: 'AvenirNext',
@@ -104,8 +96,13 @@ class EmotionsSelectorButton extends StatelessWidget {
   Widget _getButtonText(List<Emotion> selectedEmotions) {
     if (selectedEmotions.isEmpty) {
       return const Text(
-        'What are your feelings about this movie?',
-        style: _sentenceStyle,
+        'Select Emotions',
+        style: TextStyle(
+          color: Color(0xFF8F8E8E),
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'AvenirNext',
+        ),
       );
     }
 
@@ -132,72 +129,91 @@ class EmotionsSelectorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasSelection = emotions.isNotEmpty;
 
-    // Get config based on state
-    final config =
-        hasSelection ? _buttonConfig['selected']! : _buttonConfig['empty']!;
     final color = Theme.of(context).colorScheme.primary;
     final buttonText = _getButtonText(emotions);
     final gradientColors = _getEnergyGradientColors(emotions);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap:
-            readonly
-                ? null
-                : () {
-                  showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Colors.transparent,
-                    isScrollControlled: true,
-                    builder:
-                        (context) => EmotionsSelectorBottomSheet(
-                          initialEmotions: emotions,
-                          onSave: onSave,
-                        ),
-                  );
-                },
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: BoxDecoration(
-            color: DarkSurfaces.card,
-            border: Border.all(
-              color: readonly ? Colors.transparent : color,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            children: [
-              // Emotion icon with gradient background
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: gradientColors,
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    config['svgPath'] as String,
-                    width: 40,
-                    height: 40,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Text
-              Expanded(child: buttonText),
-              if (!readonly) ...[
-                const SizedBox(width: 12),
-                // Icon (arrow or pen)
-                Icon(config['icon'] as IconData, color: color, size: 24),
-              ],
-            ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'What are your feelings about this movie?',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'AvenirNext',
+            height: 1.5,
           ),
         ),
-      ),
+        const SizedBox(height: 16),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap:
+                readonly
+                    ? null
+                    : () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder:
+                            (context) => EmotionsSelectorBottomSheet(
+                              initialEmotions: emotions,
+                              onSave: onSave,
+                            ),
+                      );
+                    },
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 64),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: hasSelection ? DarkSurfaces.card : Colors.transparent,
+                border:
+                    hasSelection
+                        ? null
+                        : Border.all(color: Colors.white.withAlpha(26)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: gradientColors,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/images/emotion_face.svg',
+                        width: 40,
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: buttonText),
+                  if (!readonly) ...[
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Icon(
+                        hasSelection ? Icons.edit : Icons.add,
+                        color: hasSelection ? color : Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:movie_journal/features/emotion/emotion.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/screens/journaling.dart';
 import 'package:movie_journal/themes.dart';
@@ -10,11 +9,10 @@ import '../../../helpers/test_journal.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 /// A journal controller whose save() always fails, standing in for a dead
-/// network / Supabase outage. Non-empty emotions keep the Save button enabled.
+/// network / Supabase outage. A rating alone keeps the Save button enabled.
 class _FailingSaveController extends JournalController {
   @override
-  JournalState build() =>
-      makeJournal(emotions: [emotionList[EmotionType.joyful]!]);
+  JournalState build() => makeJournal(rating: 3);
 
   @override
   Future<JournalController> save() async {

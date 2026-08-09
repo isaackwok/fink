@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/screens/thoughts.dart';
 import 'package:movie_journal/features/journal/widgets/ai_references_accordion.dart';
+import 'package:movie_journal/themes.dart';
 
 class ThoughtsEditor extends ConsumerWidget {
   const ThoughtsEditor({super.key});
@@ -18,58 +19,78 @@ class ThoughtsEditor extends ConsumerWidget {
     final selectedRefs = ref.watch(
       journalControllerProvider.select((j) => j.selectedRefs),
     );
-    return InkWell(
-      splashColor: Colors.transparent,
-      onTap:
-          () => {
-            showModalBottomSheet(
-              useSafeArea: true,
-              enableDrag: false,
-              context: context,
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true,
-              builder: (context) => const ThoughtsScreen(),
-            ),
-          },
-      child: Column(
-        spacing: 16,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Write down your thoughts and feelings.',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'AvenirNext',
+    final hasThoughts = thoughts.isNotEmpty;
+
+    void openEditor() {
+      showModalBottomSheet(
+        useSafeArea: true,
+        enableDrag: false,
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) => const ThoughtsScreen(),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'Write down your thoughts & feelings.',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'AvenirNext',
+            height: 1.5,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            splashColor: Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            onTap: openEditor,
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 299),
+              padding: const EdgeInsets.fromLTRB(20, 20, 12, 20),
+              decoration: BoxDecoration(
+                color: hasThoughts ? DarkSurfaces.card : Colors.transparent,
+                border:
+                    hasThoughts
+                        ? null
+                        : Border.all(color: Colors.white.withAlpha(26)),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                hasThoughts ? thoughts : 'Enter your text here...',
+                style:
+                    hasThoughts
+                        ? GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                          color: Colors.white.withAlpha(204),
+                        )
+                        : GoogleFonts.nothingYouCouldDo(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                          color: Colors.white.withAlpha(128),
+                        ),
+              ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              thoughts.isNotEmpty ? thoughts : 'Enter your text here...',
-              style:
-                  thoughts.isNotEmpty
-                      ? GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                      )
-                      : GoogleFonts.nothingYouCouldDo(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white.withAlpha(128),
-                      ),
-            ),
+        ),
+        if (selectedRefs.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          AiReferencesAccordion(
+            defaultExpanded: true,
+            references: selectedRefs,
           ),
-          selectedRefs.isNotEmpty
-              ? AiReferencesAccordion(
-                defaultExpanded: true,
-                references: selectedRefs,
-              )
-              : const SizedBox.shrink(),
-          const SizedBox(height: 200),
         ],
-      ),
+      ],
     );
   }
 }
