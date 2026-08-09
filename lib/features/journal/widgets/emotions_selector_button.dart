@@ -82,12 +82,15 @@ class EmotionsSelectorButton extends StatelessWidget {
   );
 
   // Separators between successive emotion names, indexed by selection count.
-  // For 2 selections: "A and B". For 3: "A, B and C".
+  // For 2 selections: "A and B". For 3–5: comma-separated with "and"
+  // before the final emotion.
   static const _separatorsByCount = <List<String>>[
     [], // 0 emotions
     [], // 1 emotion
     [' and '], // 2 emotions
     [', ', ' and '], // 3 emotions
+    [', ', ', ', ' and '], // 4 emotions
+    [', ', ', ', ', ', ' and '], // 5 emotions
   ];
 
   TextSpan _emotionName(String name) =>

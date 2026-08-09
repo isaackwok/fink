@@ -103,6 +103,30 @@ void main() {
         expect(find.textContaining('inspired'), findsOneWidget);
         expect(find.textContaining('hopeful'), findsOneWidget);
       });
+
+      testWidgets('five emotions formats all selected names', (tester) async {
+        await tester.pumpWidget(
+          buildSubject(
+            emotions: [
+              emotionList[EmotionType.joyful]!,
+              emotionList[EmotionType.inspired]!,
+              emotionList[EmotionType.hopeful]!,
+              emotionList[EmotionType.funny]!,
+              emotionList[EmotionType.exhilarated]!,
+            ],
+          ),
+        );
+
+        for (final name in [
+          'joyful',
+          'inspired',
+          'hopeful',
+          'funny',
+          'exhilarated',
+        ]) {
+          expect(find.textContaining(name), findsOneWidget);
+        }
+      });
     });
 
     group('typography', () {

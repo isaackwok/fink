@@ -97,7 +97,7 @@ class _AnimatedEmotionChipState extends State<_AnimatedEmotionChip>
 }
 
 class EmotionsSelectorBottomSheet extends ConsumerStatefulWidget {
-  final int maxSelectionLimit = 3;
+  final int maxSelectionLimit = 5;
   final List<Emotion> initialEmotions;
   final Function(List<Emotion>)? onSave;
 

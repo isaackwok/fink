@@ -71,6 +71,36 @@ void main() {
     expect(selected, 7);
   });
 
+  testWidgets('tapping the selected rating clears all hearts', (tester) async {
+    var rating = 5;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: Themes.dark,
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder:
+                (context, setState) => RatingSelector(
+                  rating: rating,
+                  onChanged: (value) => setState(() => rating = value),
+                ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const ValueKey('rating-heart-5')));
+    await tester.pump();
+
+    expect(rating, 0);
+    for (final svg in tester.widgetList<SvgPicture>(find.byType(SvgPicture))) {
+      expect(
+        (svg.bytesLoader as SvgAssetLoader).assetName,
+        'assets/images/rating_heart_unselected.svg',
+      );
+    }
+  });
+
   testWidgets('pressing and dragging scrubs the rating left and right', (
     tester,
   ) async {

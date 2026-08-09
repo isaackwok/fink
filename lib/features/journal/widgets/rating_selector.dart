@@ -26,6 +26,13 @@ class RatingSelector extends StatelessWidget {
     onChanged!(rating);
   }
 
+  void _toggleRatingFromPosition(double dx) {
+    if (readonly || onChanged == null) return;
+
+    final tappedRating = ((dx + 4) / 32).ceil().clamp(1, maxRating);
+    onChanged!(tappedRating == rating ? 0 : tappedRating);
+  }
+
   @override
   Widget build(BuildContext context) {
     final hasRating = rating > 0;
@@ -60,11 +67,11 @@ class RatingSelector extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTapDown:
+                onTapUp:
                     readonly || onChanged == null
                         ? null
                         : (details) =>
-                            _updateRatingFromPosition(details.localPosition.dx),
+                            _toggleRatingFromPosition(details.localPosition.dx),
                 onHorizontalDragStart:
                     readonly || onChanged == null
                         ? null
@@ -99,7 +106,8 @@ class RatingSelector extends StatelessWidget {
                           onTap:
                               readonly || onChanged == null
                                   ? null
-                                  : () => onChanged!(value),
+                                  : () =>
+                                      onChanged!(value == rating ? 0 : value),
                           child: SvgPicture.asset(
                             value <= rating
                                 ? 'assets/images/rating_heart_selected.svg'

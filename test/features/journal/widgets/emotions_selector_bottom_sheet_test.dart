@@ -40,10 +40,10 @@ void main() {
         );
       });
 
-      testWidgets('displays selection counter starting at 0/3', (tester) async {
+      testWidgets('displays selection counter starting at 0/5', (tester) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (0/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (0/5)'), findsOneWidget);
       });
 
       testWidgets('counter reflects initial emotions count', (tester) async {
@@ -51,7 +51,7 @@ void main() {
           buildSubject(initialEmotions: [emotionList[EmotionType.joyful]!]),
         );
         await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (1/5)'), findsOneWidget);
       });
 
       testWidgets('displays close icon button', (tester) async {
@@ -140,7 +140,7 @@ void main() {
         await tester.tap(find.text('Joyful'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (1/5)'), findsOneWidget);
       });
 
       testWidgets('tapping a second emotion updates counter to 2', (
@@ -154,27 +154,31 @@ void main() {
         await tester.tap(find.text('Angry'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Select up to 3 (2/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (2/5)'), findsOneWidget);
       });
 
-      testWidgets('cannot select more than 3 emotions', (tester) async {
+      testWidgets('cannot select more than 5 emotions', (tester) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
 
-        // Select 3 emotions
-        await tester.tap(find.text('Joyful'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Angry'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Shocked'));
-        await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (3/3)'), findsOneWidget);
+        // Select 5 emotions.
+        for (final name in [
+          'Joyful',
+          'Angry',
+          'Shocked',
+          'Funny',
+          'Inspired',
+        ]) {
+          await tester.tap(find.text(name));
+          await tester.pumpAndSettle();
+        }
+        expect(find.text('Select up to 5 (5/5)'), findsOneWidget);
 
-        // Try to select a 4th — blocked: counter stays at 3/3 and a toast shows.
-        await tester.tap(find.text('Funny'));
+        // Try to select a 6th — blocked: counter stays at 5/5 and a toast shows.
+        await tester.tap(find.text('Hopeful'));
         await tester.pump(); // build the toast overlay frame
-        expect(find.text('Select up to 3 (3/3)'), findsOneWidget);
-        expect(find.text('You can select up to 3 emotions'), findsWidgets);
+        expect(find.text('Select up to 5 (5/5)'), findsOneWidget);
+        expect(find.text('You can select up to 5 emotions'), findsWidgets);
 
         // Drain fluttertoast's chained timers (2s show + fade out) so none
         // leak past teardown. One elapse past the whole chain fires them all.
@@ -187,13 +191,13 @@ void main() {
           buildSubject(initialEmotions: [emotionList[EmotionType.joyful]!]),
         );
         await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (1/5)'), findsOneWidget);
 
         // Tap Joyful to deselect
         await tester.tap(find.text('Joyful'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Select up to 3 (0/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (0/5)'), findsOneWidget);
       });
     });
 
