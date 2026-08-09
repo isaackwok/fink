@@ -55,29 +55,36 @@ void main() {
   group('jiffyToUtcIso', () {
     test('emits an absolute UTC instant, never a naive local string', () {
       final local = DateTime(2025, 9, 29, 19, 44, 2);
-      final out = SupabaseDbManager.jiffyToUtcIso(Jiffy.parseFromDateTime(local));
+      final out = SupabaseDbManager.jiffyToUtcIso(
+        Jiffy.parseFromDateTime(local),
+      );
 
       expect(out, endsWith('Z'), reason: 'must carry a zone marker');
       expect(DateTime.parse(out).isUtc, isTrue);
       expect(DateTime.parse(out), local.toUtc());
     });
 
-    test('differs from Jiffy.toString(), the naive-local bug being retired', () {
-      final jiffy = Jiffy.parseFromDateTime(DateTime(2025, 9, 29, 19, 44, 2));
-      final naive = jiffy.toString();
-      final utc = SupabaseDbManager.jiffyToUtcIso(jiffy);
+    test(
+      'differs from Jiffy.toString(), the naive-local bug being retired',
+      () {
+        final jiffy = Jiffy.parseFromDateTime(DateTime(2025, 9, 29, 19, 44, 2));
+        final naive = jiffy.toString();
+        final utc = SupabaseDbManager.jiffyToUtcIso(jiffy);
 
-      // Identical only in a UTC+0 zone; asserting inequality there would be a
-      // false failure, so the meaningful claim is that `utc` is zone-marked.
-      if (DateTime.now().timeZoneOffset != Duration.zero) {
-        expect(utc, isNot(equals(naive)));
-      }
-      expect(naive, isNot(endsWith('Z')));
-    });
+        // Identical only in a UTC+0 zone; asserting inequality there would be a
+        // false failure, so the meaningful claim is that `utc` is zone-marked.
+        if (DateTime.now().timeZoneOffset != Duration.zero) {
+          expect(utc, isNot(equals(naive)));
+        }
+        expect(naive, isNot(endsWith('Z')));
+      },
+    );
 
     test('round-trips local -> UTC -> local without drift', () {
       final local = DateTime(2025, 3, 14, 1, 59, 26);
-      final utc = SupabaseDbManager.jiffyToUtcIso(Jiffy.parseFromDateTime(local));
+      final utc = SupabaseDbManager.jiffyToUtcIso(
+        Jiffy.parseFromDateTime(local),
+      );
       final back = SupabaseDbManager.pgTimestampToLocalNaive(utc);
 
       expect(DateTime.parse(back), local);
@@ -94,6 +101,7 @@ void main() {
       'tmdb_id': 550,
       'movie_title': 'Fight Club',
       'movie_poster': '/poster.jpg',
+      'rating': 8,
       'emotions': emotions ?? const ['joyful'],
       'selected_scenes': scenes ?? const [],
       'selected_refs': refs ?? const [],
@@ -109,20 +117,23 @@ void main() {
       expect(j.tmdbId, 550);
       expect(j.movieTitle, 'Fight Club');
       expect(j.moviePoster, '/poster.jpg');
+      expect(j.rating, 8);
       expect(j.thoughts, 'a note');
       expect(j.emotions.single.id, 'joyful');
     });
 
     test('parses the modern object shape for scenes and refs', () {
-      final j = SupabaseDbManager.rowToJournal(baseRow(
-        scenes: [
-          {'path': '/s1.jpg', 'caption': 'the fight'},
-          {'path': '/s2.jpg'},
-        ],
-        refs: [
-          {'text': 'great film', 'source': 'letterboxd'},
-        ],
-      ));
+      final j = SupabaseDbManager.rowToJournal(
+        baseRow(
+          scenes: [
+            {'path': '/s1.jpg', 'caption': 'the fight'},
+            {'path': '/s2.jpg'},
+          ],
+          refs: [
+            {'text': 'great film', 'source': 'letterboxd'},
+          ],
+        ),
+      );
 
       expect(j.selectedScenes.length, 2);
       expect(j.selectedScenes[0].path, '/s1.jpg');
@@ -135,29 +146,36 @@ void main() {
     test('parses the LEGACY plain-string shape for scenes and refs', () {
       // 87 scene entries and 30 ref entries in the production export are still
       // bare strings, so this path is load-bearing, not hypothetical.
-      final j = SupabaseDbManager.rowToJournal(baseRow(
-        scenes: ['/legacy1.jpg', '/legacy2.jpg'],
-        refs: ['an old review'],
-      ));
+      final j = SupabaseDbManager.rowToJournal(
+        baseRow(
+          scenes: ['/legacy1.jpg', '/legacy2.jpg'],
+          refs: ['an old review'],
+        ),
+      );
 
-      expect(j.selectedScenes.map((s) => s.path), ['/legacy1.jpg', '/legacy2.jpg']);
+      expect(j.selectedScenes.map((s) => s.path), [
+        '/legacy1.jpg',
+        '/legacy2.jpg',
+      ]);
       expect(j.selectedScenes.every((s) => s.caption == null), isTrue);
       expect(j.selectedRefs.single.text, 'an old review');
     });
 
     test('renders timestamps as local wall time', () {
       final j = SupabaseDbManager.rowToJournal(baseRow());
-      final expected = DateTime.parse('2025-09-29T11:44:02.131+00:00').toLocal();
+      final expected =
+          DateTime.parse('2025-09-29T11:44:02.131+00:00').toLocal();
 
       expect(j.createdAt.hour, expected.hour);
       expect(j.createdAt.date, expected.day);
     });
 
     test('tolerates null jsonb/array columns', () {
-      final row = baseRow()
-        ..['emotions'] = null
-        ..['selected_scenes'] = null
-        ..['selected_refs'] = null;
+      final row =
+          baseRow()
+            ..['emotions'] = null
+            ..['selected_scenes'] = null
+            ..['selected_refs'] = null;
       final j = SupabaseDbManager.rowToJournal(row);
 
       expect(j.emotions, isEmpty);
@@ -171,6 +189,7 @@ void main() {
       final journal = makeJournal(
         tmdbId: 680,
         movieTitle: 'Pulp Fiction',
+        rating: 7,
         thoughts: 'wow',
         emotions: [emotionList[EmotionType.joyful]!],
         selectedScenes: [SceneItem(path: '/p.jpg', caption: 'diner')],
@@ -184,6 +203,7 @@ void main() {
       expect(row['user_id'], 'u-1');
       expect(row['tmdb_id'], 680);
       expect(row['movie_title'], 'Pulp Fiction');
+      expect(row['rating'], 7);
       expect(row['thoughts'], 'wow');
       expect(row['emotions'], ['joyful']);
       expect(row['selected_scenes'], [
@@ -221,6 +241,7 @@ void main() {
         tmdbId: 13,
         movieTitle: 'Forrest Gump',
         moviePoster: '/fg.jpg',
+        rating: 9,
         thoughts: 'run',
         emotions: [emotionList[EmotionType.touched]!],
         selectedScenes: [SceneItem(path: '/a.jpg', caption: 'bench')],
@@ -234,17 +255,18 @@ void main() {
         ...row,
         'id': 'uuid-1',
         // Postgres echoes timestamptz back with an offset rather than a Z.
-        'created_at': DateTime.parse(row['created_at'] as String)
-            .toIso8601String()
-            .replaceAll('Z', '+00:00'),
-        'updated_at': DateTime.parse(row['updated_at'] as String)
-            .toIso8601String()
-            .replaceAll('Z', '+00:00'),
+        'created_at': DateTime.parse(
+          row['created_at'] as String,
+        ).toIso8601String().replaceAll('Z', '+00:00'),
+        'updated_at': DateTime.parse(
+          row['updated_at'] as String,
+        ).toIso8601String().replaceAll('Z', '+00:00'),
       });
 
       expect(restored.tmdbId, original.tmdbId);
       expect(restored.movieTitle, original.movieTitle);
       expect(restored.moviePoster, original.moviePoster);
+      expect(restored.rating, 9);
       expect(restored.thoughts, original.thoughts);
       expect(restored.emotions.single.id, original.emotions.single.id);
       expect(restored.selectedScenes.single.path, '/a.jpg');

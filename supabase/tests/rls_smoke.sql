@@ -11,7 +11,7 @@
 
 begin;
 -- Explicit count (not no_plan) so a test that silently stops running is caught.
-select plan(63);
+select plan(66);
 
 -- ---------------------------------------------------------------- fixtures
 -- Two users. Fixed UUIDs so failures are reproducible.
@@ -130,6 +130,10 @@ select ok(not has_column_privilege('authenticated','public.journals','created_at
           'authenticated cannot UPDATE journals.created_at');
 select ok(has_column_privilege('authenticated','public.journals','created_at','INSERT'),
           'authenticated CAN INSERT journals.created_at (addJournal sends it)');
+select ok(has_column_privilege('authenticated','public.journals','rating','INSERT'),
+          'authenticated CAN INSERT journals.rating');
+select ok(has_column_privilege('authenticated','public.journals','rating','UPDATE'),
+          'authenticated CAN UPDATE journals.rating');
 
 -- The counterintuitive one, and the reason a naive allowlist breaks the app:
 -- journalToRow() always includes user_id, even on update. WITH CHECK is what
@@ -230,6 +234,13 @@ select throws_ok(
   '23514',
   null,
   'username shape is enforced by the database, not just the client');
+
+select throws_ok(
+  $$update public.journals set rating = 11
+    where id = 'aaaaaaaa-0000-0000-0000-000000000002'$$,
+  '23514',
+  null,
+  'journal rating is constrained to the 0-10 scale');
 
 -- Privileged tables are unreachable even with RLS on (no grants at all).
 select throws_ok($$select 1 from public.sync_tombstones$$, '42501', null,

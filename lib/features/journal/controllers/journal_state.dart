@@ -54,6 +54,7 @@ class JournalState {
   final int tmdbId;
   final String movieTitle;
   final String moviePoster;
+  final int rating;
   final List<Emotion> emotions;
   final List<SceneItem> selectedScenes;
   final List<Review> selectedRefs;
@@ -69,6 +70,7 @@ class JournalState {
     int tmdbId = 0,
     String movieTitle = '',
     String moviePoster = '',
+    int rating = 0,
     List<Emotion> emotions = const [],
     List<SceneItem> selectedScenes = const [],
     List<Review>? selectedRefs,
@@ -82,6 +84,7 @@ class JournalState {
       tmdbId: tmdbId,
       movieTitle: movieTitle,
       moviePoster: moviePoster,
+      rating: rating,
       emotions: emotions,
       selectedScenes: selectedScenes,
       selectedRefs: selectedRefs ?? [],
@@ -96,6 +99,7 @@ class JournalState {
     required this.tmdbId,
     required this.movieTitle,
     required this.moviePoster,
+    required this.rating,
     required this.emotions,
     required this.selectedScenes,
     required this.selectedRefs,
@@ -109,6 +113,7 @@ class JournalState {
     int? tmdbId,
     String? movieTitle,
     String? moviePoster,
+    int? rating,
     List<Emotion>? emotions,
     List<SceneItem>? selectedScenes,
     List<Review>? selectedRefs,
@@ -121,6 +126,7 @@ class JournalState {
       tmdbId: tmdbId ?? this.tmdbId,
       movieTitle: movieTitle ?? this.movieTitle,
       moviePoster: moviePoster ?? this.moviePoster,
+      rating: rating ?? this.rating,
       emotions: emotions ?? this.emotions,
       selectedScenes: selectedScenes ?? this.selectedScenes,
       selectedRefs: selectedRefs ?? this.selectedRefs,
@@ -142,6 +148,7 @@ class JournalState {
           tmdbId == other.tmdbId &&
           movieTitle == other.movieTitle &&
           moviePoster == other.moviePoster &&
+          rating == other.rating &&
           listEquals(emotions, other.emotions) &&
           listEquals(selectedScenes, other.selectedScenes) &&
           listEquals(selectedRefs, other.selectedRefs) &&
@@ -155,6 +162,7 @@ class JournalState {
     tmdbId,
     movieTitle,
     moviePoster,
+    rating,
     Object.hashAll(emotions),
     Object.hashAll(selectedScenes),
     Object.hashAll(selectedRefs),
@@ -168,6 +176,7 @@ class JournalState {
       'tmdbId': tmdbId,
       'movieTitle': movieTitle,
       'moviePoster': moviePoster,
+      'rating': rating,
       'emotions': emotions.map((e) => e.id).toList(),
       'selectedScenes': selectedScenes.map((scene) => scene.toMap()).toList(),
       'selectedRefs': selectedRefs.map((r) => r.toMap()).toList(),
@@ -183,6 +192,7 @@ class JournalState {
       'tmdbId': tmdbId,
       'movieTitle': movieTitle,
       'moviePoster': moviePoster,
+      'rating': rating,
       'emotions': emotions.map((e) => e.id).toList(),
       'selectedScenes': selectedScenes.map((scene) => scene.toMap()).toList(),
       'selectedRefs': selectedRefs.map((r) => r.toMap()).toList(),
@@ -239,6 +249,10 @@ class JournalState {
               : int.parse(map['tmdbId'].toString()),
       movieTitle: map['movieTitle'] ?? '',
       moviePoster: map['moviePoster'] ?? '',
+      rating:
+          map['rating'] is int
+              ? map['rating']
+              : int.tryParse(map['rating']?.toString() ?? '') ?? 0,
       emotions:
           (map['emotions'] as List<dynamic>? ?? []).map((emotionId) {
             return emotionById(emotionId as String) ?? emotionList.values.first;
