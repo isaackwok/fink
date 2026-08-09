@@ -241,11 +241,7 @@ class JournalState {
       moviePoster: map['moviePoster'] ?? '',
       emotions:
           (map['emotions'] as List<dynamic>? ?? []).map((emotionId) {
-            final emotionEntry = emotionList.entries.firstWhere(
-              (entry) => entry.value.id == emotionId,
-              orElse: () => emotionList.entries.first,
-            );
-            return emotionEntry.value;
+            return emotionById(emotionId as String) ?? emotionList.values.first;
           }).toList(),
       selectedScenes: parseSelectedScenes(map['selectedScenes']),
       selectedRefs: parseSelectedRefs(map['selectedRefs']),

@@ -32,6 +32,47 @@ void main() {
       });
     });
 
+    test('each energy group follows the requested display order', () {
+      List<String> namesFor(String group) =>
+          emotionList.values
+              .where((emotion) => emotion.group == group)
+              .map((emotion) => emotion.name)
+              .toList();
+
+      expect(namesFor('Uplifting'), [
+        'Joyful',
+        'Funny',
+        'Inspired',
+        'Hopeful',
+        'Fulfilling',
+        'Exhilarated',
+      ]);
+      expect(namesFor('Intense'), [
+        'Shocked',
+        'Angry',
+        'Terrified',
+        'Anxious',
+        'Overwhelmed',
+        'Disgusted',
+      ]);
+      expect(namesFor('Soothing'), [
+        'Heartwarming',
+        'Touched',
+        'Peaceful',
+        'Nostalgic',
+        'Cozy',
+        'Satisfied',
+      ]);
+      expect(namesFor('Quiet'), [
+        'Melancholic',
+        'Confused',
+        'Bittersweet',
+        'Powerless',
+        'Bored',
+        'Conflicted',
+      ]);
+    });
+
     test(
       'Uplifting/Intense are high energy, Soothing/Quiet are low energy',
       () {
@@ -59,15 +100,19 @@ void main() {
     });
 
     test('emotion lookup by id works (validates fromJson emotion parsing)', () {
-      // This mirrors the lookup logic in JournalState.fromJson
       const testId = 'joyful';
-      final found = emotionList.entries.firstWhere(
-        (entry) => entry.value.id == testId,
-        orElse: () => emotionList.entries.first,
-      );
-      expect(found.value.id, testId);
-      expect(found.value.name, 'Joyful');
-      expect(found.value.group, 'Uplifting');
+      final found = emotionById(testId)!;
+      expect(found.id, testId);
+      expect(found.name, 'Joyful');
+      expect(found.group, 'Uplifting');
+    });
+
+    test('retired emotion ids remain readable for existing journals', () {
+      expect(emotionById('mindBlown')?.name, 'Mind-blown');
+      expect(emotionById('disturbed')?.name, 'Disturbed');
+      expect(emotionById('therapeutic')?.name, 'Therapeutic');
+      expect(emotionById('profound')?.name, 'Profound');
+      expect(emotionById('lonely')?.name, 'Lonely');
     });
   });
 

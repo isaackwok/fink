@@ -31,9 +31,9 @@ enum EmotionType {
   joyful,
   funny,
   inspired,
-  mindBlown,
   hopeful,
   fulfilling,
+  exhilarated,
 
   // High Energy - Intense
   shocked,
@@ -41,23 +41,23 @@ enum EmotionType {
   terrified,
   anxious,
   overwhelmed,
-  disturbed,
+  disgusted,
 
   // Low Energy - Soothing
   heartwarming,
   touched,
   peaceful,
-  therapeutic,
   nostalgic,
   cozy,
+  satisfied,
 
   // Low Energy - Quiet
   melancholic,
   confused,
-  profound,
   bittersweet,
   powerless,
-  lonely,
+  bored,
+  conflicted,
 
   // Perspectives
   cheesy,
@@ -71,6 +71,13 @@ enum EmotionType {
   surreal,
   thoughtProvoking,
   unconventional,
+
+  // Retired emotions retained for backward-compatible journal loading.
+  mindBlown,
+  disturbed,
+  therapeutic,
+  profound,
+  lonely,
   // ------- END OF v2 New Emotions ------
 }
 
@@ -86,12 +93,6 @@ const emotionList = {
   EmotionType.funny: Emotion(
     id: "funny",
     name: "Funny",
-    group: "Uplifting",
-    energyLevel: "high",
-  ),
-  EmotionType.mindBlown: Emotion(
-    id: "mindBlown",
-    name: "Mind-blown",
     group: "Uplifting",
     energyLevel: "high",
   ),
@@ -113,6 +114,12 @@ const emotionList = {
     group: "Uplifting",
     energyLevel: "high",
   ),
+  EmotionType.exhilarated: Emotion(
+    id: "exhilarated",
+    name: "Exhilarated",
+    group: "Uplifting",
+    energyLevel: "high",
+  ),
 
   // High Energy - Intense (uses FC8885)
   EmotionType.shocked: Emotion(
@@ -127,9 +134,9 @@ const emotionList = {
     group: "Intense",
     energyLevel: "high",
   ),
-  EmotionType.disturbed: Emotion(
-    id: "disturbed",
-    name: "Disturbed",
+  EmotionType.terrified: Emotion(
+    id: "terrified",
+    name: "Terrified",
     group: "Intense",
     energyLevel: "high",
   ),
@@ -145,9 +152,9 @@ const emotionList = {
     group: "Intense",
     energyLevel: "high",
   ),
-  EmotionType.terrified: Emotion(
-    id: "terrified",
-    name: "Terrified",
+  EmotionType.disgusted: Emotion(
+    id: "disgusted",
+    name: "Disgusted",
     group: "Intense",
     energyLevel: "high",
   ),
@@ -165,27 +172,27 @@ const emotionList = {
     group: "Soothing",
     energyLevel: "low",
   ),
-  EmotionType.cozy: Emotion(
-    id: "cozy",
-    name: "Cozy",
-    group: "Soothing",
-    energyLevel: "low",
-  ),
   EmotionType.peaceful: Emotion(
     id: "peaceful",
     name: "Peaceful",
     group: "Soothing",
     energyLevel: "low",
   ),
-  EmotionType.therapeutic: Emotion(
-    id: "therapeutic",
-    name: "Therapeutic",
-    group: "Soothing",
-    energyLevel: "low",
-  ),
   EmotionType.nostalgic: Emotion(
     id: "nostalgic",
     name: "Nostalgic",
+    group: "Soothing",
+    energyLevel: "low",
+  ),
+  EmotionType.cozy: Emotion(
+    id: "cozy",
+    name: "Cozy",
+    group: "Soothing",
+    energyLevel: "low",
+  ),
+  EmotionType.satisfied: Emotion(
+    id: "satisfied",
+    name: "Satisfied",
     group: "Soothing",
     energyLevel: "low",
   ),
@@ -197,33 +204,33 @@ const emotionList = {
     group: "Quiet",
     energyLevel: "low",
   ),
-  EmotionType.bittersweet: Emotion(
-    id: "bittersweet",
-    name: "Bittersweet",
-    group: "Quiet",
-    energyLevel: "low",
-  ),
-  EmotionType.lonely: Emotion(
-    id: "lonely",
-    name: "Lonely",
-    group: "Quiet",
-    energyLevel: "low",
-  ),
-  EmotionType.profound: Emotion(
-    id: "profound",
-    name: "Profound",
-    group: "Quiet",
-    energyLevel: "low",
-  ),
   EmotionType.confused: Emotion(
     id: "confused",
     name: "Confused",
     group: "Quiet",
     energyLevel: "low",
   ),
+  EmotionType.bittersweet: Emotion(
+    id: "bittersweet",
+    name: "Bittersweet",
+    group: "Quiet",
+    energyLevel: "low",
+  ),
   EmotionType.powerless: Emotion(
     id: "powerless",
     name: "Powerless",
+    group: "Quiet",
+    energyLevel: "low",
+  ),
+  EmotionType.bored: Emotion(
+    id: "bored",
+    name: "Bored",
+    group: "Quiet",
+    energyLevel: "low",
+  ),
+  EmotionType.conflicted: Emotion(
+    id: "conflicted",
+    name: "Conflicted",
     group: "Quiet",
     energyLevel: "low",
   ),
@@ -298,3 +305,45 @@ const emotionList = {
   ),
 };
 // ------ END OF v2 New Emotions ------
+
+// Retired emotions remain resolvable so previously saved journals retain their
+// original meaning, but they are intentionally absent from the selector.
+const retiredEmotionList = {
+  EmotionType.mindBlown: Emotion(
+    id: "mindBlown",
+    name: "Mind-blown",
+    group: "Uplifting",
+    energyLevel: "high",
+  ),
+  EmotionType.disturbed: Emotion(
+    id: "disturbed",
+    name: "Disturbed",
+    group: "Intense",
+    energyLevel: "high",
+  ),
+  EmotionType.therapeutic: Emotion(
+    id: "therapeutic",
+    name: "Therapeutic",
+    group: "Soothing",
+    energyLevel: "low",
+  ),
+  EmotionType.profound: Emotion(
+    id: "profound",
+    name: "Profound",
+    group: "Quiet",
+    energyLevel: "low",
+  ),
+  EmotionType.lonely: Emotion(
+    id: "lonely",
+    name: "Lonely",
+    group: "Quiet",
+    energyLevel: "low",
+  ),
+};
+
+Emotion? emotionById(String id) {
+  for (final emotion in [...emotionList.values, ...retiredEmotionList.values]) {
+    if (emotion.id == id) return emotion;
+  }
+  return null;
+}

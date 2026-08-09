@@ -140,10 +140,10 @@ class _EmotionsSelectorBottomSheetState
           "emotions": [
             EmotionType.joyful,
             EmotionType.funny,
-            EmotionType.mindBlown,
             EmotionType.inspired,
             EmotionType.hopeful,
             EmotionType.fulfilling,
+            EmotionType.exhilarated,
           ],
         },
         {
@@ -152,10 +152,10 @@ class _EmotionsSelectorBottomSheetState
           "emotions": [
             EmotionType.shocked,
             EmotionType.angry,
-            EmotionType.disturbed,
+            EmotionType.terrified,
             EmotionType.anxious,
             EmotionType.overwhelmed,
-            EmotionType.terrified,
+            EmotionType.disgusted,
           ],
         },
       ],
@@ -170,10 +170,10 @@ class _EmotionsSelectorBottomSheetState
           "emotions": [
             EmotionType.heartwarming,
             EmotionType.touched,
-            EmotionType.cozy,
             EmotionType.peaceful,
-            EmotionType.therapeutic,
             EmotionType.nostalgic,
+            EmotionType.cozy,
+            EmotionType.satisfied,
           ],
         },
         {
@@ -181,11 +181,11 @@ class _EmotionsSelectorBottomSheetState
           "color": const Color(0xFF9ADCFF),
           "emotions": [
             EmotionType.melancholic,
-            EmotionType.bittersweet,
-            EmotionType.lonely,
-            EmotionType.profound,
             EmotionType.confused,
+            EmotionType.bittersweet,
             EmotionType.powerless,
+            EmotionType.bored,
+            EmotionType.conflicted,
           ],
         },
       ],

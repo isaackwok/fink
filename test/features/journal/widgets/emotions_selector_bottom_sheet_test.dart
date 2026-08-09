@@ -86,9 +86,9 @@ void main() {
         expect(find.text('Joyful'), findsOneWidget);
         expect(find.text('Funny'), findsOneWidget);
         expect(find.text('Inspired'), findsOneWidget);
-        expect(find.text('Mind-blown'), findsOneWidget);
         expect(find.text('Hopeful'), findsOneWidget);
         expect(find.text('Fulfilling'), findsOneWidget);
+        expect(find.text('Exhilarated'), findsOneWidget);
       });
 
       testWidgets('displays all 6 Intense emotion names', (tester) async {
@@ -99,7 +99,36 @@ void main() {
         expect(find.text('Terrified'), findsOneWidget);
         expect(find.text('Anxious'), findsOneWidget);
         expect(find.text('Overwhelmed'), findsOneWidget);
-        expect(find.text('Disturbed'), findsOneWidget);
+        expect(find.text('Disgusted'), findsOneWidget);
+      });
+    });
+
+    group('second page content', () {
+      testWidgets('displays the updated Soothing and Quiet emotions', (
+        tester,
+      ) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        await tester.drag(find.byType(PageView), const Offset(-500, 0));
+        await tester.pumpAndSettle();
+
+        for (final name in [
+          'Heartwarming',
+          'Touched',
+          'Peaceful',
+          'Nostalgic',
+          'Cozy',
+          'Satisfied',
+          'Melancholic',
+          'Confused',
+          'Bittersweet',
+          'Powerless',
+          'Bored',
+          'Conflicted',
+        ]) {
+          expect(find.text(name), findsOneWidget);
+        }
       });
     });
 
