@@ -91,7 +91,7 @@ The app follows a feature-based architecture where each feature is self-containe
   - `widgets/` - MovieSearchBar, MovieResultList
     - `MovieSearchBar`: **search-as-you-type** with a 300ms debounce (`_kSearchDebounce`). A `TextEditingController` *listener* (not `SearchBar.onChanged`) schedules the debounced `search()` — chosen so programmatic edits fire it too, notably the clear (X) button, which debounce-resets to popular. The listener also `setState`s so the trailing clear/search icon stays in sync (a `FocusNode` listener does the same for focus). Auto-fired searches are **not** logged to analytics; only explicit submit (keyboard "search" action / tap) logs via `logMovieSearched` and cancels any pending timer before searching immediately. `dispose()` cancels the timer, removes both listeners, and disposes the `FocusNode`. A reload no longer flashes skeletons: Riverpod merges the `AsyncLoading` with the previous state, and `MovieResultList` opts in with `skipLoadingOnReload: true`, so the old list stays visible until the new results land (skeletons only on first load). Behavior pinned by `movie_search_bar_test.dart`.
 
-- **emotion/** - Emotion data model (24 emotions in 4 groups — see Working with Emotions section)
+- **emotion/** - Emotion data model (35 emotions in 5 groups — see Working with Emotions section)
 
 - **quesgen/** - AI review fetching service for movie reviews from external sources
   - `review.dart` - Review data model with `text` and `source` fields (sources: "letterboxd", "reddit")
@@ -372,7 +372,7 @@ Tests mirror `lib/features/` under `test/features/`. Shared helpers live in `tes
 - **Pure model tests**: Serialization, deserialization, backward compatibility, equality
 - **Controller state tests**: Use `ProviderContainer` to test Riverpod notifiers without Flutter widgets
 - **Widget tests**: Use `testWidgets` with `MaterialApp` wrapper; require `FakeHttpOverrides` for `Image.network` and `GoogleFonts.config.allowRuntimeFetching = false`
-- **Data integrity tests**: Validate emotion list structure (24 emotions, 4 groups, energy levels)
+- **Data integrity tests**: Validate emotion list structure (35 emotions, 5 groups, energy levels)
 - No Firebase or API mocking — tests cover models, state mutations, and widget rendering only
 
 ### Test Helpers
@@ -475,15 +475,16 @@ Feature lives under `lib/features/share/`. Flow: callers → `TicketPosterPicker
 
 ### Working with Emotions
 - Emotion definitions in `lib/features/emotion/emotion.dart`
-- **24 emotions** organized into 4 groups based on energy level (high/low) and valence (positive/negative):
+- **35 emotions** organized into 5 groups:
   - **Uplifting** (high energy, positive): Joyful, Funny, Inspired, Mind-blown, Hopeful, Fulfilling
   - **Intense** (high energy, negative): Shocked, Angry, Terrified, Anxious, Overwhelmed, Disturbed
   - **Soothing** (low energy, positive): Heartwarming, Touched, Peaceful, Therapeutic, Nostalgic, Cozy
   - **Quiet** (low energy, negative): Melancholic, Confused, Profound, Bittersweet, Powerless, Lonely
+- **Perspectives** (neutral evaluation, represented as low energy by the current model): Cheesy, Cinematic, Cringe, Dark Humor, Ironic, Predictable, Quirky, Slow-burn, Surreal, Thought-provoking, Unconventional
 - Each emotion has:
   - `id`: Unique identifier (camelCase string)
   - `name`: Display name (with proper capitalization)
-  - `group`: Group name (Uplifting, Intense, Soothing, or Quiet)
+  - `group`: Group name (Uplifting, Intense, Soothing, Quiet, or Perspectives)
   - `energyLevel`: "high" or "low"
 - Emotion colors are handled in the UI layer (EmotionsSelectorButton, EmotionsSelectorBottomSheet) rather than the data model
 - Access emotions via `emotionList` map using `EmotionType` enum keys

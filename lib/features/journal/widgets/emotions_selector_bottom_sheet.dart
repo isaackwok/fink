@@ -8,12 +8,14 @@ class _AnimatedEmotionChip extends StatefulWidget {
   final Emotion emotion;
   final bool isSelected;
   final Color sectionColor;
+  final Color? borderColor;
   final VoidCallback onTap;
 
   const _AnimatedEmotionChip({
     required this.emotion,
     required this.isSelected,
     required this.sectionColor,
+    this.borderColor,
     required this.onTap,
   });
 
@@ -71,7 +73,9 @@ class _AnimatedEmotionChipState extends State<_AnimatedEmotionChip>
                         : Colors.transparent,
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(
-                  color: widget.sectionColor.withAlpha(179), // 70% opacity
+                  color:
+                      widget.borderColor ??
+                      widget.sectionColor.withAlpha(179), // 70% opacity
                   width: 1,
                 ),
               ),
@@ -124,7 +128,7 @@ class _EmotionsSelectorBottomSheetState
       300; // Current page height (default while measuring)
   late final List<GlobalKey> _pageKeys;
 
-  // Two pages with two sections each
+  // Two energy pages plus the neutral Perspectives group.
   static final List<Map<String, dynamic>> emotionPages = [
     // Page 1: High Energy
     {
@@ -186,6 +190,31 @@ class _EmotionsSelectorBottomSheetState
         },
       ],
     },
+    // Page 3: Perspectives
+    {
+      "title": "Perspectives",
+      "sections": [
+        {
+          // This card has no subsection label in the Figma design.
+          "label": null,
+          "color": const Color(0xFF8F8E8E),
+          "borderColor": const Color(0xFF8F8E8E),
+          "emotions": [
+            EmotionType.cheesy,
+            EmotionType.cinematic,
+            EmotionType.cringe,
+            EmotionType.darkHumor,
+            EmotionType.ironic,
+            EmotionType.predictable,
+            EmotionType.quirky,
+            EmotionType.slowBurn,
+            EmotionType.surreal,
+            EmotionType.thoughtProvoking,
+            EmotionType.unconventional,
+          ],
+        },
+      ],
+    },
   ];
 
   @override
@@ -195,9 +224,9 @@ class _EmotionsSelectorBottomSheetState
     _tempSelectedEmotions = List.from(widget.initialEmotions);
 
     // Initialize page keys for height measurement
-    _pageKeys = List.generate(2, (_) => GlobalKey());
+    _pageKeys = List.generate(emotionPages.length, (_) => GlobalKey());
 
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: emotionPages.length, vsync: this);
     _pageController = PageController();
 
     _pageController.addListener(() {
@@ -378,14 +407,14 @@ class _EmotionsSelectorBottomSheetState
 
             const SizedBox(height: 16),
 
-            // Content with horizontal scroll - two pages
+            // Content with horizontal scrolling between emotion groups.
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               height: _currentPageHeight,
               child: PageView.builder(
                 controller: _pageController,
-                itemCount: 2,
+                itemCount: emotionPages.length,
                 itemBuilder: (context, pageIndex) {
                   final page = emotionPages[pageIndex];
                   final pageTitle = page["title"] as String;
@@ -432,8 +461,11 @@ class _EmotionsSelectorBottomSheetState
                               ...sections.asMap().entries.map((entry) {
                                 final index = entry.key;
                                 final section = entry.value;
-                                final sectionLabel = section["label"] as String;
+                                final sectionLabel =
+                                    section["label"] as String?;
                                 final sectionColor = section["color"] as Color;
+                                final borderColor =
+                                    section["borderColor"] as Color?;
                                 final emotions =
                                     section["emotions"] as List<EmotionType>;
                                 final isLastSection =
@@ -442,16 +474,18 @@ class _EmotionsSelectorBottomSheetState
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      sectionLabel,
-                                      style: TextStyle(
-                                        fontFamily: 'AvenirNext',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: sectionColor,
+                                    if (sectionLabel != null) ...[
+                                      Text(
+                                        sectionLabel,
+                                        style: TextStyle(
+                                          fontFamily: 'AvenirNext',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: sectionColor,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 12),
+                                      const SizedBox(height: 12),
+                                    ],
                                     Wrap(
                                       spacing: 8,
                                       runSpacing: 8,
@@ -468,6 +502,7 @@ class _EmotionsSelectorBottomSheetState
                                               emotion: emotion,
                                               isSelected: isSelected,
                                               sectionColor: sectionColor,
+                                              borderColor: borderColor,
                                               onTap:
                                                   () => _handleEmotionTap(
                                                     emotion,
@@ -503,7 +538,7 @@ class _EmotionsSelectorBottomSheetState
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                2,
+                emotionPages.length,
                 (index) => Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   width: 6,
@@ -539,7 +574,10 @@ class _EmotionsSelectorBottomSheetState
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
                   onPressed: _handleDone,
                   child: const Text('Done'),

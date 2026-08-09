@@ -40,17 +40,16 @@ void main() {
         );
       });
 
-      testWidgets('displays selection counter starting at 0/3',
-          (tester) async {
+      testWidgets('displays selection counter starting at 0/3', (tester) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
         expect(find.text('Select up to 3 (0/3)'), findsOneWidget);
       });
 
       testWidgets('counter reflects initial emotions count', (tester) async {
-        await tester.pumpWidget(buildSubject(
-          initialEmotions: [emotionList[EmotionType.joyful]!],
-        ));
+        await tester.pumpWidget(
+          buildSubject(initialEmotions: [emotionList[EmotionType.joyful]!]),
+        );
         await tester.pumpAndSettle();
         expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
       });
@@ -115,8 +114,9 @@ void main() {
         expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
       });
 
-      testWidgets('tapping a second emotion updates counter to 2',
-          (tester) async {
+      testWidgets('tapping a second emotion updates counter to 2', (
+        tester,
+      ) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
 
@@ -154,9 +154,9 @@ void main() {
       });
 
       testWidgets('tapping a selected emotion deselects it', (tester) async {
-        await tester.pumpWidget(buildSubject(
-          initialEmotions: [emotionList[EmotionType.joyful]!],
-        ));
+        await tester.pumpWidget(
+          buildSubject(initialEmotions: [emotionList[EmotionType.joyful]!]),
+        );
         await tester.pumpAndSettle();
         expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
 
@@ -165,6 +165,36 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Select up to 3 (0/3)'), findsOneWidget);
+      });
+    });
+
+    group('Perspectives page content', () {
+      testWidgets('displays all Perspectives emotion names', (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        final pageView = find.byType(PageView);
+        await tester.drag(pageView, const Offset(-500, 0));
+        await tester.pumpAndSettle();
+        await tester.drag(pageView, const Offset(-500, 0));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Perspectives'), findsOneWidget);
+        for (final name in [
+          'Cheesy',
+          'Cinematic',
+          'Cringe',
+          'Dark Humor',
+          'Ironic',
+          'Predictable',
+          'Quirky',
+          'Slow-burn',
+          'Surreal',
+          'Thought-provoking',
+          'Unconventional',
+        ]) {
+          expect(find.text(name), findsOneWidget);
+        }
       });
     });
 
@@ -177,9 +207,9 @@ void main() {
 
       testWidgets('Done calls onSave with selected emotions', (tester) async {
         List<Emotion>? savedEmotions;
-        await tester.pumpWidget(buildSubject(
-          onSave: (emotions) => savedEmotions = emotions,
-        ));
+        await tester.pumpWidget(
+          buildSubject(onSave: (emotions) => savedEmotions = emotions),
+        );
         await tester.pumpAndSettle();
 
         // Select two emotions
@@ -198,12 +228,13 @@ void main() {
         expect(savedEmotions!.any((e) => e.id == 'inspired'), isTrue);
       });
 
-      testWidgets('Done with no selection calls onSave with empty list',
-          (tester) async {
+      testWidgets('Done with no selection calls onSave with empty list', (
+        tester,
+      ) async {
         List<Emotion>? savedEmotions;
-        await tester.pumpWidget(buildSubject(
-          onSave: (emotions) => savedEmotions = emotions,
-        ));
+        await tester.pumpWidget(
+          buildSubject(onSave: (emotions) => savedEmotions = emotions),
+        );
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Done'));
@@ -215,26 +246,31 @@ void main() {
     });
 
     group('page indicator', () {
-      testWidgets('displays 2 page indicator dots', (tester) async {
+      testWidgets('displays 3 page indicator dots', (tester) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
 
         // Find the page indicator containers (6x6 circles)
-        final dots = tester
-            .widgetList<Container>(find.byType(Container))
-            .where((c) =>
-                c.decoration is BoxDecoration &&
-                (c.decoration as BoxDecoration).shape == BoxShape.circle &&
-                c.constraints?.maxWidth == 6)
-            .toList();
+        final dots =
+            tester
+                .widgetList<Container>(find.byType(Container))
+                .where(
+                  (c) =>
+                      c.decoration is BoxDecoration &&
+                      (c.decoration as BoxDecoration).shape ==
+                          BoxShape.circle &&
+                      c.constraints?.maxWidth == 6,
+                )
+                .toList();
 
-        expect(dots.length, 2);
+        expect(dots.length, 3);
       });
     });
 
     group('divider between sections', () {
-      testWidgets('has a Divider between Uplifting and Intense sections',
-          (tester) async {
+      testWidgets('has a Divider between Uplifting and Intense sections', (
+        tester,
+      ) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
         expect(find.byType(Divider), findsOneWidget);

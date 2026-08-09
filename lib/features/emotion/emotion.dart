@@ -26,7 +26,6 @@ class Emotion {
 }
 
 enum EmotionType {
-
   // ------ v2 New Emotions ------
   // High Energy - Uplifting
   joyful,
@@ -59,6 +58,19 @@ enum EmotionType {
   bittersweet,
   powerless,
   lonely,
+
+  // Perspectives
+  cheesy,
+  cinematic,
+  cringe,
+  darkHumor,
+  ironic,
+  predictable,
+  quirky,
+  slowBurn,
+  surreal,
+  thoughtProvoking,
+  unconventional,
   // ------- END OF v2 New Emotions ------
 }
 
@@ -213,6 +225,75 @@ const emotionList = {
     id: "powerless",
     name: "Powerless",
     group: "Quiet",
+    energyLevel: "low",
+  ),
+
+  // Perspectives (neutral evaluation; treated as low energy by the current
+  // high/low gradient model)
+  EmotionType.cheesy: Emotion(
+    id: "cheesy",
+    name: "Cheesy",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.cinematic: Emotion(
+    id: "cinematic",
+    name: "Cinematic",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.cringe: Emotion(
+    id: "cringe",
+    name: "Cringe",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.darkHumor: Emotion(
+    id: "darkHumor",
+    name: "Dark Humor",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.ironic: Emotion(
+    id: "ironic",
+    name: "Ironic",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.predictable: Emotion(
+    id: "predictable",
+    name: "Predictable",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.quirky: Emotion(
+    id: "quirky",
+    name: "Quirky",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.slowBurn: Emotion(
+    id: "slowBurn",
+    name: "Slow-burn",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.surreal: Emotion(
+    id: "surreal",
+    name: "Surreal",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.thoughtProvoking: Emotion(
+    id: "thoughtProvoking",
+    name: "Thought-provoking",
+    group: "Perspectives",
+    energyLevel: "low",
+  ),
+  EmotionType.unconventional: Emotion(
+    id: "unconventional",
+    name: "Unconventional",
+    group: "Perspectives",
     energyLevel: "low",
   ),
 };

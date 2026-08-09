@@ -90,12 +90,14 @@ export function toUtcIso(
 
 // ---------------------------------------------------------------- emotions
 
-/** The 24 live ids, from lib/features/emotion/emotion.dart. */
+/** The 35 live ids, from lib/features/emotion/emotion.dart. */
 export const EMOTION_IDS_V2 = [
   "joyful", "funny", "inspired", "mindBlown", "hopeful", "fulfilling",
   "shocked", "angry", "terrified", "anxious", "overwhelmed", "disturbed",
   "heartwarming", "touched", "peaceful", "therapeutic", "nostalgic", "cozy",
   "melancholic", "confused", "profound", "bittersweet", "powerless", "lonely",
+  "cheesy", "cinematic", "cringe", "darkHumor", "ironic", "predictable",
+  "quirky", "slowBurn", "surreal", "thoughtProvoking", "unconventional",
 ] as const;
 
 /**
@@ -107,7 +109,6 @@ export const EMOTION_IDS_V2 = [
 export const EMOTION_IDS_V1_ONLY = [
   "amazed", "excited", "entertained", "humorous", "melancholy", "frustrated",
   "disgust", "isolated", "bored", "calm", "surprised", "relatable", "nervous",
-  "ironic",
 ] as const;
 
 const V2 = new Set<string>(EMOTION_IDS_V2);
