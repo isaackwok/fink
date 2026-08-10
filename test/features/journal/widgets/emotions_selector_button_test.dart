@@ -190,6 +190,23 @@ void main() {
         expect(find.byIcon(Icons.edit), findsOneWidget);
         expect(find.byIcon(Icons.add), findsNothing);
       });
+
+      testWidgets('hides the prompt when displaying emotions read-only', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          buildSubject(
+            emotions: [emotionList[EmotionType.joyful]!],
+            readonly: true,
+          ),
+        );
+
+        expect(
+          find.text('What are your feelings about this movie?'),
+          findsNothing,
+        );
+        expect(find.textContaining('You felt'), findsOneWidget);
+      });
     });
 
     group('energy-based gradient', () {

@@ -139,17 +139,19 @@ class EmotionsSelectorButton extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'What are your feelings about this movie?',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'AvenirNext',
-            height: 1.5,
+        if (!readonly) ...[
+          const Text(
+            'What are your feelings about this movie?',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'AvenirNext',
+              height: 1.5,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
+        ],
         Material(
           color: Colors.transparent,
           child: InkWell(
