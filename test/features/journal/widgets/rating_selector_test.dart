@@ -43,6 +43,28 @@ void main() {
     );
   });
 
+  testWidgets('keeps the same border dimensions when rated', (tester) async {
+    await tester.pumpWidget(buildSubject());
+
+    final cardFinder = find.byKey(const ValueKey('rating-card'));
+    final unselectedSize = tester.getSize(cardFinder);
+    final unselectedDecoration =
+        tester.widget<Container>(cardFinder).decoration! as BoxDecoration;
+    final unselectedBorder = unselectedDecoration.border! as Border;
+
+    await tester.pumpWidget(buildSubject(rating: 5));
+
+    final ratedSize = tester.getSize(cardFinder);
+    final ratedDecoration =
+        tester.widget<Container>(cardFinder).decoration! as BoxDecoration;
+    final ratedBorder = ratedDecoration.border! as Border;
+
+    expect(ratedSize, unselectedSize);
+    expect(ratedBorder.top.width, unselectedBorder.top.width);
+    expect(ratedBorder.top.color, DarkSurfaces.card);
+    expect(ratedDecoration.color, DarkSurfaces.card);
+  });
+
   testWidgets('fills every heart through the selected rating', (tester) async {
     await tester.pumpWidget(buildSubject(rating: 3));
 

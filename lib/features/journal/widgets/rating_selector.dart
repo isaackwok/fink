@@ -56,10 +56,9 @@ class RatingSelector extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           decoration: BoxDecoration(
             color: hasRating ? DarkSurfaces.card : Colors.transparent,
-            border:
-                hasRating
-                    ? null
-                    : Border.all(color: Colors.white.withAlpha(26)),
+            border: Border.all(
+              color: hasRating ? DarkSurfaces.card : Colors.white.withAlpha(26),
+            ),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
