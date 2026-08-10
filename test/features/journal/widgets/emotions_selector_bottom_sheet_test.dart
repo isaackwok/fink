@@ -40,19 +40,18 @@ void main() {
         );
       });
 
-      testWidgets('displays selection counter starting at 0/3',
-          (tester) async {
+      testWidgets('displays selection counter starting at 0/5', (tester) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (0/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (0/5)'), findsOneWidget);
       });
 
       testWidgets('counter reflects initial emotions count', (tester) async {
-        await tester.pumpWidget(buildSubject(
-          initialEmotions: [emotionList[EmotionType.joyful]!],
-        ));
+        await tester.pumpWidget(
+          buildSubject(initialEmotions: [emotionList[EmotionType.joyful]!]),
+        );
         await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (1/5)'), findsOneWidget);
       });
 
       testWidgets('displays close icon button', (tester) async {
@@ -87,9 +86,9 @@ void main() {
         expect(find.text('Joyful'), findsOneWidget);
         expect(find.text('Funny'), findsOneWidget);
         expect(find.text('Inspired'), findsOneWidget);
-        expect(find.text('Mind-blown'), findsOneWidget);
         expect(find.text('Hopeful'), findsOneWidget);
         expect(find.text('Fulfilling'), findsOneWidget);
+        expect(find.text('Exhilarated'), findsOneWidget);
       });
 
       testWidgets('displays all 6 Intense emotion names', (tester) async {
@@ -100,7 +99,36 @@ void main() {
         expect(find.text('Terrified'), findsOneWidget);
         expect(find.text('Anxious'), findsOneWidget);
         expect(find.text('Overwhelmed'), findsOneWidget);
-        expect(find.text('Disturbed'), findsOneWidget);
+        expect(find.text('Disgusted'), findsOneWidget);
+      });
+    });
+
+    group('second page content', () {
+      testWidgets('displays the updated Soothing and Quiet emotions', (
+        tester,
+      ) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        await tester.drag(find.byType(PageView), const Offset(-500, 0));
+        await tester.pumpAndSettle();
+
+        for (final name in [
+          'Heartwarming',
+          'Touched',
+          'Peaceful',
+          'Nostalgic',
+          'Cozy',
+          'Satisfied',
+          'Melancholic',
+          'Confused',
+          'Bittersweet',
+          'Powerless',
+          'Bored',
+          'Conflicted',
+        ]) {
+          expect(find.text(name), findsOneWidget);
+        }
       });
     });
 
@@ -112,11 +140,12 @@ void main() {
         await tester.tap(find.text('Joyful'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (1/5)'), findsOneWidget);
       });
 
-      testWidgets('tapping a second emotion updates counter to 2',
-          (tester) async {
+      testWidgets('tapping a second emotion updates counter to 2', (
+        tester,
+      ) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
 
@@ -125,27 +154,31 @@ void main() {
         await tester.tap(find.text('Angry'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Select up to 3 (2/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (2/5)'), findsOneWidget);
       });
 
-      testWidgets('cannot select more than 3 emotions', (tester) async {
+      testWidgets('cannot select more than 5 emotions', (tester) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
 
-        // Select 3 emotions
-        await tester.tap(find.text('Joyful'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Angry'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Shocked'));
-        await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (3/3)'), findsOneWidget);
+        // Select 5 emotions.
+        for (final name in [
+          'Joyful',
+          'Angry',
+          'Shocked',
+          'Funny',
+          'Inspired',
+        ]) {
+          await tester.tap(find.text(name));
+          await tester.pumpAndSettle();
+        }
+        expect(find.text('Select up to 5 (5/5)'), findsOneWidget);
 
-        // Try to select a 4th — blocked: counter stays at 3/3 and a toast shows.
-        await tester.tap(find.text('Funny'));
+        // Try to select a 6th — blocked: counter stays at 5/5 and a toast shows.
+        await tester.tap(find.text('Hopeful'));
         await tester.pump(); // build the toast overlay frame
-        expect(find.text('Select up to 3 (3/3)'), findsOneWidget);
-        expect(find.text('You can select up to 3 emotions'), findsWidgets);
+        expect(find.text('Select up to 5 (5/5)'), findsOneWidget);
+        expect(find.text('You can select up to 5 emotions'), findsWidgets);
 
         // Drain fluttertoast's chained timers (2s show + fade out) so none
         // leak past teardown. One elapse past the whole chain fires them all.
@@ -154,17 +187,47 @@ void main() {
       });
 
       testWidgets('tapping a selected emotion deselects it', (tester) async {
-        await tester.pumpWidget(buildSubject(
-          initialEmotions: [emotionList[EmotionType.joyful]!],
-        ));
+        await tester.pumpWidget(
+          buildSubject(initialEmotions: [emotionList[EmotionType.joyful]!]),
+        );
         await tester.pumpAndSettle();
-        expect(find.text('Select up to 3 (1/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (1/5)'), findsOneWidget);
 
         // Tap Joyful to deselect
         await tester.tap(find.text('Joyful'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Select up to 3 (0/3)'), findsOneWidget);
+        expect(find.text('Select up to 5 (0/5)'), findsOneWidget);
+      });
+    });
+
+    group('Perspectives page content', () {
+      testWidgets('displays all Perspectives emotion names', (tester) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+
+        final pageView = find.byType(PageView);
+        await tester.drag(pageView, const Offset(-500, 0));
+        await tester.pumpAndSettle();
+        await tester.drag(pageView, const Offset(-500, 0));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Perspectives'), findsOneWidget);
+        for (final name in [
+          'Cheesy',
+          'Cinematic',
+          'Cringe',
+          'Dark Humor',
+          'Ironic',
+          'Predictable',
+          'Quirky',
+          'Slow-burn',
+          'Surreal',
+          'Thought-provoking',
+          'Unconventional',
+        ]) {
+          expect(find.text(name), findsOneWidget);
+        }
       });
     });
 
@@ -177,9 +240,9 @@ void main() {
 
       testWidgets('Done calls onSave with selected emotions', (tester) async {
         List<Emotion>? savedEmotions;
-        await tester.pumpWidget(buildSubject(
-          onSave: (emotions) => savedEmotions = emotions,
-        ));
+        await tester.pumpWidget(
+          buildSubject(onSave: (emotions) => savedEmotions = emotions),
+        );
         await tester.pumpAndSettle();
 
         // Select two emotions
@@ -198,12 +261,13 @@ void main() {
         expect(savedEmotions!.any((e) => e.id == 'inspired'), isTrue);
       });
 
-      testWidgets('Done with no selection calls onSave with empty list',
-          (tester) async {
+      testWidgets('Done with no selection calls onSave with empty list', (
+        tester,
+      ) async {
         List<Emotion>? savedEmotions;
-        await tester.pumpWidget(buildSubject(
-          onSave: (emotions) => savedEmotions = emotions,
-        ));
+        await tester.pumpWidget(
+          buildSubject(onSave: (emotions) => savedEmotions = emotions),
+        );
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Done'));
@@ -215,26 +279,31 @@ void main() {
     });
 
     group('page indicator', () {
-      testWidgets('displays 2 page indicator dots', (tester) async {
+      testWidgets('displays 3 page indicator dots', (tester) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
 
         // Find the page indicator containers (6x6 circles)
-        final dots = tester
-            .widgetList<Container>(find.byType(Container))
-            .where((c) =>
-                c.decoration is BoxDecoration &&
-                (c.decoration as BoxDecoration).shape == BoxShape.circle &&
-                c.constraints?.maxWidth == 6)
-            .toList();
+        final dots =
+            tester
+                .widgetList<Container>(find.byType(Container))
+                .where(
+                  (c) =>
+                      c.decoration is BoxDecoration &&
+                      (c.decoration as BoxDecoration).shape ==
+                          BoxShape.circle &&
+                      c.constraints?.maxWidth == 6,
+                )
+                .toList();
 
-        expect(dots.length, 2);
+        expect(dots.length, 3);
       });
     });
 
     group('divider between sections', () {
-      testWidgets('has a Divider between Uplifting and Intense sections',
-          (tester) async {
+      testWidgets('has a Divider between Uplifting and Intense sections', (
+        tester,
+      ) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
         expect(find.byType(Divider), findsOneWidget);

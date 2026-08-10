@@ -16,37 +16,42 @@ void main() {
   // ── JournalState (data model) ──────────────────────────────────────
 
   group('JournalState', () {
-    test('default constructor sets UUID id, createdAt = now, updatedAt = createdAt', () {
-      final before = Jiffy.now();
-      final journal = JournalState();
-      final after = Jiffy.now();
+    test(
+      'default constructor sets UUID id, createdAt = now, updatedAt = createdAt',
+      () {
+        final before = Jiffy.now();
+        final journal = JournalState();
+        final after = Jiffy.now();
 
-      // id should be a valid UUID (36 chars with dashes)
-      expect(journal.id.length, 36);
-      expect(journal.id.contains('-'), true);
+        // id should be a valid UUID (36 chars with dashes)
+        expect(journal.id.length, 36);
+        expect(journal.id.contains('-'), true);
 
-      // createdAt should be between before and after
-      expect(
-        journal.createdAt.microsecondsSinceEpoch,
-        greaterThanOrEqualTo(before.microsecondsSinceEpoch),
-      );
-      expect(
-        journal.createdAt.microsecondsSinceEpoch,
-        lessThanOrEqualTo(after.microsecondsSinceEpoch),
-      );
+        // createdAt should be between before and after
+        expect(
+          journal.createdAt.microsecondsSinceEpoch,
+          greaterThanOrEqualTo(before.microsecondsSinceEpoch),
+        );
+        expect(
+          journal.createdAt.microsecondsSinceEpoch,
+          lessThanOrEqualTo(after.microsecondsSinceEpoch),
+        );
 
-      // updatedAt should equal createdAt
-      expect(
-        journal.updatedAt.microsecondsSinceEpoch,
-        journal.createdAt.microsecondsSinceEpoch,
-      );
-    });
+        // updatedAt should equal createdAt
+        expect(
+          journal.updatedAt.microsecondsSinceEpoch,
+          journal.createdAt.microsecondsSinceEpoch,
+        );
+        expect(journal.rating, 0);
+      },
+    );
 
     test('copyWith() preserves unchanged fields', () {
       final journal = makeJournal(
         id: 'test-id',
         tmdbId: 550,
         movieTitle: 'Fight Club',
+        rating: 8,
         thoughts: 'Great movie',
       );
 
@@ -55,6 +60,7 @@ void main() {
       expect(copy.id, 'test-id');
       expect(copy.tmdbId, 550);
       expect(copy.movieTitle, 'Fight Club');
+      expect(copy.rating, 8);
       expect(copy.thoughts, 'Updated');
     });
 
@@ -65,33 +71,40 @@ void main() {
       final copy = journal.copyWith(
         tmdbId: 999,
         movieTitle: 'New Movie',
+        rating: 6,
         emotions: emotions,
       );
 
       expect(copy.tmdbId, 999);
       expect(copy.movieTitle, 'New Movie');
+      expect(copy.rating, 6);
       expect(copy.emotions, emotions);
     });
 
-    test('toMap() serializes emotions as ID strings, scenes as maps, reviews as maps', () {
-      final journal = makeJournal(
-        emotions: [emotionList[EmotionType.joyful]!],
-        selectedScenes: [SceneItem(path: '/scene.jpg', caption: 'Nice')],
-        selectedRefs: [Review(text: 'Great', source: 'reddit')],
-      );
+    test(
+      'toMap() serializes emotions as ID strings, scenes as maps, reviews as maps',
+      () {
+        final journal = makeJournal(
+          rating: 7,
+          emotions: [emotionList[EmotionType.joyful]!],
+          selectedScenes: [SceneItem(path: '/scene.jpg', caption: 'Nice')],
+          selectedRefs: [Review(text: 'Great', source: 'reddit')],
+        );
 
-      final map = journal.toMap();
+        final map = journal.toMap();
 
-      expect(map['emotions'], ['joyful']);
-      expect(map['selectedScenes'], [
-        {'path': '/scene.jpg', 'caption': 'Nice'},
-      ]);
-      expect(map['selectedRefs'], [
-        {'text': 'Great', 'source': 'reddit'},
-      ]);
-      // toMap should NOT include id
-      expect(map.containsKey('id'), false);
-    });
+        expect(map['rating'], 7);
+        expect(map['emotions'], ['joyful']);
+        expect(map['selectedScenes'], [
+          {'path': '/scene.jpg', 'caption': 'Nice'},
+        ]);
+        expect(map['selectedRefs'], [
+          {'text': 'Great', 'source': 'reddit'},
+        ]);
+        // toMap should NOT include id
+        expect(map.containsKey('id'), false);
+      },
+    );
 
     test('toJson() includes id field (unlike toMap())', () {
       final journal = makeJournal(id: 'my-id');
@@ -101,64 +114,72 @@ void main() {
       expect(decoded['id'], 'my-id');
     });
 
-    test('fromJson() round-trip — serialize then deserialize produces equivalent state', () {
-      final original = makeJournal(
-        id: 'roundtrip-id',
-        tmdbId: 550,
-        movieTitle: 'Fight Club',
-        moviePoster: '/poster.jpg',
-        emotions: [
-          emotionList[EmotionType.joyful]!,
-          emotionList[EmotionType.inspired]!,
-        ],
-        selectedScenes: [
-          SceneItem(path: '/scene1.jpg', caption: 'Opening'),
-          SceneItem(path: '/scene2.jpg'),
-        ],
-        selectedRefs: [Review(text: 'Amazing', source: 'letterboxd')],
-        thoughts: 'Mind-blowing experience',
-      );
+    test(
+      'fromJson() round-trip — serialize then deserialize produces equivalent state',
+      () {
+        final original = makeJournal(
+          id: 'roundtrip-id',
+          tmdbId: 550,
+          movieTitle: 'Fight Club',
+          moviePoster: '/poster.jpg',
+          rating: 9,
+          emotions: [
+            emotionList[EmotionType.joyful]!,
+            emotionList[EmotionType.inspired]!,
+          ],
+          selectedScenes: [
+            SceneItem(path: '/scene1.jpg', caption: 'Opening'),
+            SceneItem(path: '/scene2.jpg'),
+          ],
+          selectedRefs: [Review(text: 'Amazing', source: 'letterboxd')],
+          thoughts: 'Mind-blowing experience',
+        );
 
-      final restored = JournalState.fromJson(original.toJson());
+        final restored = JournalState.fromJson(original.toJson());
 
-      expect(restored.id, original.id);
-      expect(restored.tmdbId, original.tmdbId);
-      expect(restored.movieTitle, original.movieTitle);
-      expect(restored.moviePoster, original.moviePoster);
-      expect(restored.emotions.length, original.emotions.length);
-      expect(restored.emotions[0].id, original.emotions[0].id);
-      expect(restored.emotions[1].id, original.emotions[1].id);
-      expect(restored.selectedScenes.length, original.selectedScenes.length);
-      expect(restored.selectedScenes[0].path, '/scene1.jpg');
-      expect(restored.selectedScenes[0].caption, 'Opening');
-      expect(restored.selectedScenes[1].caption, isNull);
-      expect(restored.selectedRefs.length, 1);
-      expect(restored.selectedRefs[0].text, 'Amazing');
-      expect(restored.selectedRefs[0].source, 'letterboxd');
-      expect(restored.thoughts, 'Mind-blowing experience');
-    });
+        expect(restored.id, original.id);
+        expect(restored.tmdbId, original.tmdbId);
+        expect(restored.movieTitle, original.movieTitle);
+        expect(restored.moviePoster, original.moviePoster);
+        expect(restored.rating, 9);
+        expect(restored.emotions.length, original.emotions.length);
+        expect(restored.emotions[0].id, original.emotions[0].id);
+        expect(restored.emotions[1].id, original.emotions[1].id);
+        expect(restored.selectedScenes.length, original.selectedScenes.length);
+        expect(restored.selectedScenes[0].path, '/scene1.jpg');
+        expect(restored.selectedScenes[0].caption, 'Opening');
+        expect(restored.selectedScenes[1].caption, isNull);
+        expect(restored.selectedRefs.length, 1);
+        expect(restored.selectedRefs[0].text, 'Amazing');
+        expect(restored.selectedRefs[0].source, 'letterboxd');
+        expect(restored.thoughts, 'Mind-blowing experience');
+      },
+    );
 
-    test('fromJson() backward compat — old string-format scenes → SceneItem', () {
-      final json = jsonEncode({
-        'id': 'compat-id',
-        'tmdbId': 550,
-        'movieTitle': 'Fight Club',
-        'moviePoster': '/poster.jpg',
-        'emotions': <String>[],
-        'selectedScenes': ['/old-scene1.jpg', '/old-scene2.jpg'],
-        'selectedRefs': <String>[],
-        'thoughts': '',
-        'createdAt': Jiffy.now().toString(),
-        'updatedAt': Jiffy.now().toString(),
-      });
+    test(
+      'fromJson() backward compat — old string-format scenes → SceneItem',
+      () {
+        final json = jsonEncode({
+          'id': 'compat-id',
+          'tmdbId': 550,
+          'movieTitle': 'Fight Club',
+          'moviePoster': '/poster.jpg',
+          'emotions': <String>[],
+          'selectedScenes': ['/old-scene1.jpg', '/old-scene2.jpg'],
+          'selectedRefs': <String>[],
+          'thoughts': '',
+          'createdAt': Jiffy.now().toString(),
+          'updatedAt': Jiffy.now().toString(),
+        });
 
-      final journal = JournalState.fromJson(json);
+        final journal = JournalState.fromJson(json);
 
-      expect(journal.selectedScenes.length, 2);
-      expect(journal.selectedScenes[0].path, '/old-scene1.jpg');
-      expect(journal.selectedScenes[0].caption, isNull);
-      expect(journal.selectedScenes[1].path, '/old-scene2.jpg');
-    });
+        expect(journal.selectedScenes.length, 2);
+        expect(journal.selectedScenes[0].path, '/old-scene1.jpg');
+        expect(journal.selectedScenes[0].caption, isNull);
+        expect(journal.selectedScenes[1].path, '/old-scene2.jpg');
+      },
+    );
 
     test('fromJson() backward compat — old string-format reviews → Review', () {
       final json = jsonEncode({
@@ -193,6 +214,7 @@ void main() {
       expect(journal.id, '');
       expect(journal.movieTitle, '');
       expect(journal.moviePoster, '');
+      expect(journal.rating, 0);
       expect(journal.emotions, isEmpty);
       expect(journal.selectedScenes, isEmpty);
       expect(journal.selectedRefs, isEmpty);
@@ -200,18 +222,22 @@ void main() {
     });
 
     test('fromJson() parses tmdbId from both int and string formats', () {
-      final fromInt = JournalState.fromJson(jsonEncode({
-        'tmdbId': 550,
-        'createdAt': Jiffy.now().toString(),
-        'updatedAt': Jiffy.now().toString(),
-      }));
+      final fromInt = JournalState.fromJson(
+        jsonEncode({
+          'tmdbId': 550,
+          'createdAt': Jiffy.now().toString(),
+          'updatedAt': Jiffy.now().toString(),
+        }),
+      );
       expect(fromInt.tmdbId, 550);
 
-      final fromString = JournalState.fromJson(jsonEncode({
-        'tmdbId': '550',
-        'createdAt': Jiffy.now().toString(),
-        'updatedAt': Jiffy.now().toString(),
-      }));
+      final fromString = JournalState.fromJson(
+        jsonEncode({
+          'tmdbId': '550',
+          'createdAt': Jiffy.now().toString(),
+          'updatedAt': Jiffy.now().toString(),
+        }),
+      );
       expect(fromString.tmdbId, 550);
     });
   });
@@ -241,11 +267,14 @@ void main() {
       expect(scene.caption, 'Beautiful');
     });
 
-    test('fromString() creates SceneItem with null caption (backward compat)', () {
-      final scene = SceneItem.fromString('/old-scene.jpg');
-      expect(scene.path, '/old-scene.jpg');
-      expect(scene.caption, isNull);
-    });
+    test(
+      'fromString() creates SceneItem with null caption (backward compat)',
+      () {
+        final scene = SceneItem.fromString('/old-scene.jpg');
+        expect(scene.path, '/old-scene.jpg');
+        expect(scene.caption, isNull);
+      },
+    );
 
     test('copyWith() works correctly', () {
       final scene = SceneItem(path: '/scene.jpg', caption: 'Old');
@@ -293,6 +322,15 @@ void main() {
       expect(state.emotions[1].id, 'peaceful');
     });
 
+    test('setRating() updates rating and enforces the ten-point scale', () {
+      final controller = container.read(journalControllerProvider.notifier);
+      controller.setRating(7);
+
+      expect(container.read(journalControllerProvider).rating, 7);
+      expect(() => controller.setRating(-1), throwsRangeError);
+      expect(() => controller.setRating(11), throwsRangeError);
+    });
+
     test('addSelectedScene() appends a new SceneItem', () {
       final controller = container.read(journalControllerProvider.notifier);
       controller.addSelectedScene('/scene1.jpg');
@@ -338,16 +376,19 @@ void main() {
       expect(state.selectedRefs[0].text, 'B');
     });
 
-    test('updateSceneCaption() updates caption on matching scene, leaves others unchanged', () {
-      final controller = container.read(journalControllerProvider.notifier);
-      controller.addSelectedScene('/scene1.jpg');
-      controller.addSelectedScene('/scene2.jpg');
-      controller.updateSceneCaption('/scene1.jpg', 'Caption for scene 1');
+    test(
+      'updateSceneCaption() updates caption on matching scene, leaves others unchanged',
+      () {
+        final controller = container.read(journalControllerProvider.notifier);
+        controller.addSelectedScene('/scene1.jpg');
+        controller.addSelectedScene('/scene2.jpg');
+        controller.updateSceneCaption('/scene1.jpg', 'Caption for scene 1');
 
-      final state = container.read(journalControllerProvider);
-      expect(state.selectedScenes[0].caption, 'Caption for scene 1');
-      expect(state.selectedScenes[1].caption, isNull);
-    });
+        final state = container.read(journalControllerProvider);
+        expect(state.selectedScenes[0].caption, 'Caption for scene 1');
+        expect(state.selectedScenes[1].caption, isNull);
+      },
+    );
 
     test('updateSceneCaption() with empty string passes null to copyWith', () {
       // Note: SceneItem.copyWith uses `caption ?? this.caption`, so passing
@@ -406,6 +447,7 @@ void main() {
       final state = container.read(journalControllerProvider);
       expect(state.tmdbId, 0);
       expect(state.movieTitle, '');
+      expect(state.rating, 0);
       expect(state.thoughts, '');
       expect(state.emotions, isEmpty);
       expect(state.selectedScenes, isEmpty);
@@ -462,6 +504,7 @@ void main() {
         id: 'fixed-id',
         tmdbId: 550,
         movieTitle: 'Fight Club',
+        rating: 5,
         thoughts: 'great',
         emotions: [emotionList[EmotionType.joyful]!],
         selectedScenes: [SceneItem(path: '/s.jpg', caption: 'c')],
@@ -497,6 +540,7 @@ void main() {
       expect(a.copyWith(tmdbId: 551), isNot(equals(a)));
       expect(a.copyWith(movieTitle: 'Se7en'), isNot(equals(a)));
       expect(a.copyWith(moviePoster: '/x.jpg'), isNot(equals(a)));
+      expect(a.copyWith(rating: 6), isNot(equals(a)));
       expect(a.copyWith(thoughts: 'meh'), isNot(equals(a)));
       expect(
         a.copyWith(emotions: [emotionList[EmotionType.angry]!]),
@@ -580,23 +624,24 @@ void main() {
 
   group('JournalState.fromMap', () {
     Map<String, dynamic> journalMap() => {
-          'id': 'j1',
-          'tmdbId': 550,
-          'movieTitle': 'Fight Club',
-          'moviePoster': '/poster.jpg',
-          'emotions': ['joyful'],
-          'selectedScenes': [
-            {'path': '/scene.jpg', 'caption': 'the ending'},
-            '/legacy_scene.jpg',
-          ],
-          'selectedRefs': [
-            {'text': 'great movie', 'source': 'letterboxd'},
-            'legacy plain-string review',
-          ],
-          'thoughts': 'wow',
-          'createdAt': '2026-07-01 10:00:00',
-          'updatedAt': '2026-07-02 11:00:00',
-        };
+      'id': 'j1',
+      'tmdbId': 550,
+      'movieTitle': 'Fight Club',
+      'moviePoster': '/poster.jpg',
+      'rating': 7,
+      'emotions': ['joyful'],
+      'selectedScenes': [
+        {'path': '/scene.jpg', 'caption': 'the ending'},
+        '/legacy_scene.jpg',
+      ],
+      'selectedRefs': [
+        {'text': 'great movie', 'source': 'letterboxd'},
+        'legacy plain-string review',
+      ],
+      'thoughts': 'wow',
+      'createdAt': '2026-07-01 10:00:00',
+      'updatedAt': '2026-07-02 11:00:00',
+    };
 
     test('parses a decoded map identically to fromJson(encoded)', () {
       final map = journalMap();
@@ -610,6 +655,7 @@ void main() {
     test('fromJson is fromMap over the decoded string', () {
       final journal = JournalState.fromJson(jsonEncode(journalMap()));
       expect(journal.id, 'j1');
+      expect(journal.rating, 7);
       expect(journal.selectedScenes, hasLength(2));
       expect(journal.selectedScenes[1].path, '/legacy_scene.jpg');
       expect(journal.selectedRefs, hasLength(2));

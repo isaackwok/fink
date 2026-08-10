@@ -90,24 +90,25 @@ export function toUtcIso(
 
 // ---------------------------------------------------------------- emotions
 
-/** The 24 live ids, from lib/features/emotion/emotion.dart. */
+/** The 35 live ids, from lib/features/emotion/emotion.dart. */
 export const EMOTION_IDS_V2 = [
-  "joyful", "funny", "inspired", "mindBlown", "hopeful", "fulfilling",
-  "shocked", "angry", "terrified", "anxious", "overwhelmed", "disturbed",
-  "heartwarming", "touched", "peaceful", "therapeutic", "nostalgic", "cozy",
-  "melancholic", "confused", "profound", "bittersweet", "powerless", "lonely",
+  "joyful", "funny", "inspired", "hopeful", "fulfilling", "exhilarated",
+  "shocked", "angry", "terrified", "anxious", "overwhelmed", "disgusted",
+  "heartwarming", "touched", "peaceful", "nostalgic", "cozy", "satisfied",
+  "melancholic", "confused", "bittersweet", "powerless", "bored", "conflicted",
+  "cheesy", "cinematic", "cringe", "darkHumor", "ironic", "predictable",
+  "quirky", "slowBurn", "surreal", "thoughtProvoking", "unconventional",
 ] as const;
 
 /**
- * v1 ids, still present commented-out in the EmotionType enum. Old journals can
- * legitimately carry these, so they are reported separately from genuinely
- * unknown ids -- "legacy data as expected" and "something is wrong" deserve
- * different buckets when deciding whether to add the cardinality<=3 constraint.
+ * Historical ids absent from the current selector. This includes v1 ids and
+ * retired v2 ids; old journals can legitimately carry either, so they are kept
+ * separate from genuinely unknown values during migration reporting.
  */
 export const EMOTION_IDS_V1_ONLY = [
   "amazed", "excited", "entertained", "humorous", "melancholy", "frustrated",
-  "disgust", "isolated", "bored", "calm", "surprised", "relatable", "nervous",
-  "ironic",
+  "disgust", "isolated", "calm", "surprised", "relatable", "nervous",
+  "mindBlown", "disturbed", "therapeutic", "profound", "lonely",
 ] as const;
 
 const V2 = new Set<string>(EMOTION_IDS_V2);
@@ -129,7 +130,7 @@ export function normalizeEmotions(value: unknown, report: Report, ctx: string): 
     }
     if (!V2.has(e)) {
       if (V1.has(e)) {
-        report.anomaly("emotion_legacy_v1", `${ctx}: legacy v1 emotion id "${e}" (expected in old journals)`, { id: e });
+        report.anomaly("emotion_legacy_v1", `${ctx}: historical emotion id "${e}" (expected in old journals)`, { id: e });
       } else {
         report.anomaly("emotion_unknown", `${ctx}: unrecognised emotion id "${e}"`, { id: e });
       }

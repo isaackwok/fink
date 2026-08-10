@@ -3,54 +3,116 @@ import 'package:movie_journal/features/emotion/emotion.dart';
 
 void main() {
   group('Emotion data integrity', () {
-    test('emotionList contains exactly 24 emotions', () {
-      expect(emotionList.length, 24);
+    test('emotionList contains exactly 35 emotions', () {
+      expect(emotionList.length, 35);
     });
 
-    test('all 4 groups present: Uplifting, Intense, Soothing, Quiet', () {
+    test('all 5 emotion groups are present', () {
       final groups = emotionList.values.map((e) => e.group).toSet();
-      expect(groups, {'Uplifting', 'Intense', 'Soothing', 'Quiet'});
+      expect(groups, {
+        'Uplifting',
+        'Intense',
+        'Soothing',
+        'Quiet',
+        'Perspectives',
+      });
     });
 
-    test('each group has exactly 6 emotions', () {
+    test('energy groups have 6 emotions and Perspectives has 11', () {
       final groupCounts = <String, int>{};
       for (final emotion in emotionList.values) {
         groupCounts[emotion.group] = (groupCounts[emotion.group] ?? 0) + 1;
       }
-      for (final entry in groupCounts.entries) {
-        expect(entry.value, 6, reason: '${entry.key} should have 6 emotions');
-      }
+      expect(groupCounts, {
+        'Uplifting': 6,
+        'Intense': 6,
+        'Soothing': 6,
+        'Quiet': 6,
+        'Perspectives': 11,
+      });
     });
 
-    test('Uplifting/Intense are high energy, Soothing/Quiet are low energy',
-        () {
-      for (final emotion in emotionList.values) {
-        if (emotion.group == 'Uplifting' || emotion.group == 'Intense') {
-          expect(emotion.energyLevel, 'high',
-              reason: '${emotion.name} in ${emotion.group} should be high');
-        } else {
-          expect(emotion.energyLevel, 'low',
-              reason: '${emotion.name} in ${emotion.group} should be low');
-        }
-      }
+    test('each energy group follows the requested display order', () {
+      List<String> namesFor(String group) =>
+          emotionList.values
+              .where((emotion) => emotion.group == group)
+              .map((emotion) => emotion.name)
+              .toList();
+
+      expect(namesFor('Uplifting'), [
+        'Joyful',
+        'Funny',
+        'Inspired',
+        'Hopeful',
+        'Fulfilling',
+        'Exhilarated',
+      ]);
+      expect(namesFor('Intense'), [
+        'Shocked',
+        'Angry',
+        'Terrified',
+        'Anxious',
+        'Overwhelmed',
+        'Disgusted',
+      ]);
+      expect(namesFor('Soothing'), [
+        'Heartwarming',
+        'Touched',
+        'Peaceful',
+        'Nostalgic',
+        'Cozy',
+        'Satisfied',
+      ]);
+      expect(namesFor('Quiet'), [
+        'Melancholic',
+        'Confused',
+        'Bittersweet',
+        'Powerless',
+        'Bored',
+        'Conflicted',
+      ]);
     });
+
+    test(
+      'Uplifting/Intense are high energy, Soothing/Quiet are low energy',
+      () {
+        for (final emotion in emotionList.values) {
+          if (emotion.group == 'Uplifting' || emotion.group == 'Intense') {
+            expect(
+              emotion.energyLevel,
+              'high',
+              reason: '${emotion.name} in ${emotion.group} should be high',
+            );
+          } else {
+            expect(
+              emotion.energyLevel,
+              'low',
+              reason: '${emotion.name} in ${emotion.group} should be low',
+            );
+          }
+        }
+      },
+    );
 
     test('each emotion has a unique id', () {
       final ids = emotionList.values.map((e) => e.id).toList();
       expect(ids.toSet().length, ids.length, reason: 'ids should be unique');
     });
 
-    test('emotion lookup by id works (validates fromJson emotion parsing)',
-        () {
-      // This mirrors the lookup logic in JournalState.fromJson
+    test('emotion lookup by id works (validates fromJson emotion parsing)', () {
       const testId = 'joyful';
-      final found = emotionList.entries.firstWhere(
-        (entry) => entry.value.id == testId,
-        orElse: () => emotionList.entries.first,
-      );
-      expect(found.value.id, testId);
-      expect(found.value.name, 'Joyful');
-      expect(found.value.group, 'Uplifting');
+      final found = emotionById(testId)!;
+      expect(found.id, testId);
+      expect(found.name, 'Joyful');
+      expect(found.group, 'Uplifting');
+    });
+
+    test('retired emotion ids remain readable for existing journals', () {
+      expect(emotionById('mindBlown')?.name, 'Mind-blown');
+      expect(emotionById('disturbed')?.name, 'Disturbed');
+      expect(emotionById('therapeutic')?.name, 'Therapeutic');
+      expect(emotionById('profound')?.name, 'Profound');
+      expect(emotionById('lonely')?.name, 'Lonely');
     });
   });
 

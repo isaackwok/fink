@@ -1,5 +1,5 @@
 ---
-name: Flutter Animation Testing
+name: flutter-animation-testing
 description: >
   This skill should be used when writing or debugging Flutter widget tests
   that involve AnimationController, animateTo, animateBack, Future.delayed,

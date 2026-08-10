@@ -1,5 +1,5 @@
 ---
-name: Journal Data Access
+name: journal-data-access
 description: >
   This skill should be used when the user asks to "access journal data",
   "read journal state", "modify journal", "use journal providers",
@@ -79,6 +79,7 @@ All setter methods are on the `journalControllerProvider.notifier` and return `t
 ref.read(journalControllerProvider.notifier)
   .setMovie(tmdbId, title, poster);
 
+ref.read(journalControllerProvider.notifier).setRating(rating);
 ref.read(journalControllerProvider.notifier).setEmotions(emotions);
 ref.read(journalControllerProvider.notifier).setSelectedScenes(scenes);
 ref.read(journalControllerProvider.notifier).setThoughts(text);

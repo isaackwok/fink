@@ -45,6 +45,14 @@ class JournalController extends Notifier<JournalState> {
     return this;
   }
 
+  JournalController setRating(int rating) {
+    if (rating < 0 || rating > 10) {
+      throw RangeError.range(rating, 0, 10, 'rating');
+    }
+    state = state.copyWith(rating: rating);
+    return this;
+  }
+
   JournalController setEmotions(List<Emotion> emotions) {
     state = state.copyWith(emotions: emotions);
     return this;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/journal/controllers/journals.dart';
@@ -10,6 +11,7 @@ import 'package:movie_journal/features/journal/widgets/scene_card.dart';
 import 'package:movie_journal/features/share/share_flow.dart';
 import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen.dart';
 import 'package:movie_journal/shared_widgets/circled_icon_button.dart';
+import 'package:movie_journal/themes.dart';
 
 class JournalContent extends ConsumerStatefulWidget {
   final String journalId;
@@ -93,10 +95,11 @@ class _JournalContentState extends ConsumerState<JournalContent> {
                         settings: const RouteSettings(
                           name: kShareFlowRouteName,
                         ),
-                        builder: (_) => TicketPosterPickerScreen(
-                          journal: journal,
-                          entry: ShareTicketEntry.journalContent,
-                        ),
+                        builder:
+                            (_) => TicketPosterPickerScreen(
+                              journal: journal,
+                              entry: ShareTicketEntry.journalContent,
+                            ),
                       ),
                     );
                   },
@@ -122,21 +125,36 @@ class _JournalContentState extends ConsumerState<JournalContent> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         journal.movieTitle,
-                        style: GoogleFonts.inter(fontSize: 32),
+                        style: GoogleFonts.inter(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        journal.updatedAt.format(pattern: 'MMM do yyyy'),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white.withAlpha(178),
-                          fontFamily: 'AvenirNext',
-                        ),
+                      child: Row(
+                        children: [
+                          Text(
+                            journal.updatedAt.format(pattern: 'MMM do yyyy'),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              height: 16 / 14,
+                              letterSpacing: 0.5,
+                              color: Color(0xFFDDDDDD),
+                              fontFamily: 'AvenirNext',
+                            ),
+                          ),
+                          if (journal.rating > 0) ...[
+                            const SizedBox(width: 8),
+                            _JournalRatingBadge(rating: journal.rating),
+                          ],
+                        ],
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -234,6 +252,46 @@ class _JournalContentState extends ConsumerState<JournalContent> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _JournalRatingBadge extends StatelessWidget {
+  const _JournalRatingBadge({required this.rating});
+
+  final int rating;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: const ValueKey('journal-rating-badge'),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: DarkSurfaces.card,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            'assets/images/rating_heart_badge.svg',
+            width: 20,
+            height: 20,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '$rating',
+            style: const TextStyle(
+              color: Colors.white,
+              fontFamily: 'AvenirNext',
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+              letterSpacing: -0.154,
+            ),
+          ),
+        ],
       ),
     );
   }

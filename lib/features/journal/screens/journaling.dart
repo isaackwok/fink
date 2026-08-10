@@ -8,8 +8,8 @@ import 'package:jiffy/jiffy.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/screens/journal_complete.dart';
 import 'package:movie_journal/features/journal/widgets/emotions_selector_button.dart';
+import 'package:movie_journal/features/journal/widgets/rating_selector.dart';
 import 'package:movie_journal/features/journal/widgets/scenes_selector.dart';
-import 'package:movie_journal/features/journal/widgets/section_separator.dart';
 import 'package:movie_journal/features/journal/widgets/thoughts_editor.dart';
 import 'package:movie_journal/features/quesgen/provider.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
@@ -69,7 +69,8 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
 
   bool _hasUnsavedChanges() {
     final journal = ref.read(journalControllerProvider);
-    return journal.emotions.isNotEmpty ||
+    return journal.rating > 0 ||
+        journal.emotions.isNotEmpty ||
         journal.selectedScenes.isNotEmpty ||
         journal.thoughts.isNotEmpty;
   }
@@ -154,7 +155,8 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                     child: ElevatedButton(
                       onPressed:
                           _isSaving ||
-                                  (journal.emotions.isEmpty &&
+                                  (journal.rating == 0 &&
+                                      journal.emotions.isEmpty &&
                                       journal.selectedScenes.isEmpty &&
                                       journal.thoughts.isEmpty)
                               ? null
@@ -165,23 +167,28 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                                 try {
                                   if (_isEditMode) {
                                     await ref
-                                        .read(journalControllerProvider.notifier)
+                                        .read(
+                                          journalControllerProvider.notifier,
+                                        )
                                         .update();
                                     if (context.mounted) {
                                       CustomToast.showSuccess(
                                         context,
                                         'Your journal has been updated.',
                                       );
-                                      Navigator.of(context).popUntil(
-                                        (route) => route.isFirst,
-                                      );
+                                      Navigator.of(
+                                        context,
+                                      ).popUntil((route) => route.isFirst);
                                     }
                                   } else {
                                     await ref
-                                        .read(journalControllerProvider.notifier)
+                                        .read(
+                                          journalControllerProvider.notifier,
+                                        )
                                         .save();
-                                    final savedJournal =
-                                        ref.read(journalControllerProvider);
+                                    final savedJournal = ref.read(
+                                      journalControllerProvider,
+                                    );
                                     if (context.mounted) {
                                       unawaited(
                                         Navigator.pushAndRemoveUntil(
@@ -221,7 +228,10 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                           ),
                         ),
                         padding: WidgetStateProperty.all(
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                         ),
                         textStyle: WidgetStateProperty.all(
                           const TextStyle(
@@ -259,23 +269,26 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                           return Colors.white;
                         }),
                       ),
-                      child: _isSaving
-                          ? SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: Center(
-                              child: SizedBox(
-                                width: 14,
-                                height: 14,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                  backgroundColor: Colors.white.withAlpha(50),
+                      child:
+                          _isSaving
+                              ? SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 14,
+                                    height: 14,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                      backgroundColor: Colors.white.withAlpha(
+                                        50,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                          : const Text('Save'),
+                              )
+                              : const Text('Save'),
                     ),
                   ),
                 ],
@@ -301,7 +314,9 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                             ),
                             Text(
                               _isEditMode
-                                  ? journal.createdAt.format(pattern: 'MMM do yyyy')
+                                  ? journal.createdAt.format(
+                                    pattern: 'MMM do yyyy',
+                                  )
                                   : Jiffy.now().format(pattern: 'MMM do yyyy'),
                               style: TextStyle(
                                 fontSize: 12,
@@ -312,6 +327,15 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                             ),
                           ],
                         ),
+                      ),
+                      const SizedBox(height: 36),
+                      RatingSelector(
+                        rating: journal.rating,
+                        onChanged: (rating) {
+                          ref
+                              .read(journalControllerProvider.notifier)
+                              .setRating(rating);
+                        },
                       ),
                       const SizedBox(height: 36),
                       EmotionsSelectorButton(
@@ -325,7 +349,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                       const SizedBox(height: 36),
 
                       ScenesSelector(movieId: movieId),
-                      const SectionSeparator(),
+                      const SizedBox(height: 36),
                       const ThoughtsEditor(),
                     ],
                   ),
