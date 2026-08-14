@@ -31,16 +31,44 @@ void main() {
     }
   });
 
-  testWidgets('uses equal top and bottom padding', (tester) async {
+  testWidgets('shows the numeric score for empty and rated states', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject());
+
+    expect(find.text('0/10'), findsOneWidget);
+
+    await tester.pumpWidget(buildSubject(rating: 3));
+
+    expect(find.text('3/10'), findsOneWidget);
+  });
+
+  testWidgets('keeps every heart fixed when rating changes from 9 to 10', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildSubject(rating: 9));
+
+    final positionsAtNine = [
+      for (var value = 1; value <= 10; value++)
+        tester.getTopLeft(find.byKey(ValueKey('rating-heart-$value'))),
+    ];
+
+    await tester.pumpWidget(buildSubject(rating: 10));
+
+    final positionsAtTen = [
+      for (var value = 1; value <= 10; value++)
+        tester.getTopLeft(find.byKey(ValueKey('rating-heart-$value'))),
+    ];
+    expect(positionsAtTen, positionsAtNine);
+  });
+
+  testWidgets('uses sixteen pixels of padding on every side', (tester) async {
     await tester.pumpWidget(buildSubject());
 
     final card = tester.widget<Container>(
       find.byKey(const ValueKey('rating-card')),
     );
-    expect(
-      card.padding,
-      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-    );
+    expect(card.padding, const EdgeInsets.all(16));
   });
 
   testWidgets('keeps the same border dimensions when rated', (tester) async {
