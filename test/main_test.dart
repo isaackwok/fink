@@ -42,6 +42,10 @@ void main() {
 
     final splashContext = tester.element(find.byType(BrandingSplashScreen));
     expect(Localizations.localeOf(splashContext), locale);
+    expect(
+      ProviderScope.containerOf(splashContext).read(appLocaleProvider),
+      locale,
+    );
 
     await tester.pumpWidget(const SizedBox.shrink());
   });

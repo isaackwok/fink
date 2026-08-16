@@ -80,6 +80,15 @@ class _MyAppState extends ConsumerState<MyApp> {
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: appSupportedLocales,
+      builder:
+          (context, child) => ProviderScope(
+            overrides: [
+              appLocaleProvider.overrideWithValue(
+                Localizations.localeOf(context),
+              ),
+            ],
+            child: child ?? const SizedBox.shrink(),
+          ),
       themeMode: ThemeMode.dark,
       darkTheme: Themes.dark,
       theme: Themes.light,

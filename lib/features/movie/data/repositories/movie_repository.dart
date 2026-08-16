@@ -5,8 +5,9 @@ import 'package:movie_journal/features/movie/data/models/movie_image.dart';
 
 class MovieRepository {
   final MovieAPI api;
+  final String _language;
 
-  MovieRepository(this.api);
+  MovieRepository(this.api, {String language = 'en-US'}) : _language = language;
 
   Future<MovieListResponse> search({
     required String query,
@@ -16,6 +17,7 @@ class MovieRepository {
     final data = await api.searchMovies(
       query: query,
       page: page,
+      language: _language,
       cancelToken: cancelToken,
     );
     return data;
@@ -25,12 +27,16 @@ class MovieRepository {
     required int page,
     CancelToken? cancelToken,
   }) async {
-    final data = await api.popularMovies(page: page, cancelToken: cancelToken);
+    final data = await api.popularMovies(
+      page: page,
+      language: _language,
+      cancelToken: cancelToken,
+    );
     return data;
   }
 
   Future<DetailedMovie> getMovieDetails(int id) async {
-    final data = await api.getMovieDetails(id: id);
+    final data = await api.getMovieDetails(id: id, language: _language);
     return data;
   }
 

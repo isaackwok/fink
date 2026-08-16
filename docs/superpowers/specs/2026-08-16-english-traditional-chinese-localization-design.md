@@ -110,8 +110,8 @@ This phase does not localize or alter:
 - displayed dates or times
 - the existing Jiffy locale or any existing Jiffy format pattern
 - internal month-grouping keys such as `yyyy-MM`
-- TMDB movie titles, summaries, or other remote movie metadata
-- AI-generated review text or review-source content
+- the underlying content of TMDB movie metadata beyond selecting its requested translation
+- the underlying AI review sources beyond selecting the generation language
 - server, SDK, or operating-system error details embedded in an app-owned localized error wrapper
 - analytics event and property names
 - route names, database values, domain identifiers, asset paths, and URLs
@@ -121,13 +121,9 @@ In particular, date output remains byte-for-byte governed by the current pattern
 
 ## Backend Locale Behavior
 
-`QuesgenController` continues reading `PlatformDispatcher.instance.locale`. With iOS as the locale owner, the per-app language override is the process locale and therefore remains the appropriate source.
+`MaterialApp` exposes its resolved locale through `appLocaleProvider`. Both TMDB title-bearing requests and Quesgen review generation derive their backend language tag from that provider, mapping English to `en-US` and Taiwan Traditional Chinese to `zh-TW`.
 
-The existing `toBackendLocaleTag()` behavior intentionally removes the script subtag, converting `zh-Hant-TW` to the backend-supported `zh-TW`. No Quesgen API change is required.
-
-TMDB request localization is outside this hard-coded-copy migration.
-
-When an in-app language setting is added later, backend locale selection must move from `PlatformDispatcher` to the app-selected locale source as part of that separate feature.
+TMDB applies the language to popular, search, and movie-detail requests. Poster image filtering keeps its explicit per-tab language behavior.
 
 ## Error and Fallback Behavior
 

@@ -28,6 +28,11 @@ void main() {
     ]);
   });
 
+  test('backend language follows the supported app locale', () {
+    expect(appLanguageTag(const Locale('en')), 'en-US');
+    expect(appLanguageTag(_traditionalChinese), 'zh-TW');
+  });
+
   test(
     'generated resources load real copy for both production locales',
     () async {

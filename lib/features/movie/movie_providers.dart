@@ -5,11 +5,15 @@ import 'package:movie_journal/features/movie/controllers/search_movie_controller
 import 'package:movie_journal/features/movie/data/data_sources/movie_api.dart';
 import 'package:movie_journal/features/movie/data/repositories/movie_repository.dart';
 import 'package:movie_journal/features/movie/data/models/detailed_movie.dart';
+import 'package:movie_journal/l10n/supported_locales.dart';
 
 final movieApiProvider = Provider((_) => MovieAPI());
 
 final movieRepoProvider = Provider(
-  (ref) => MovieRepository(ref.watch(movieApiProvider)),
+  (ref) => MovieRepository(
+    ref.watch(movieApiProvider),
+    language: appLanguageTag(ref.watch(appLocaleProvider)),
+  ),
 );
 
 final searchMovieControllerProvider =
