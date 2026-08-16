@@ -171,6 +171,17 @@ The app requires a `.env` file in the root directory with:
 
 Firebase configuration is in `lib/firebase_options.dart` (auto-generated).
 
+### iOS debug console
+
+`SystemKeyboardConstraintLogPolicy` in `ios/Runner/AppDelegate.swift` disables
+UIKit's `_UIConstraintBasedLayoutLogUnsatisfiable` diagnostic in Debug builds.
+This suppresses iOS 26 TextInputUI warnings whose constraints name
+`TUIPredictionViewCell` / `TUICandidateGradientContentLabel`; those views belong
+to the system keyboard, not Flutter. `SWIFT_ACTIVE_COMPILATION_CONDITIONS` must
+retain `$(inherited) DEBUG` for the Runner Debug configuration. To restore native
+constraint logs for one Xcode run, add
+`-_UIConstraintBasedLayoutLogUnsatisfiable YES` to the scheme's launch arguments.
+
 ## UI/UX Guidelines
 
 ### Typography
