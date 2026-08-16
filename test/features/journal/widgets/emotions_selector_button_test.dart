@@ -41,7 +41,7 @@ void main() {
 
       expect(find.text('你對這部電影有什麼感受？'), findsOneWidget);
       expect(find.textContaining('joyful'), findsOneWidget);
-      expect(find.textContaining('這部電影讓你感到'), findsOneWidget);
+      expect(find.textContaining('這部電影讓你感到 joyful'), findsOneWidget);
     });
 
     group('empty state', () {

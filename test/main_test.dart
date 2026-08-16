@@ -12,6 +12,7 @@ import 'package:movie_journal/features/quesgen/api.dart';
 import 'package:movie_journal/features/quesgen/controller.dart';
 import 'package:movie_journal/features/quesgen/provider.dart';
 import 'package:movie_journal/features/quesgen/review.dart';
+import 'package:movie_journal/features/settings/controllers/language_settings.dart';
 import 'package:movie_journal/l10n/supported_locales.dart';
 import 'package:movie_journal/main.dart';
 
@@ -127,4 +128,78 @@ void main() {
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
+
+  testWidgets(
+    'Interface language controls UI and TMDB independently of AI Reviews',
+    (tester) async {
+      const systemLocale = Locale.fromSubtags(
+        languageCode: 'zh',
+        scriptCode: 'Hant',
+        countryCode: 'TW',
+      );
+      tester.binding.platformDispatcher.localesTestValue = const [systemLocale];
+      addTearDown(tester.binding.platformDispatcher.clearLocalesTestValue);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authStateProvider.overrideWith((ref) => Stream.value(null)),
+            anonymousBridgeProvider.overrideWith((ref) async => false),
+            movieApiProvider.overrideWithValue(_LanguageEchoMovieApi()),
+            quesgenApiProvider.overrideWithValue(_LanguageEchoQuesgenApi()),
+            splashPostersProvider.overrideWith((ref) async => const <String>[]),
+          ],
+          child: const MyApp(),
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+
+      final rootContainer = ProviderScope.containerOf(
+        tester.element(find.byType(MyApp)),
+      );
+      rootContainer
+          .read(languageSettingsProvider.notifier)
+          .setInterfaceLanguage(LanguagePreference.english);
+      await tester.pump();
+
+      final splashContext = tester.element(find.byType(BrandingSplashScreen));
+      expect(Localizations.localeOf(splashContext), const Locale('en'));
+
+      final appContainer = ProviderScope.containerOf(splashContext);
+      final movies = await appContainer
+          .read(movieRepoProvider)
+          .popular(page: 1);
+      expect(movies.results.single.title, 'Popular en-US');
+
+      await appContainer
+          .read(quesgenControllerProvider.notifier)
+          .generateReviews(movieId: 42);
+      expect(
+        appContainer.read(quesgenControllerProvider).reviews.single.text,
+        'Review zh-TW',
+      );
+
+      rootContainer
+          .read(languageSettingsProvider.notifier)
+          .setAiReviewsLanguage(LanguagePreference.english);
+      await tester.pump();
+
+      final updatedSplashContext = tester.element(
+        find.byType(BrandingSplashScreen),
+      );
+      final updatedAppContainer = ProviderScope.containerOf(
+        updatedSplashContext,
+      );
+      await updatedAppContainer
+          .read(quesgenControllerProvider.notifier)
+          .generateReviews(movieId: 42);
+      expect(
+        updatedAppContainer.read(quesgenControllerProvider).reviews.single.text,
+        'Review en-US',
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
 }

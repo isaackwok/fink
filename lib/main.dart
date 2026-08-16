@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/auth/auth_providers.dart';
 import 'package:movie_journal/features/home/screens/home.dart';
+import 'package:movie_journal/features/settings/controllers/language_settings.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/l10n/supported_locales.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
@@ -76,19 +77,31 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final languageSettings = ref.watch(languageSettingsProvider);
+
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: appSupportedLocales,
-      builder:
-          (context, child) => ProviderScope(
-            overrides: [
-              appLocaleProvider.overrideWithValue(
-                Localizations.localeOf(context),
+      locale: languageSettings.interfaceLanguage.explicitLocale,
+      builder: (context, child) {
+        final systemLocales =
+            WidgetsBinding.instance.platformDispatcher.locales;
+        return ProviderScope(
+          overrides: [
+            appLocaleProvider.overrideWithValue(
+              Localizations.localeOf(context),
+            ),
+            aiReviewLocaleProvider.overrideWithValue(
+              resolveLanguagePreference(
+                languageSettings.aiReviewsLanguage,
+                systemLocales,
               ),
-            ],
-            child: child ?? const SizedBox.shrink(),
-          ),
+            ),
+          ],
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       themeMode: ThemeMode.dark,
       darkTheme: Themes.dark,
       theme: Themes.light,

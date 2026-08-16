@@ -11,6 +11,7 @@ import 'package:movie_journal/features/auth/auth_providers.dart';
 import 'package:movie_journal/features/home/screens/home.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
 import 'package:movie_journal/features/journal/controllers/journals.dart';
+import 'package:movie_journal/features/settings/controllers/language_settings.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/circled_icon_button.dart';
 import 'package:movie_journal/shared_widgets/confirmation_dialog.dart';
@@ -77,6 +78,10 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
 
+              // Language section
+              const _LanguageSection(),
+              const SizedBox(height: 16),
+
               // Account section
               _AccountSection(),
             ],
@@ -85,6 +90,176 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _LanguageSection extends ConsumerWidget {
+  const _LanguageSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final settings = ref.watch(languageSettingsProvider);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              l10n.settingsLanguageSection,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Colors.white.withValues(alpha: 0.6),
+                letterSpacing: 0.5,
+                fontFamily: 'AvenirNext',
+              ),
+            ),
+          ),
+          _SettingsItem(
+            title: l10n.settingsInterfaceLanguage,
+            trailing: _languageLabel(l10n, settings.interfaceLanguage),
+            onTap:
+                () => _showLanguagePicker(
+                  context,
+                  title: l10n.settingsInterfaceLanguage,
+                  selected: settings.interfaceLanguage,
+                  onSelected:
+                      ref
+                          .read(languageSettingsProvider.notifier)
+                          .setInterfaceLanguage,
+                ),
+          ),
+          Divider(height: 1, color: Colors.white.withValues(alpha: 0.1)),
+          _SettingsItem(
+            title: l10n.settingsAiReviewsLanguage,
+            trailing: _languageLabel(l10n, settings.aiReviewsLanguage),
+            isLast: true,
+            onTap:
+                () => _showLanguagePicker(
+                  context,
+                  title: l10n.settingsAiReviewsLanguage,
+                  selected: settings.aiReviewsLanguage,
+                  onSelected:
+                      ref
+                          .read(languageSettingsProvider.notifier)
+                          .setAiReviewsLanguage,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLanguagePicker(
+    BuildContext context, {
+    required String title,
+    required LanguagePreference selected,
+    required ValueChanged<LanguagePreference> onSelected,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      backgroundColor: DarkSurfaces.sheetSecondary,
+      builder:
+          (context) => _LanguagePickerSheet(
+            title: title,
+            selected: selected,
+            onSelected: (language) {
+              onSelected(language);
+              Navigator.of(context).pop();
+            },
+          ),
+    );
+  }
+}
+
+class _LanguagePickerSheet extends StatelessWidget {
+  const _LanguagePickerSheet({
+    required this.title,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final String title;
+  final LanguagePreference selected;
+  final ValueChanged<LanguagePreference> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.35),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 6),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: 'AvenirNext',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            for (final language in LanguagePreference.values)
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                title: Text(
+                  _languageLabel(l10n, language),
+                  style: const TextStyle(
+                    fontFamily: 'AvenirNext',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                trailing:
+                    language == selected
+                        ? Icon(
+                          Icons.check,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                        : null,
+                onTap: () => onSelected(language),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+String _languageLabel(AppLocalizations l10n, LanguagePreference preference) {
+  return switch (preference) {
+    LanguagePreference.system => l10n.languageSystemDefault,
+    LanguagePreference.english => l10n.languageEnglish,
+    LanguagePreference.traditionalChineseTaiwan =>
+      l10n.languageTraditionalChineseTaiwan,
+  };
 }
 
 class _AccountSection extends ConsumerWidget {
@@ -281,12 +456,14 @@ class _AccountSection extends ConsumerWidget {
 
 class _SettingsItem extends StatelessWidget {
   final String title;
+  final String? trailing;
   final Color? titleColor;
   final VoidCallback onTap;
   final bool isLast;
 
   const _SettingsItem({
     required this.title,
+    this.trailing,
     this.titleColor,
     required this.onTap,
     this.isLast = false,
@@ -321,6 +498,24 @@ class _SettingsItem extends StatelessWidget {
                 fontFamily: 'AvenirNext',
               ),
             ),
+            if (trailing != null) ...[
+              const Spacer(),
+              Text(
+                trailing!,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white.withValues(alpha: 0.55),
+                  fontFamily: 'AvenirNext',
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: Colors.white.withValues(alpha: 0.4),
+              ),
+            ],
           ],
         ),
       ),

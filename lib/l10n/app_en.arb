@@ -198,6 +198,30 @@
   "@settingsTitle": {
     "description": "Settings screen title"
   },
+  "settingsLanguageSection": "LANGUAGE",
+  "@settingsLanguageSection": {
+    "description": "Heading above the interface and AI review language settings"
+  },
+  "settingsInterfaceLanguage": "Interface",
+  "@settingsInterfaceLanguage": {
+    "description": "Setting that controls app UI and TMDB content language"
+  },
+  "settingsAiReviewsLanguage": "AI Reviews",
+  "@settingsAiReviewsLanguage": {
+    "description": "Setting that controls generated AI review language"
+  },
+  "languageSystemDefault": "System Default",
+  "@languageSystemDefault": {
+    "description": "Language option that follows the device setting"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "English language option"
+  },
+  "languageTraditionalChineseTaiwan": "繁體中文 (台灣)",
+  "@languageTraditionalChineseTaiwan": {
+    "description": "Taiwan Traditional Chinese language option"
+  },
   "settingsAccountSection": "ACCOUNT",
   "@settingsAccountSection": {
     "description": "Heading above account settings"

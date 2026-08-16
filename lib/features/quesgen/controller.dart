@@ -48,18 +48,13 @@ class QuesgenController extends Notifier<QuesgenState> {
     return QuesgenState(reviews: [], isLoading: false, isError: false);
   }
 
-  Future<void> generateReviews({
-    required int movieId,
-  }) async {
+  Future<void> generateReviews({required int movieId}) async {
     state = state.copyWith(isLoading: true);
     try {
-      final locale = appLanguageTag(ref.read(appLocaleProvider));
+      final locale = appLanguageTag(ref.read(aiReviewLocaleProvider));
       final newReviews = await ref
           .read(quesgenApiProvider)
-          .generateReviews(
-            movieId: movieId,
-            locale: locale,
-          );
+          .generateReviews(movieId: movieId, locale: locale);
       state = state.copyWith(reviews: newReviews, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, isError: true);

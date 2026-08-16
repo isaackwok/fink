@@ -5,5 +5,5 @@ import 'package:movie_journal/l10n/supported_locales.dart';
 final quesgenControllerProvider =
     NotifierProvider<QuesgenController, QuesgenState>(
       QuesgenController.new,
-      dependencies: [appLocaleProvider],
+      dependencies: [aiReviewLocaleProvider],
     );

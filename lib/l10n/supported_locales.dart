@@ -13,3 +13,8 @@ final appLocaleProvider = Provider<Locale>(
   (_) => appSupportedLocales.first,
   dependencies: const [],
 );
+
+final aiReviewLocaleProvider = Provider<Locale>(
+  (ref) => ref.watch(appLocaleProvider),
+  dependencies: [appLocaleProvider],
+);

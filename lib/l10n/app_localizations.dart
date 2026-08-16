@@ -376,6 +376,42 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTitle;
 
+  /// Heading above the interface and AI review language settings
+  ///
+  /// In en, this message translates to:
+  /// **'LANGUAGE'**
+  String get settingsLanguageSection;
+
+  /// Setting that controls app UI and TMDB content language
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get settingsInterfaceLanguage;
+
+  /// Setting that controls generated AI review language
+  ///
+  /// In en, this message translates to:
+  /// **'AI Reviews'**
+  String get settingsAiReviewsLanguage;
+
+  /// Language option that follows the device setting
+  ///
+  /// In en, this message translates to:
+  /// **'System Default'**
+  String get languageSystemDefault;
+
+  /// English language option
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Taiwan Traditional Chinese language option
+  ///
+  /// In en, this message translates to:
+  /// **'繁體中文 (台灣)'**
+  String get languageTraditionalChineseTaiwan;
+
   /// Heading above account settings
   ///
   /// In en, this message translates to:

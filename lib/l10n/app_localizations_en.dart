@@ -166,6 +166,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
+  String get settingsLanguageSection => 'LANGUAGE';
+
+  @override
+  String get settingsInterfaceLanguage => 'Interface';
+
+  @override
+  String get settingsAiReviewsLanguage => 'AI Reviews';
+
+  @override
+  String get languageSystemDefault => 'System Default';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageTraditionalChineseTaiwan => '繁體中文 (台灣)';
+
+  @override
   String get settingsAccountSection => 'ACCOUNT';
 
   @override

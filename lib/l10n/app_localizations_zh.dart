@@ -154,6 +154,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsTitle => '設定';
 
   @override
+  String get settingsLanguageSection => '語言';
+
+  @override
+  String get settingsInterfaceLanguage => '介面';
+
+  @override
+  String get settingsAiReviewsLanguage => 'AI 評論';
+
+  @override
+  String get languageSystemDefault => '依系統設定';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageTraditionalChineseTaiwan => '繁體中文 (台灣)';
+
+  @override
   String get settingsAccountSection => '帳號';
 
   @override
@@ -236,7 +254,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get emotionsSelect => '選擇情緒';
 
   @override
-  String get emotionsSummaryPrefix => '這部電影讓你感到';
+  String get emotionsSummaryPrefix => '這部電影讓你感到 ';
 
   @override
   String get emotionsSummarySuffix => '。';
@@ -583,6 +601,24 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get settingsTitle => '設定';
 
   @override
+  String get settingsLanguageSection => '語言';
+
+  @override
+  String get settingsInterfaceLanguage => '介面';
+
+  @override
+  String get settingsAiReviewsLanguage => 'AI 評論';
+
+  @override
+  String get languageSystemDefault => '依系統設定';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageTraditionalChineseTaiwan => '繁體中文 (台灣)';
+
+  @override
   String get settingsAccountSection => '帳號';
 
   @override
@@ -665,7 +701,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get emotionsSelect => '選擇情緒';
 
   @override
-  String get emotionsSummaryPrefix => '這部電影讓你感到';
+  String get emotionsSummaryPrefix => '這部電影讓你感到 ';
 
   @override
   String get emotionsSummarySuffix => '。';
