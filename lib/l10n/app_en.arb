@@ -1,0 +1,56 @@
+{
+  "@@locale": "en",
+  "appTitle": "Movie Journal",
+  "@appTitle": {
+    "description": "The application title used by the operating system"
+  },
+  "commonAdd": "Add",
+  "@commonAdd": {
+    "description": "Generic action to add an item"
+  },
+  "commonCancel": "Cancel",
+  "@commonCancel": {
+    "description": "Generic action to dismiss without saving"
+  },
+  "commonDelete": "Delete",
+  "@commonDelete": {
+    "description": "Generic destructive action"
+  },
+  "commonDone": "Done",
+  "@commonDone": {
+    "description": "Generic action to finish editing"
+  },
+  "commonEdit": "Edit",
+  "@commonEdit": {
+    "description": "Generic action to edit an item"
+  },
+  "commonErrorWithDetails": "Error: {error}",
+  "@commonErrorWithDetails": {
+    "description": "Generic error prefix followed by opaque error details",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "commonGoBack": "Go Back",
+  "@commonGoBack": {
+    "description": "Action to return to the previous screen"
+  },
+  "commonOthers": "Others",
+  "@commonOthers": {
+    "description": "Label for other choices not listed explicitly"
+  },
+  "commonRetry": "Retry",
+  "@commonRetry": {
+    "description": "Action to repeat a failed operation"
+  },
+  "commonSave": "Save",
+  "@commonSave": {
+    "description": "Generic action to save changes"
+  },
+  "commonShare": "Share",
+  "@commonShare": {
+    "description": "Generic action to share content"
+  }
+}

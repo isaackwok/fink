@@ -27,11 +27,14 @@ Fink will use Flutter's first-party localization stack:
 The source resources are:
 
 - `lib/l10n/app_en.arb`
+- `lib/l10n/app_zh.arb` (generator-required base fallback; identical to the Taiwan Traditional Chinese copy)
 - `lib/l10n/app_zh_Hant_TW.arb`
+
+Flutter requires a base-language ARB whenever a script/country-specific ARB exists. The generated delegate therefore understands generic `zh` as a technical fallback, but Fink's production `MaterialApp` and iOS bundle expose only `en` and `zh-Hant-TW` to users.
 
 `l10n.yaml` configures generation into the source tree. Generated getters are non-nullable, dynamic message arguments use named parameters, and English remains the preferred supported locale.
 
-`MaterialApp` declares `AppLocalizations.localizationsDelegates` and `AppLocalizations.supportedLocales`. It does not set `locale` or add a custom locale-resolution callback. Consequently, Flutter follows the locale supplied by iOS, including a per-app language override, and falls back through Flutter's standard supported-locale resolution.
+`MaterialApp` declares `AppLocalizations.localizationsDelegates` and a production locale list containing only `en` and `zh-Hant-TW`. It does not set `locale` or add a custom locale-resolution callback. Consequently, Flutter follows the locale supplied by iOS, including a per-app language override, and falls back through Flutter's standard supported-locale resolution.
 
 No localization facade, Riverpod locale provider, or app-owned locale persistence is introduced in this phase. Widgets access the generated `AppLocalizations` API directly from `BuildContext`.
 

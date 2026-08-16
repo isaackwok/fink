@@ -1,0 +1,15 @@
+{
+  "@@locale": "zh_Hant_TW",
+  "appTitle": "電影日記",
+  "commonAdd": "新增",
+  "commonCancel": "取消",
+  "commonDelete": "刪除",
+  "commonDone": "完成",
+  "commonEdit": "編輯",
+  "commonErrorWithDetails": "錯誤：{error}",
+  "commonGoBack": "返回",
+  "commonOthers": "其他",
+  "commonRetry": "重試",
+  "commonSave": "儲存",
+  "commonShare": "分享"
+}

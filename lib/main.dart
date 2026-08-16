@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/auth/auth_providers.dart';
 import 'package:movie_journal/features/home/screens/home.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
+import 'package:movie_journal/l10n/supported_locales.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -75,7 +77,9 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Movie Journal',
+      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: appSupportedLocales,
       themeMode: ThemeMode.dark,
       darkTheme: Themes.dark,
       theme: Themes.light,
