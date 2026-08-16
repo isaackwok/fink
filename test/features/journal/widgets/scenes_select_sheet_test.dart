@@ -7,6 +7,7 @@ import 'package:movie_journal/features/movie/data/models/movie_image.dart';
 import 'package:movie_journal/features/movie/movie_providers.dart';
 
 import '../../../helpers/widget_test_setup.dart';
+import '../../../helpers/localized_test_app.dart';
 
 /// Serves a fixed set of backdrops synchronously so the sheet renders its grid
 /// without any network call (the real controller stays in AsyncLoading forever).
@@ -19,32 +20,38 @@ class _FakeMovieImagesController extends MovieImagesController {
 
   @override
   Future<MovieImagesState> build() async => MovieImagesState(
-        posters: const [],
-        logos: const [],
-        backdrops: _backdrops,
-      );
+    posters: const [],
+    logos: const [],
+    backdrops: _backdrops,
+  );
 }
 
 List<MovieImage> _fakeBackdrops(int count) => List.generate(
-      count,
-      (i) => MovieImage(
-        filePath: '/scene$i.jpg',
-        aspectRatio: 1.78,
-        height: 1080,
-        width: 1920,
-        voteAverage: 1,
-        voteCount: 1,
-      ),
-    );
+  count,
+  (i) => MovieImage(
+    filePath: '/scene$i.jpg',
+    aspectRatio: 1.78,
+    height: 1080,
+    width: 1920,
+    voteAverage: 1,
+    voteCount: 1,
+  ),
+);
 
 void main() {
   setUpAll(setUpWidgetTests);
   tearDownAll(tearDownWidgetTests);
 
-  Widget buildSubject(ProviderContainer container) {
+  Widget buildSubject(
+    ProviderContainer container, {
+    Locale locale = const Locale('en'),
+  }) {
     return UncontrolledProviderScope(
       container: container,
-      child: const MaterialApp(home: ScenesSelectSheet(movieId: 550)),
+      child: localizedTestApp(
+        locale: locale,
+        home: const ScenesSelectSheet(movieId: 550),
+      ),
     );
   }
 
@@ -59,8 +66,31 @@ void main() {
   }
 
   group('ScenesSelectSheet', () {
-    testWidgets('shows the emotion-style count, starting at 0/10',
-        (tester) async {
+    testWidgets('renders Taiwan Traditional Chinese scene controls', (
+      tester,
+    ) async {
+      final container = makeContainer(12);
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        buildSubject(
+          container,
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('場景'), findsOneWidget);
+      expect(find.text('最多選擇 10 個（0/10）'), findsOneWidget);
+    });
+
+    testWidgets('shows the emotion-style count, starting at 0/10', (
+      tester,
+    ) async {
       final container = makeContainer(12);
       addTearDown(container.dispose);
 
@@ -83,8 +113,9 @@ void main() {
       expect(find.text('Select up to 10 (1/10)'), findsOneWidget);
     });
 
-    testWidgets('blocks selection past the cap and shows a toast',
-        (tester) async {
+    testWidgets('blocks selection past the cap and shows a toast', (
+      tester,
+    ) async {
       // A tall surface so all 12 grid cells render and are hit-testable.
       tester.view.physicalSize = const Size(1000, 4000);
       tester.view.devicePixelRatio = 1.0;

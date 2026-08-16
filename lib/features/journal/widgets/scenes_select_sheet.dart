@@ -8,6 +8,7 @@ import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/shared_widgets/sheet_app_bar.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class SceneGridTile extends StatelessWidget {
   const SceneGridTile({
@@ -54,7 +55,10 @@ class SceneGridTile extends StatelessWidget {
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: onTap,
-              child: const SizedBox(width: double.infinity, height: double.infinity),
+              child: const SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
           ),
         ),
@@ -111,6 +115,7 @@ class _ScenesSelectSheetState extends ConsumerState<ScenesSelectSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final movieImagesAsync = ref.watch(
       movieImagesControllerProvider(widget.movieId),
     );
@@ -129,7 +134,10 @@ class _ScenesSelectSheetState extends ConsumerState<ScenesSelectSheet> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                'Select up to $_maxSceneLimit (${_localSelectedScenes.length}/$_maxSceneLimit)',
+                l10n.selectionUpToStatus(
+                  limit: _maxSceneLimit,
+                  selected: _localSelectedScenes.length,
+                ),
                 style: TextStyle(
                   fontFamily: 'AvenirNext',
                   fontSize: 14,
@@ -176,7 +184,7 @@ class _ScenesSelectSheetState extends ConsumerState<ScenesSelectSheet> {
                         if (_localSelectedScenes.length >= _maxSceneLimit) {
                           CustomToast.showError(
                             context,
-                            'You can select up to $_maxSceneLimit scenes',
+                            l10n.scenesSelectionLimit(limit: _maxSceneLimit),
                           );
                           return;
                         }
@@ -195,7 +203,7 @@ class _ScenesSelectSheetState extends ConsumerState<ScenesSelectSheet> {
         ),
       ),
       appBar: SheetAppBar(
-        title: 'Scenes',
+        title: l10n.scenesTitle,
         backgroundColor: Theme.of(context).colorScheme.surface,
         onCancel: () => Navigator.pop(context),
         onDone: () {

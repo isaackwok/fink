@@ -4,13 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/emotion/emotion.dart';
 import 'package:movie_journal/features/journal/widgets/emotions_selector_bottom_sheet.dart';
 
+import '../../../helpers/localized_test_app.dart';
+
 void main() {
   Widget buildSubject({
     List<Emotion> initialEmotions = const [],
     Function(List<Emotion>)? onSave,
+    Locale locale = const Locale('en'),
   }) {
     return ProviderScope(
-      child: MaterialApp(
+      child: localizedTestApp(
+        locale: locale,
         home: Scaffold(
           // Use a full-height body so the bottom sheet has room
           body: Builder(
@@ -30,6 +34,27 @@ void main() {
   }
 
   group('EmotionsSelectorBottomSheet', () {
+    testWidgets('localizes controls but leaves emotion taxonomy in English', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('你對這部電影有什麼感受？'), findsOneWidget);
+      expect(find.text('最多選擇 5 個（0/5）'), findsOneWidget);
+      expect(find.text('High Energy'), findsOneWidget);
+      expect(find.text('Uplifting'), findsOneWidget);
+      expect(find.text('Joyful'), findsOneWidget);
+    });
+
     group('header', () {
       testWidgets('displays question text', (tester) async {
         await tester.pumpWidget(buildSubject());

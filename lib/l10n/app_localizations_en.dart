@@ -240,4 +240,147 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moviePreviewErrorLoading => 'Error loading movie';
+
+  @override
+  String get ratingPrompt => 'How much did you enjoy this movie?';
+
+  @override
+  String ratingSemantics({required int value, required int max}) {
+    return '$value out of $max';
+  }
+
+  @override
+  String get emotionsPrompt => 'What are your feelings about this movie?';
+
+  @override
+  String get emotionsSelect => 'Select Emotions';
+
+  @override
+  String get emotionsSummaryPrefix => 'You felt ';
+
+  @override
+  String get emotionsSummarySuffix => ' by this movie.';
+
+  @override
+  String get emotionsListSeparator => ', ';
+
+  @override
+  String get emotionsListFinalSeparator => ' and ';
+
+  @override
+  String selectionUpToStatus({required int limit, required int selected}) {
+    return 'Select up to $limit ($selected/$limit)';
+  }
+
+  @override
+  String emotionsSelectionLimit({required int limit}) {
+    return 'You can select up to $limit emotions';
+  }
+
+  @override
+  String get scenesTitle => 'Scenes';
+
+  @override
+  String get scenesPrompt => 'What are the memorable scenes?';
+
+  @override
+  String get scenesAdd => '+  Add Scenes';
+
+  @override
+  String get sceneAdd => 'Add Scene';
+
+  @override
+  String get scenesMissingTitle => 'Scene missing!';
+
+  @override
+  String get scenesMissingBody =>
+      'We couldn\'t find any scene photos for this movie.';
+
+  @override
+  String get scenesMissingTagline => 'Keep this one in your memory. ✨';
+
+  @override
+  String get sceneErrorLoadingImage => 'Error loading image';
+
+  @override
+  String get sceneErrorLoadingImages => 'Error loading images';
+
+  @override
+  String scenesSelectionLimit({required int limit}) {
+    return 'You can select up to $limit scenes';
+  }
+
+  @override
+  String get sceneCaptionHint => 'Add a caption...';
+
+  @override
+  String get commonMore => 'more';
+
+  @override
+  String get thoughtsTitle => 'Thoughts';
+
+  @override
+  String get thoughtsPrompt => 'Write down your thoughts & feelings.';
+
+  @override
+  String get thoughtsHint => 'Enter your text here...';
+
+  @override
+  String get thoughtsAdd => 'Add';
+
+  @override
+  String itemPosition({required int current, required int total}) {
+    return '$current of $total';
+  }
+
+  @override
+  String get reviewsTitle => 'Movie Reviews';
+
+  @override
+  String get reviewsLabel => 'Reviews';
+
+  @override
+  String get reviewsDescription =>
+      'We summarized reviews from Letterboxd and Reddit with AI, add these insights to your notes!';
+
+  @override
+  String get reviewsEmpty => 'No reviews generated';
+
+  @override
+  String get journalSaved => 'You\'ve saved a journal';
+
+  @override
+  String get shareTicket => 'Share Ticket';
+
+  @override
+  String get viewJournal => 'View Journal';
+
+  @override
+  String get journalUpdated => 'Your journal has been updated.';
+
+  @override
+  String get journalSaveFailed => 'Failed to save journal. Please try again.';
+
+  @override
+  String get journalDeleteTitle => 'Delete Journal';
+
+  @override
+  String get journalDeleteConfirmation =>
+      'Are you sure you want to delete this journal?';
+
+  @override
+  String get journalDeleted => 'Journal deleted successfully';
+
+  @override
+  String get journalDeleteFailed => 'Failed to delete journal';
+
+  @override
+  String get discardChangesTitle => 'Discard Changes';
+
+  @override
+  String get discardChangesDescription =>
+      'Are you sure you want to discard the changes? All changes will not be saved.';
+
+  @override
+  String get discardChangesAction => 'Discard';
 }

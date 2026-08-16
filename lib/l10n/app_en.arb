@@ -298,5 +298,195 @@
   "moviePreviewErrorLoading": "Error loading movie",
   "@moviePreviewErrorLoading": {
     "description": "Error shown when movie details cannot be loaded"
+  },
+  "ratingPrompt": "How much did you enjoy this movie?",
+  "@ratingPrompt": {
+    "description": "Prompt above the movie rating control"
+  },
+  "ratingSemantics": "{value} out of {max}",
+  "@ratingSemantics": {
+    "description": "Accessibility label for one rating value",
+    "placeholders": {
+      "value": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "emotionsPrompt": "What are your feelings about this movie?",
+  "@emotionsPrompt": {
+    "description": "Prompt above the emotion selector"
+  },
+  "emotionsSelect": "Select Emotions",
+  "@emotionsSelect": {
+    "description": "Empty-state action in the emotion selector"
+  },
+  "emotionsSummaryPrefix": "You felt ",
+  "@emotionsSummaryPrefix": {
+    "description": "Text before styled English emotion names"
+  },
+  "emotionsSummarySuffix": " by this movie.",
+  "@emotionsSummarySuffix": {
+    "description": "Text after styled English emotion names"
+  },
+  "emotionsListSeparator": ", ",
+  "@emotionsListSeparator": {
+    "description": "Separator between non-final English emotion names"
+  },
+  "emotionsListFinalSeparator": " and ",
+  "@emotionsListFinalSeparator": {
+    "description": "Separator before the final English emotion name"
+  },
+  "selectionUpToStatus": "Select up to {limit} ({selected}/{limit})",
+  "@selectionUpToStatus": {
+    "description": "Current count for a selector with a maximum",
+    "placeholders": {
+      "limit": {"type": "int"},
+      "selected": {"type": "int"}
+    }
+  },
+  "emotionsSelectionLimit": "You can select up to {limit} emotions",
+  "@emotionsSelectionLimit": {
+    "description": "Error shown when too many emotions are selected",
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "scenesTitle": "Scenes",
+  "@scenesTitle": {
+    "description": "Title of the scene selector"
+  },
+  "scenesPrompt": "What are the memorable scenes?",
+  "@scenesPrompt": {
+    "description": "Prompt above selected movie scenes"
+  },
+  "scenesAdd": "+  Add Scenes",
+  "@scenesAdd": {
+    "description": "Action to select movie scenes"
+  },
+  "sceneAdd": "Add Scene",
+  "@sceneAdd": {
+    "description": "Action to add a single movie scene"
+  },
+  "scenesMissingTitle": "Scene missing!",
+  "@scenesMissingTitle": {
+    "description": "Title when TMDB has no scene images"
+  },
+  "scenesMissingBody": "We couldn't find any scene photos for this movie.",
+  "@scenesMissingBody": {
+    "description": "Explanation when TMDB has no scene images"
+  },
+  "scenesMissingTagline": "Keep this one in your memory. ✨",
+  "@scenesMissingTagline": {
+    "description": "Supporting line when no scene images are available"
+  },
+  "sceneErrorLoadingImage": "Error loading image",
+  "@sceneErrorLoadingImage": {
+    "description": "Error in a single scene image"
+  },
+  "sceneErrorLoadingImages": "Error loading images",
+  "@sceneErrorLoadingImages": {
+    "description": "Error while loading scene images"
+  },
+  "scenesSelectionLimit": "You can select up to {limit} scenes",
+  "@scenesSelectionLimit": {
+    "description": "Error shown when too many scenes are selected",
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "sceneCaptionHint": "Add a caption...",
+  "@sceneCaptionHint": {
+    "description": "Hint for a scene caption"
+  },
+  "commonMore": "more",
+  "@commonMore": {
+    "description": "Action to expand truncated text"
+  },
+  "thoughtsTitle": "Thoughts",
+  "@thoughtsTitle": {
+    "description": "Title of the thoughts editor"
+  },
+  "thoughtsPrompt": "Write down your thoughts & feelings.",
+  "@thoughtsPrompt": {
+    "description": "Prompt above the thoughts editor"
+  },
+  "thoughtsHint": "Enter your text here...",
+  "@thoughtsHint": {
+    "description": "Hint in the thoughts editor"
+  },
+  "thoughtsAdd": "Add",
+  "@thoughtsAdd": {
+    "description": "Action to add a generated review to thoughts"
+  },
+  "itemPosition": "{current} of {total}",
+  "@itemPosition": {
+    "description": "Current position in a set of items",
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "reviewsTitle": "Movie Reviews",
+  "@reviewsTitle": {
+    "description": "Title of the generated reviews sheet"
+  },
+  "reviewsLabel": "Reviews",
+  "@reviewsLabel": {
+    "description": "Short label for movie reviews"
+  },
+  "reviewsDescription": "We summarized reviews from Letterboxd and Reddit with AI, add these insights to your notes!",
+  "@reviewsDescription": {
+    "description": "Explanation of AI-generated review summaries"
+  },
+  "reviewsEmpty": "No reviews generated",
+  "@reviewsEmpty": {
+    "description": "Empty state when no generated reviews are available"
+  },
+  "journalSaved": "You've saved a journal",
+  "@journalSaved": {
+    "description": "Success message after saving a journal"
+  },
+  "shareTicket": "Share Ticket",
+  "@shareTicket": {
+    "description": "Action to share a journal ticket"
+  },
+  "viewJournal": "View Journal",
+  "@viewJournal": {
+    "description": "Action to open a saved journal"
+  },
+  "journalUpdated": "Your journal has been updated.",
+  "@journalUpdated": {
+    "description": "Success toast after updating a journal"
+  },
+  "journalSaveFailed": "Failed to save journal. Please try again.",
+  "@journalSaveFailed": {
+    "description": "Error toast after a journal cannot be saved"
+  },
+  "journalDeleteTitle": "Delete Journal",
+  "@journalDeleteTitle": {
+    "description": "Title of the journal deletion dialog"
+  },
+  "journalDeleteConfirmation": "Are you sure you want to delete this journal?",
+  "@journalDeleteConfirmation": {
+    "description": "Journal deletion confirmation question"
+  },
+  "journalDeleted": "Journal deleted successfully",
+  "@journalDeleted": {
+    "description": "Success toast after deleting a journal"
+  },
+  "journalDeleteFailed": "Failed to delete journal",
+  "@journalDeleteFailed": {
+    "description": "Error toast after a journal cannot be deleted"
+  },
+  "discardChangesTitle": "Discard Changes",
+  "@discardChangesTitle": {
+    "description": "Title of the discard changes dialog"
+  },
+  "discardChangesDescription": "Are you sure you want to discard the changes? All changes will not be saved.",
+  "@discardChangesDescription": {
+    "description": "Warning shown before discarding journal edits"
+  },
+  "discardChangesAction": "Discard",
+  "@discardChangesAction": {
+    "description": "Action to discard journal edits"
   }
 }

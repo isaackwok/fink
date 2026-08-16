@@ -8,6 +8,7 @@ import 'package:movie_journal/features/journal/widgets/reviews_bottom_sheet.dart
 import 'package:movie_journal/features/journal/widgets/reviews_floating_button.dart';
 import 'package:movie_journal/shared_widgets/sheet_app_bar.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class ThoughtsScreen extends ConsumerStatefulWidget {
   const ThoughtsScreen({super.key});
@@ -146,7 +147,7 @@ class _ThoughtsScreenState extends ConsumerState<ThoughtsScreen> {
             const Icon(Icons.add, color: Colors.white, size: 24),
             const SizedBox(height: 4),
             Text(
-              'Add',
+              AppLocalizations.of(context).thoughtsAdd,
               style: GoogleFonts.inter(
                 color: Colors.white,
                 fontSize: 14,
@@ -161,12 +162,13 @@ class _ThoughtsScreenState extends ConsumerState<ThoughtsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final selectedReferences =
         ref.watch(journalControllerProvider).selectedRefs;
     final isEditMode = ref.watch(journalModeProvider) == JournalMode.edit;
     return Scaffold(
       appBar: SheetAppBar(
-        title: 'Thoughts',
+        title: l10n.thoughtsTitle,
         onCancel: () => Navigator.pop(context),
         onDone: () {
           ref
@@ -209,7 +211,7 @@ class _ThoughtsScreenState extends ConsumerState<ThoughtsScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Enter your text here...',
+                        hintText: l10n.thoughtsHint,
                         hintStyle: GoogleFonts.nothingYouCouldDo(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,

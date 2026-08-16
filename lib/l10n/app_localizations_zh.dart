@@ -220,6 +220,146 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get moviePreviewErrorLoading => '無法載入電影';
+
+  @override
+  String get ratingPrompt => '你有多喜歡這部電影？';
+
+  @override
+  String ratingSemantics({required int value, required int max}) {
+    return '$value（滿分 $max）';
+  }
+
+  @override
+  String get emotionsPrompt => '你對這部電影有什麼感受？';
+
+  @override
+  String get emotionsSelect => '選擇情緒';
+
+  @override
+  String get emotionsSummaryPrefix => '這部電影讓你感到';
+
+  @override
+  String get emotionsSummarySuffix => '。';
+
+  @override
+  String get emotionsListSeparator => '、';
+
+  @override
+  String get emotionsListFinalSeparator => '、';
+
+  @override
+  String selectionUpToStatus({required int limit, required int selected}) {
+    return '最多選擇 $limit 個（$selected/$limit）';
+  }
+
+  @override
+  String emotionsSelectionLimit({required int limit}) {
+    return '最多只能選擇 $limit 個情緒';
+  }
+
+  @override
+  String get scenesTitle => '場景';
+
+  @override
+  String get scenesPrompt => '有哪些令人難忘的場景？';
+
+  @override
+  String get scenesAdd => '+  新增場景';
+
+  @override
+  String get sceneAdd => '新增場景';
+
+  @override
+  String get scenesMissingTitle => '找不到場景！';
+
+  @override
+  String get scenesMissingBody => '我們找不到這部電影的場景照片。';
+
+  @override
+  String get scenesMissingTagline => '把這一幕留在記憶裡。✨';
+
+  @override
+  String get sceneErrorLoadingImage => '無法載入圖片';
+
+  @override
+  String get sceneErrorLoadingImages => '無法載入圖片';
+
+  @override
+  String scenesSelectionLimit({required int limit}) {
+    return '最多只能選擇 $limit 個場景';
+  }
+
+  @override
+  String get sceneCaptionHint => '新增說明...';
+
+  @override
+  String get commonMore => '更多';
+
+  @override
+  String get thoughtsTitle => '想法';
+
+  @override
+  String get thoughtsPrompt => '寫下你的想法與感受。';
+
+  @override
+  String get thoughtsHint => '在這裡輸入文字...';
+
+  @override
+  String get thoughtsAdd => '新增';
+
+  @override
+  String itemPosition({required int current, required int total}) {
+    return '$current / $total';
+  }
+
+  @override
+  String get reviewsTitle => '電影評論';
+
+  @override
+  String get reviewsLabel => '評論';
+
+  @override
+  String get reviewsDescription =>
+      '我們使用 AI 整理了 Letterboxd 和 Reddit 的評論，把這些觀點加入你的筆記吧！';
+
+  @override
+  String get reviewsEmpty => '尚未產生評論';
+
+  @override
+  String get journalSaved => '日記已儲存';
+
+  @override
+  String get shareTicket => '分享票卡';
+
+  @override
+  String get viewJournal => '查看日記';
+
+  @override
+  String get journalUpdated => '日記已更新。';
+
+  @override
+  String get journalSaveFailed => '無法儲存日記，請再試一次。';
+
+  @override
+  String get journalDeleteTitle => '刪除日記';
+
+  @override
+  String get journalDeleteConfirmation => '確定要刪除這篇日記嗎？';
+
+  @override
+  String get journalDeleted => '日記已刪除';
+
+  @override
+  String get journalDeleteFailed => '無法刪除日記';
+
+  @override
+  String get discardChangesTitle => '捨棄變更';
+
+  @override
+  String get discardChangesDescription => '確定要捨棄變更嗎？所有變更都不會被儲存。';
+
+  @override
+  String get discardChangesAction => '捨棄';
 }
 
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
@@ -438,4 +578,144 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get moviePreviewErrorLoading => '無法載入電影';
+
+  @override
+  String get ratingPrompt => '你有多喜歡這部電影？';
+
+  @override
+  String ratingSemantics({required int value, required int max}) {
+    return '$value（滿分 $max）';
+  }
+
+  @override
+  String get emotionsPrompt => '你對這部電影有什麼感受？';
+
+  @override
+  String get emotionsSelect => '選擇情緒';
+
+  @override
+  String get emotionsSummaryPrefix => '這部電影讓你感到';
+
+  @override
+  String get emotionsSummarySuffix => '。';
+
+  @override
+  String get emotionsListSeparator => '、';
+
+  @override
+  String get emotionsListFinalSeparator => '、';
+
+  @override
+  String selectionUpToStatus({required int limit, required int selected}) {
+    return '最多選擇 $limit 個（$selected/$limit）';
+  }
+
+  @override
+  String emotionsSelectionLimit({required int limit}) {
+    return '最多只能選擇 $limit 個情緒';
+  }
+
+  @override
+  String get scenesTitle => '場景';
+
+  @override
+  String get scenesPrompt => '有哪些令人難忘的場景？';
+
+  @override
+  String get scenesAdd => '+  新增場景';
+
+  @override
+  String get sceneAdd => '新增場景';
+
+  @override
+  String get scenesMissingTitle => '找不到場景！';
+
+  @override
+  String get scenesMissingBody => '我們找不到這部電影的場景照片。';
+
+  @override
+  String get scenesMissingTagline => '把這一幕留在記憶裡。✨';
+
+  @override
+  String get sceneErrorLoadingImage => '無法載入圖片';
+
+  @override
+  String get sceneErrorLoadingImages => '無法載入圖片';
+
+  @override
+  String scenesSelectionLimit({required int limit}) {
+    return '最多只能選擇 $limit 個場景';
+  }
+
+  @override
+  String get sceneCaptionHint => '新增說明...';
+
+  @override
+  String get commonMore => '更多';
+
+  @override
+  String get thoughtsTitle => '想法';
+
+  @override
+  String get thoughtsPrompt => '寫下你的想法與感受。';
+
+  @override
+  String get thoughtsHint => '在這裡輸入文字...';
+
+  @override
+  String get thoughtsAdd => '新增';
+
+  @override
+  String itemPosition({required int current, required int total}) {
+    return '$current / $total';
+  }
+
+  @override
+  String get reviewsTitle => '電影評論';
+
+  @override
+  String get reviewsLabel => '評論';
+
+  @override
+  String get reviewsDescription =>
+      '我們使用 AI 整理了 Letterboxd 和 Reddit 的評論，把這些觀點加入你的筆記吧！';
+
+  @override
+  String get reviewsEmpty => '尚未產生評論';
+
+  @override
+  String get journalSaved => '日記已儲存';
+
+  @override
+  String get shareTicket => '分享票卡';
+
+  @override
+  String get viewJournal => '查看日記';
+
+  @override
+  String get journalUpdated => '日記已更新。';
+
+  @override
+  String get journalSaveFailed => '無法儲存日記，請再試一次。';
+
+  @override
+  String get journalDeleteTitle => '刪除日記';
+
+  @override
+  String get journalDeleteConfirmation => '確定要刪除這篇日記嗎？';
+
+  @override
+  String get journalDeleted => '日記已刪除';
+
+  @override
+  String get journalDeleteFailed => '無法刪除日記';
+
+  @override
+  String get discardChangesTitle => '捨棄變更';
+
+  @override
+  String get discardChangesDescription => '確定要捨棄變更嗎？所有變更都不會被儲存。';
+
+  @override
+  String get discardChangesAction => '捨棄';
 }

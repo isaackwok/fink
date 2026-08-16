@@ -4,6 +4,7 @@ import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/widgets/reviews_bottom_sheet.dart';
 import 'package:movie_journal/features/movie/movie_providers.dart';
 import 'package:movie_journal/features/quesgen/provider.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class ReviewsFloatingButton extends ConsumerStatefulWidget {
   const ReviewsFloatingButton({super.key});
@@ -103,9 +104,9 @@ class _ReviewsFloatingButtonState extends ConsumerState<ReviewsFloatingButton> {
                   ],
                 ),
               ),
-      label: const Text(
-        'Reviews',
-        style: TextStyle(color: Colors.white, fontFamily: 'AvenirNext'),
+      label: Text(
+        AppLocalizations.of(context).reviewsLabel,
+        style: const TextStyle(color: Colors.white, fontFamily: 'AvenirNext'),
       ),
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),

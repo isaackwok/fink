@@ -15,6 +15,7 @@ import 'package:movie_journal/features/quesgen/provider.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:movie_journal/shared_widgets/circled_icon_button.dart';
 import 'package:movie_journal/shared_widgets/confirmation_dialog.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class JournalingScreen extends ConsumerStatefulWidget {
   final String movieTitle;
@@ -106,6 +107,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
   @override
   Widget build(BuildContext context) {
     final journal = ref.watch(journalControllerProvider);
+    final l10n = AppLocalizations.of(context);
     // Both create (setMovie before push) and edit (loadJournal) set tmdbId
     // before this screen builds, so the journal is the id's source of truth —
     // no need to wait on the movie-detail fetch.
@@ -174,7 +176,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                                     if (context.mounted) {
                                       CustomToast.showSuccess(
                                         context,
-                                        'Your journal has been updated.',
+                                        l10n.journalUpdated,
                                       );
                                       Navigator.of(
                                         context,
@@ -210,7 +212,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                                   if (context.mounted) {
                                     CustomToast.showError(
                                       context,
-                                      'Failed to save journal. Please try again.',
+                                      l10n.journalSaveFailed,
                                     );
                                   }
                                 } finally {
@@ -288,7 +290,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                                   ),
                                 ),
                               )
-                              : const Text('Save'),
+                              : Text(l10n.commonSave),
                     ),
                   ),
                 ],
@@ -368,12 +370,12 @@ class _DiscardChangesDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ConfirmationDialog(
-      title: 'Discard Changes',
-      description:
-          'Are you sure you want to discard the changes? All changes will not be saved.',
-      cancelText: 'Cancel',
-      confirmText: 'Discard',
+      title: l10n.discardChangesTitle,
+      description: l10n.discardChangesDescription,
+      cancelText: l10n.commonCancel,
+      confirmText: l10n.discardChangesAction,
       onCancel: () => Navigator.pop(context, false),
       onConfirm: () => Navigator.pop(context, true),
     );

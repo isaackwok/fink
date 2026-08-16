@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class SceneCard extends StatefulWidget {
   final String imagePath;
@@ -87,7 +88,7 @@ class _SceneCardState extends State<SceneCard> {
           maxLines: 2,
           minLines: 1,
           decoration: InputDecoration(
-            hintText: 'Add a caption...',
+            hintText: AppLocalizations.of(context).sceneCaptionHint,
             hintStyle: TextStyle(
               color: Colors.white.withAlpha(153),
               fontSize: 13,
@@ -117,7 +118,10 @@ class _SceneCardState extends State<SceneCard> {
               ),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
           ),
         ),
       ],
@@ -204,7 +208,7 @@ class _SceneCardState extends State<SceneCard> {
     }
 
     // Find truncation point - calculate how much text fits with "...more" suffix
-    const moreText = '...more';
+    final moreText = '...${AppLocalizations.of(context).commonMore}';
     var truncatedText = caption;
     var truncatedPainter = TextPainter(
       text: TextSpan(text: '$truncatedText$moreText', style: textStyle),
@@ -236,7 +240,7 @@ class _SceneCardState extends State<SceneCard> {
             TextSpan(text: truncatedText),
             TextSpan(text: '...', style: textStyle),
             TextSpan(
-              text: 'more',
+              text: AppLocalizations.of(context).commonMore,
               style: textStyle.copyWith(color: Colors.white.withAlpha(128)),
             ),
           ],

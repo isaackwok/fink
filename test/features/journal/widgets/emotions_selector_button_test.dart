@@ -3,13 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/emotion/emotion.dart';
 import 'package:movie_journal/features/journal/widgets/emotions_selector_button.dart';
 
+import '../../../helpers/localized_test_app.dart';
+
 void main() {
   Widget buildSubject({
     List<Emotion> emotions = const [],
     Function(List<Emotion>)? onSave,
     bool readonly = false,
+    Locale locale = const Locale('en'),
   }) {
-    return MaterialApp(
+    return localizedTestApp(
+      locale: locale,
       home: Scaffold(
         body: EmotionsSelectorButton(
           emotions: emotions,
@@ -21,6 +25,25 @@ void main() {
   }
 
   group('EmotionsSelectorButton', () {
+    testWidgets('localizes framing but keeps emotion names in English', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(
+          emotions: [emotionList[EmotionType.joyful]!],
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+
+      expect(find.text('你對這部電影有什麼感受？'), findsOneWidget);
+      expect(find.textContaining('joyful'), findsOneWidget);
+      expect(find.textContaining('這部電影讓你感到'), findsOneWidget);
+    });
+
     group('empty state', () {
       testWidgets('displays prompt text when no emotions selected', (
         tester,

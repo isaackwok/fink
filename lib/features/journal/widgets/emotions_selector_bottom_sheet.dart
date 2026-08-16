@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/features/emotion/emotion.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class _AnimatedEmotionChip extends StatefulWidget {
   final Emotion emotion;
@@ -296,7 +297,9 @@ class _EmotionsSelectorBottomSheetState
         _tempSelectedEmotions.length >= widget.maxSelectionLimit) {
       CustomToast.showError(
         context,
-        'You can select up to ${widget.maxSelectionLimit} emotions',
+        AppLocalizations.of(
+          context,
+        ).emotionsSelectionLimit(limit: widget.maxSelectionLimit),
       );
       return;
     }
@@ -329,6 +332,8 @@ class _EmotionsSelectorBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       decoration: const BoxDecoration(
         color: DarkSurfaces.sheetSecondary,
@@ -367,9 +372,9 @@ class _EmotionsSelectorBottomSheetState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'What are your feelings about this movie?',
-                          style: TextStyle(
+                        Text(
+                          l10n.emotionsPrompt,
+                          style: const TextStyle(
                             fontFamily: 'AvenirNext',
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
@@ -379,7 +384,10 @@ class _EmotionsSelectorBottomSheetState
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Select up to ${widget.maxSelectionLimit} (${_tempSelectedEmotions.length}/${widget.maxSelectionLimit})',
+                          l10n.selectionUpToStatus(
+                            limit: widget.maxSelectionLimit,
+                            selected: _tempSelectedEmotions.length,
+                          ),
                           style: TextStyle(
                             fontFamily: 'AvenirNext',
                             fontSize: 14,
@@ -580,7 +588,7 @@ class _EmotionsSelectorBottomSheetState
                     ),
                   ),
                   onPressed: _handleDone,
-                  child: const Text('Done'),
+                  child: Text(l10n.commonDone),
                 ),
               ),
             ),

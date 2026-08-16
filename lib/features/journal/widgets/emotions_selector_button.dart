@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:movie_journal/features/emotion/emotion.dart';
 import 'package:movie_journal/features/journal/widgets/emotions_selector_bottom_sheet.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class EmotionsSelectorButton extends StatelessWidget {
   final List<Emotion> emotions;
@@ -81,26 +82,14 @@ class EmotionsSelectorButton extends StatelessWidget {
     fontFamily: 'AvenirNext',
   );
 
-  // Separators between successive emotion names, indexed by selection count.
-  // For 2 selections: "A and B". For 3–5: comma-separated with "and"
-  // before the final emotion.
-  static const _separatorsByCount = <List<String>>[
-    [], // 0 emotions
-    [], // 1 emotion
-    [' and '], // 2 emotions
-    [', ', ' and '], // 3 emotions
-    [', ', ', ', ' and '], // 4 emotions
-    [', ', ', ', ', ', ' and '], // 5 emotions
-  ];
-
   TextSpan _emotionName(String name) =>
       TextSpan(text: name, style: _emotionNameStyle);
 
-  Widget _getButtonText(List<Emotion> selectedEmotions) {
+  Widget _getButtonText(List<Emotion> selectedEmotions, AppLocalizations l10n) {
     if (selectedEmotions.isEmpty) {
-      return const Text(
-        'Select Emotions',
-        style: TextStyle(
+      return Text(
+        l10n.emotionsSelect,
+        style: const TextStyle(
           color: Color(0xFF8F8E8E),
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -110,19 +99,23 @@ class EmotionsSelectorButton extends StatelessWidget {
     }
 
     final names = selectedEmotions.map((e) => e.name.toLowerCase()).toList();
-    final separators = _separatorsByCount[names.length];
 
     return Text.rich(
       TextSpan(
         style: _sentenceStyle,
         children: [
-          const TextSpan(text: 'You felt '),
+          TextSpan(text: l10n.emotionsSummaryPrefix),
           _emotionName(names.first),
           for (var i = 1; i < names.length; i++) ...[
-            TextSpan(text: separators[i - 1]),
+            TextSpan(
+              text:
+                  i == names.length - 1
+                      ? l10n.emotionsListFinalSeparator
+                      : l10n.emotionsListSeparator,
+            ),
             _emotionName(names[i]),
           ],
-          const TextSpan(text: ' by this movie.'),
+          TextSpan(text: l10n.emotionsSummarySuffix),
         ],
       ),
     );
@@ -131,18 +124,19 @@ class EmotionsSelectorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasSelection = emotions.isNotEmpty;
+    final l10n = AppLocalizations.of(context);
 
     final color = Theme.of(context).colorScheme.primary;
-    final buttonText = _getButtonText(emotions);
+    final buttonText = _getButtonText(emotions, l10n);
     final gradientColors = _getEnergyGradientColors(emotions);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (!readonly) ...[
-          const Text(
-            'What are your feelings about this movie?',
-            style: TextStyle(
+          Text(
+            l10n.emotionsPrompt,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w500,

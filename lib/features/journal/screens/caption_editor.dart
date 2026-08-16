@@ -6,6 +6,7 @@ import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/widgets/scene_card.dart';
 import 'package:movie_journal/shared_widgets/sheet_app_bar.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class CaptionEditor extends ConsumerStatefulWidget {
   final int initialSceneIndex;
@@ -179,7 +180,10 @@ class _CaptionEditorState extends ConsumerState<CaptionEditor> {
                       Positioned(
                         right: 0,
                         child: Text(
-                          '${_currentPage + 1} of ${selectedScenes.length}',
+                          AppLocalizations.of(context).itemPosition(
+                            current: _currentPage + 1,
+                            total: selectedScenes.length,
+                          ),
                           style: TextStyle(
                             color: Colors.white.withAlpha(153),
                             fontSize: 13,

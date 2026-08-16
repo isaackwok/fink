@@ -6,6 +6,7 @@ import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/screens/journal_content.dart';
 import 'package:movie_journal/features/share/share_flow.dart';
 import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class JournalCompleteScreen extends StatefulWidget {
   final JournalState journal;
@@ -88,6 +89,7 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final l10n = AppLocalizations.of(context);
 
     return ScreenViewTracker(
       screenName: 'JournalComplete',
@@ -148,7 +150,7 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
                       child: FadeTransition(
                         opacity: _textFade,
                         child: Text(
-                          "You've saved a journal",
+                          l10n.journalSaved,
                           style: GoogleFonts.inter(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
@@ -209,7 +211,7 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
                             fontFamily: 'AvenirNext',
                           ),
                         ),
-                        child: const Text('Share Ticket'),
+                        child: Text(l10n.shareTicket),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -238,7 +240,7 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
                             fontFamily: 'AvenirNext',
                           ),
                         ),
-                        child: const Text('View Journal'),
+                        child: Text(l10n.viewJournal),
                       ),
                     ),
                   ],

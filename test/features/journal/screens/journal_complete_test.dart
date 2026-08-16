@@ -8,6 +8,7 @@ import 'package:movie_journal/features/share/share_flow.dart';
 import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen.dart';
 
 import '../../../helpers/test_journal.dart';
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 // Note: journal_complete.dart now logs a screen view in initState via AnalyticsManager.
@@ -28,9 +29,10 @@ void main() {
       );
     });
 
-    Widget buildSubject() {
+    Widget buildSubject({Locale locale = const Locale('en')}) {
       return ProviderScope(
-        child: MaterialApp(
+        child: localizedTestApp(
+          locale: locale,
           home: JournalCompleteScreen(journal: journal),
         ),
       );
@@ -46,6 +48,25 @@ void main() {
       expect(find.text("You've saved a journal"), findsOneWidget);
     });
 
+    testWidgets('renders Taiwan Traditional Chinese completion actions', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('日記已儲存'), findsOneWidget);
+      expect(find.text('分享票卡'), findsOneWidget);
+      expect(find.text('查看日記'), findsOneWidget);
+    });
+
     testWidgets('renders Share Ticket as ElevatedButton', (tester) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -58,10 +79,7 @@ void main() {
     testWidgets('renders View Journal as TextButton', (tester) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
-      expect(
-        find.widgetWithText(TextButton, 'View Journal'),
-        findsOneWidget,
-      );
+      expect(find.widgetWithText(TextButton, 'View Journal'), findsOneWidget);
     });
 
     testWidgets('reuses JournalCard widget from home', (tester) async {
@@ -69,8 +87,9 @@ void main() {
       expect(find.byType(JournalCard), findsOneWidget);
     });
 
-    testWidgets('wraps JournalCard in IgnorePointer to disable tap',
-        (tester) async {
+    testWidgets('wraps JournalCard in IgnorePointer to disable tap', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
 
       final ignorePointer = find.ancestor(
@@ -88,8 +107,9 @@ void main() {
       expect(find.text('Fight Club'), findsOneWidget);
     });
 
-    testWidgets('Share Ticket button is tappable without errors',
-        (tester) async {
+    testWidgets('Share Ticket button is tappable without errors', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
@@ -98,8 +118,9 @@ void main() {
       // No exception = handler ran without crash (currently a TODO stub)
     });
 
-    testWidgets('Share Ticket navigates to TicketPosterPickerScreen',
-        (tester) async {
+    testWidgets('Share Ticket navigates to TicketPosterPickerScreen', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
@@ -111,32 +132,32 @@ void main() {
       expect(find.byType(TicketPosterPickerScreen), findsOneWidget);
     });
 
-    testWidgets(
-      'Share Ticket pushes a route tagged with kShareFlowRouteName',
-      (tester) async {
-        // Tagging is load-bearing: closeShareFlow popUntil's predicate uses the
-        // route name to know where the share flow ends. If the tag is missing,
-        // the journalContent close path overshoots back past JournalContent.
-        final observer = _RouteSettingsObserver();
-        await tester.pumpWidget(
-          ProviderScope(
-            child: MaterialApp(
-              navigatorObservers: [observer],
-              home: JournalCompleteScreen(journal: journal),
-            ),
+    testWidgets('Share Ticket pushes a route tagged with kShareFlowRouteName', (
+      tester,
+    ) async {
+      // Tagging is load-bearing: closeShareFlow popUntil's predicate uses the
+      // route name to know where the share flow ends. If the tag is missing,
+      // the journalContent close path overshoots back past JournalContent.
+      final observer = _RouteSettingsObserver();
+      await tester.pumpWidget(
+        ProviderScope(
+          child: localizedTestApp(
+            navigatorObservers: [observer],
+            home: JournalCompleteScreen(journal: journal),
           ),
-        );
-        await tester.pumpAndSettle();
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Share Ticket'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('Share Ticket'));
+      await tester.pumpAndSettle();
 
-        expect(observer.lastPushedName, kShareFlowRouteName);
-      },
-    );
+      expect(observer.lastPushedName, kShareFlowRouteName);
+    });
 
-    testWidgets('checkmark has filled white circle with dark icon',
-        (tester) async {
+    testWidgets('checkmark has filled white circle with dark icon', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
@@ -157,8 +178,9 @@ void main() {
       expect(icon.color, Colors.black);
     });
 
-    testWidgets('all elements visible after animations complete',
-        (tester) async {
+    testWidgets('all elements visible after animations complete', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
@@ -176,46 +198,48 @@ void main() {
       expect(find.byIcon(Icons.close), findsOneWidget);
     });
 
-    testWidgets(
-      'tapping close pops back to the first route (home)',
-      (tester) async {
-        // JournalCompleteScreen reaches the user via pushAndRemoveUntil
-        // sitting on top of Home. Simulate that by pushing it onto a sentinel
-        // home route, then verify close pops back to that sentinel.
-        await tester.pumpWidget(
-          ProviderScope(
-            child: MaterialApp(
-              home: Builder(
-                builder: (context) => Scaffold(
-                  body: Center(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              JournalCompleteScreen(journal: journal),
-                        ),
+    testWidgets('tapping close pops back to the first route (home)', (
+      tester,
+    ) async {
+      // JournalCompleteScreen reaches the user via pushAndRemoveUntil
+      // sitting on top of Home. Simulate that by pushing it onto a sentinel
+      // home route, then verify close pops back to that sentinel.
+      await tester.pumpWidget(
+        ProviderScope(
+          child: localizedTestApp(
+            home: Builder(
+              builder:
+                  (context) => Scaffold(
+                    body: Center(
+                      child: ElevatedButton(
+                        onPressed:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) =>
+                                        JournalCompleteScreen(journal: journal),
+                              ),
+                            ),
+                        child: const Text('open-complete-sentinel'),
                       ),
-                      child: const Text('open-complete-sentinel'),
                     ),
                   ),
-                ),
-              ),
             ),
           ),
-        );
+        ),
+      );
 
-        await tester.tap(find.text('open-complete-sentinel'));
-        await tester.pumpAndSettle();
-        expect(find.byType(JournalCompleteScreen), findsOneWidget);
+      await tester.tap(find.text('open-complete-sentinel'));
+      await tester.pumpAndSettle();
+      expect(find.byType(JournalCompleteScreen), findsOneWidget);
 
-        await tester.tap(find.byIcon(Icons.close));
-        await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
 
-        expect(find.byType(JournalCompleteScreen), findsNothing);
-        expect(find.text('open-complete-sentinel'), findsOneWidget);
-      },
-    );
+      expect(find.byType(JournalCompleteScreen), findsNothing);
+      expect(find.text('open-complete-sentinel'), findsOneWidget);
+    });
   });
 }
 

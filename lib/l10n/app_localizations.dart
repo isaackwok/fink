@@ -489,6 +489,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error loading movie'**
   String get moviePreviewErrorLoading;
+
+  /// Prompt above the movie rating control
+  ///
+  /// In en, this message translates to:
+  /// **'How much did you enjoy this movie?'**
+  String get ratingPrompt;
+
+  /// Accessibility label for one rating value
+  ///
+  /// In en, this message translates to:
+  /// **'{value} out of {max}'**
+  String ratingSemantics({required int value, required int max});
+
+  /// Prompt above the emotion selector
+  ///
+  /// In en, this message translates to:
+  /// **'What are your feelings about this movie?'**
+  String get emotionsPrompt;
+
+  /// Empty-state action in the emotion selector
+  ///
+  /// In en, this message translates to:
+  /// **'Select Emotions'**
+  String get emotionsSelect;
+
+  /// Text before styled English emotion names
+  ///
+  /// In en, this message translates to:
+  /// **'You felt '**
+  String get emotionsSummaryPrefix;
+
+  /// Text after styled English emotion names
+  ///
+  /// In en, this message translates to:
+  /// **' by this movie.'**
+  String get emotionsSummarySuffix;
+
+  /// Separator between non-final English emotion names
+  ///
+  /// In en, this message translates to:
+  /// **', '**
+  String get emotionsListSeparator;
+
+  /// Separator before the final English emotion name
+  ///
+  /// In en, this message translates to:
+  /// **' and '**
+  String get emotionsListFinalSeparator;
+
+  /// Current count for a selector with a maximum
+  ///
+  /// In en, this message translates to:
+  /// **'Select up to {limit} ({selected}/{limit})'**
+  String selectionUpToStatus({required int limit, required int selected});
+
+  /// Error shown when too many emotions are selected
+  ///
+  /// In en, this message translates to:
+  /// **'You can select up to {limit} emotions'**
+  String emotionsSelectionLimit({required int limit});
+
+  /// Title of the scene selector
+  ///
+  /// In en, this message translates to:
+  /// **'Scenes'**
+  String get scenesTitle;
+
+  /// Prompt above selected movie scenes
+  ///
+  /// In en, this message translates to:
+  /// **'What are the memorable scenes?'**
+  String get scenesPrompt;
+
+  /// Action to select movie scenes
+  ///
+  /// In en, this message translates to:
+  /// **'+  Add Scenes'**
+  String get scenesAdd;
+
+  /// Action to add a single movie scene
+  ///
+  /// In en, this message translates to:
+  /// **'Add Scene'**
+  String get sceneAdd;
+
+  /// Title when TMDB has no scene images
+  ///
+  /// In en, this message translates to:
+  /// **'Scene missing!'**
+  String get scenesMissingTitle;
+
+  /// Explanation when TMDB has no scene images
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find any scene photos for this movie.'**
+  String get scenesMissingBody;
+
+  /// Supporting line when no scene images are available
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this one in your memory. ✨'**
+  String get scenesMissingTagline;
+
+  /// Error in a single scene image
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading image'**
+  String get sceneErrorLoadingImage;
+
+  /// Error while loading scene images
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading images'**
+  String get sceneErrorLoadingImages;
+
+  /// Error shown when too many scenes are selected
+  ///
+  /// In en, this message translates to:
+  /// **'You can select up to {limit} scenes'**
+  String scenesSelectionLimit({required int limit});
+
+  /// Hint for a scene caption
+  ///
+  /// In en, this message translates to:
+  /// **'Add a caption...'**
+  String get sceneCaptionHint;
+
+  /// Action to expand truncated text
+  ///
+  /// In en, this message translates to:
+  /// **'more'**
+  String get commonMore;
+
+  /// Title of the thoughts editor
+  ///
+  /// In en, this message translates to:
+  /// **'Thoughts'**
+  String get thoughtsTitle;
+
+  /// Prompt above the thoughts editor
+  ///
+  /// In en, this message translates to:
+  /// **'Write down your thoughts & feelings.'**
+  String get thoughtsPrompt;
+
+  /// Hint in the thoughts editor
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your text here...'**
+  String get thoughtsHint;
+
+  /// Action to add a generated review to thoughts
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get thoughtsAdd;
+
+  /// Current position in a set of items
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}'**
+  String itemPosition({required int current, required int total});
+
+  /// Title of the generated reviews sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Movie Reviews'**
+  String get reviewsTitle;
+
+  /// Short label for movie reviews
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get reviewsLabel;
+
+  /// Explanation of AI-generated review summaries
+  ///
+  /// In en, this message translates to:
+  /// **'We summarized reviews from Letterboxd and Reddit with AI, add these insights to your notes!'**
+  String get reviewsDescription;
+
+  /// Empty state when no generated reviews are available
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews generated'**
+  String get reviewsEmpty;
+
+  /// Success message after saving a journal
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve saved a journal'**
+  String get journalSaved;
+
+  /// Action to share a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Share Ticket'**
+  String get shareTicket;
+
+  /// Action to open a saved journal
+  ///
+  /// In en, this message translates to:
+  /// **'View Journal'**
+  String get viewJournal;
+
+  /// Success toast after updating a journal
+  ///
+  /// In en, this message translates to:
+  /// **'Your journal has been updated.'**
+  String get journalUpdated;
+
+  /// Error toast after a journal cannot be saved
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save journal. Please try again.'**
+  String get journalSaveFailed;
+
+  /// Title of the journal deletion dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Journal'**
+  String get journalDeleteTitle;
+
+  /// Journal deletion confirmation question
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this journal?'**
+  String get journalDeleteConfirmation;
+
+  /// Success toast after deleting a journal
+  ///
+  /// In en, this message translates to:
+  /// **'Journal deleted successfully'**
+  String get journalDeleted;
+
+  /// Error toast after a journal cannot be deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete journal'**
+  String get journalDeleteFailed;
+
+  /// Title of the discard changes dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes'**
+  String get discardChangesTitle;
+
+  /// Warning shown before discarding journal edits
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to discard the changes? All changes will not be saved.'**
+  String get discardChangesDescription;
+
+  /// Action to discard journal edits
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discardChangesAction;
 }
 
 class _AppLocalizationsDelegate
