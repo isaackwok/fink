@@ -46,6 +46,7 @@ app.*.map.json
 
 *.env
 .claude/worktrees
+.worktrees/
 
 # Firestore -> Supabase migration.
 # Insurance only: all secrets and user data live OUTSIDE this repo, in
