@@ -383,4 +383,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discardChangesAction => 'Discard';
+
+  @override
+  String get posterOriginalLanguage => 'Original Language';
+
+  @override
+  String get posterPickerTitle => 'Choose a Ticket Poster';
+
+  @override
+  String get posterPickerEmpty => 'No posters available';
+
+  @override
+  String get shareCopySocial => 'Copy text to post on Social';
+
+  @override
+  String get shareOptionsTitle => 'Share Option';
+
+  @override
+  String get shareStory => 'Story';
+
+  @override
+  String get shareCopiedToClipboard => 'Copied to clipboard';
+
+  @override
+  String get shareCopyText => 'Copy Text';
+
+  @override
+  String get sharePhotoAccessDenied => 'Photo library access denied';
+
+  @override
+  String get shareImageSaved => 'Image saved to camera roll';
+
+  @override
+  String get shareImageSaveFailed => 'Failed to save image';
+
+  @override
+  String get shareInstagramUnavailable =>
+      'Could not open Instagram. Is it installed?';
+
+  @override
+  String get shareThreadsUnavailable =>
+      'Could not open Threads. Is it installed?';
+
+  @override
+  String get shareThreadsFailed => 'Could not open Threads';
+
+  @override
+  String get ticketBrand => 'FINK MOVIE JOURNAL';
+
+  @override
+  String ticketNumber({required int number}) {
+    return 'NO. $number';
+  }
+
+  @override
+  String get ticketTitle => 'Title';
+
+  @override
+  String get ticketRelease => 'Release';
+
+  @override
+  String get ticketDirector => 'Director';
+
+  @override
+  String get ticketCast => 'Cast';
+
+  @override
+  String get ticketEmotion => 'Emotion';
+
+  @override
+  String get ticketDate => 'Date';
+
+  @override
+  String get ticketTime => 'Time';
 }

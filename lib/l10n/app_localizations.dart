@@ -747,6 +747,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Discard'**
   String get discardChangesAction;
+
+  /// Poster filter for the movie's original language
+  ///
+  /// In en, this message translates to:
+  /// **'Original Language'**
+  String get posterOriginalLanguage;
+
+  /// Title of the ticket poster picker
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Ticket Poster'**
+  String get posterPickerTitle;
+
+  /// Empty state when no ticket posters are available
+  ///
+  /// In en, this message translates to:
+  /// **'No posters available'**
+  String get posterPickerEmpty;
+
+  /// Heading above journal thoughts in the share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text to post on Social'**
+  String get shareCopySocial;
+
+  /// Heading above destinations in the share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Share Option'**
+  String get shareOptionsTitle;
+
+  /// Instagram Story destination label
+  ///
+  /// In en, this message translates to:
+  /// **'Story'**
+  String get shareStory;
+
+  /// Success toast after copying journal thoughts
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get shareCopiedToClipboard;
+
+  /// Action to copy journal thoughts
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Text'**
+  String get shareCopyText;
+
+  /// Error after photo-library permission is denied
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library access denied'**
+  String get sharePhotoAccessDenied;
+
+  /// Success toast after saving a ticket image
+  ///
+  /// In en, this message translates to:
+  /// **'Image saved to camera roll'**
+  String get shareImageSaved;
+
+  /// Error toast after a ticket image cannot be saved
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save image'**
+  String get shareImageSaveFailed;
+
+  /// Error when Instagram cannot be opened
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open Instagram. Is it installed?'**
+  String get shareInstagramUnavailable;
+
+  /// Error when Threads is not installed
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open Threads. Is it installed?'**
+  String get shareThreadsUnavailable;
+
+  /// Generic error when Threads cannot be opened
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open Threads'**
+  String get shareThreadsFailed;
+
+  /// Brand line on the back of a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'FINK MOVIE JOURNAL'**
+  String get ticketBrand;
+
+  /// Ticket number on the back of a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'NO. {number}'**
+  String ticketNumber({required int number});
+
+  /// Movie title field label on a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get ticketTitle;
+
+  /// Release date field label on a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get ticketRelease;
+
+  /// Director field label on a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Director'**
+  String get ticketDirector;
+
+  /// Cast field label on a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Cast'**
+  String get ticketCast;
+
+  /// Emotion field label on a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Emotion'**
+  String get ticketEmotion;
+
+  /// Journal date field label on a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get ticketDate;
+
+  /// Journal time field label on a journal ticket
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get ticketTime;
 }
 
 class _AppLocalizationsDelegate

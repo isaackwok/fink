@@ -19,6 +19,7 @@ import 'package:movie_journal/features/share/widgets/ticket_front.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:movie_journal/shared_widgets/circled_icon_button.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class ShareTicketScreen extends ConsumerStatefulWidget {
   final JournalState journal;
@@ -110,7 +111,10 @@ class _ShareTicketScreenState extends ConsumerState<ShareTicketScreen> {
         final granted = await Gal.requestAccess();
         if (!granted) {
           if (mounted) {
-            CustomToast.showError(context, 'Photo library access denied');
+            CustomToast.showError(
+              context,
+              AppLocalizations.of(context).sharePhotoAccessDenied,
+            );
           }
           return;
         }
@@ -128,12 +132,18 @@ class _ShareTicketScreenState extends ConsumerState<ShareTicketScreen> {
       );
 
       if (mounted) {
-        CustomToast.showSuccess(context, 'Image saved to camera roll');
+        CustomToast.showSuccess(
+          context,
+          AppLocalizations.of(context).shareImageSaved,
+        );
       }
     } catch (e) {
       debugPrint('Save image error: $e');
       if (mounted) {
-        CustomToast.showError(context, 'Failed to save image');
+        CustomToast.showError(
+          context,
+          AppLocalizations.of(context).shareImageSaveFailed,
+        );
       }
     } finally {
       if (mounted) {
@@ -148,6 +158,7 @@ class _ShareTicketScreenState extends ConsumerState<ShareTicketScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final asyncMovie = ref.watch(
       movieDetailControllerProvider(widget.journal.tmdbId),
     );
@@ -175,7 +186,7 @@ class _ShareTicketScreenState extends ConsumerState<ShareTicketScreen> {
             .where((e) => e.job == 'Director')
             .firstOrNull
             ?.name ??
-        'Unknown';
+        l10n.commonUnknown;
     final cast =
         movie?.credits.cast.take(3).map((c) => c.name).join(', ') ?? '--';
     final releaseDate = movie?.releaseDate.split('-').join('. ') ?? '--';
@@ -283,7 +294,7 @@ class _ShareTicketScreenState extends ConsumerState<ShareTicketScreen> {
                                   fontFamily: 'AvenirNext',
                                 ),
                               ),
-                              child: const Text('Share'),
+                              child: Text(l10n.commonShare),
                             ),
                           ),
                         ],

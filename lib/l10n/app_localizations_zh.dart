@@ -360,6 +360,77 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get discardChangesAction => '捨棄';
+
+  @override
+  String get posterOriginalLanguage => '原始語言';
+
+  @override
+  String get posterPickerTitle => '選擇票卡海報';
+
+  @override
+  String get posterPickerEmpty => '沒有可用的海報';
+
+  @override
+  String get shareCopySocial => '複製文字並分享到社群';
+
+  @override
+  String get shareOptionsTitle => '分享方式';
+
+  @override
+  String get shareStory => '限時動態';
+
+  @override
+  String get shareCopiedToClipboard => '已複製到剪貼簿';
+
+  @override
+  String get shareCopyText => '複製文字';
+
+  @override
+  String get sharePhotoAccessDenied => '相簿存取權限遭拒';
+
+  @override
+  String get shareImageSaved => '圖片已儲存到相簿';
+
+  @override
+  String get shareImageSaveFailed => '無法儲存圖片';
+
+  @override
+  String get shareInstagramUnavailable => '無法開啟 Instagram，請確認是否已安裝。';
+
+  @override
+  String get shareThreadsUnavailable => '無法開啟 Threads，請確認是否已安裝。';
+
+  @override
+  String get shareThreadsFailed => '無法開啟 Threads';
+
+  @override
+  String get ticketBrand => 'FINK 電影日記';
+
+  @override
+  String ticketNumber({required int number}) {
+    return '編號 $number';
+  }
+
+  @override
+  String get ticketTitle => '片名';
+
+  @override
+  String get ticketRelease => '上映';
+
+  @override
+  String get ticketDirector => '導演';
+
+  @override
+  String get ticketCast => '演員';
+
+  @override
+  String get ticketEmotion => '情緒';
+
+  @override
+  String get ticketDate => '日期';
+
+  @override
+  String get ticketTime => '時間';
 }
 
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
@@ -718,4 +789,75 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get discardChangesAction => '捨棄';
+
+  @override
+  String get posterOriginalLanguage => '原始語言';
+
+  @override
+  String get posterPickerTitle => '選擇票卡海報';
+
+  @override
+  String get posterPickerEmpty => '沒有可用的海報';
+
+  @override
+  String get shareCopySocial => '複製文字並分享到社群';
+
+  @override
+  String get shareOptionsTitle => '分享方式';
+
+  @override
+  String get shareStory => '限時動態';
+
+  @override
+  String get shareCopiedToClipboard => '已複製到剪貼簿';
+
+  @override
+  String get shareCopyText => '複製文字';
+
+  @override
+  String get sharePhotoAccessDenied => '相簿存取權限遭拒';
+
+  @override
+  String get shareImageSaved => '圖片已儲存到相簿';
+
+  @override
+  String get shareImageSaveFailed => '無法儲存圖片';
+
+  @override
+  String get shareInstagramUnavailable => '無法開啟 Instagram，請確認是否已安裝。';
+
+  @override
+  String get shareThreadsUnavailable => '無法開啟 Threads，請確認是否已安裝。';
+
+  @override
+  String get shareThreadsFailed => '無法開啟 Threads';
+
+  @override
+  String get ticketBrand => 'FINK 電影日記';
+
+  @override
+  String ticketNumber({required int number}) {
+    return '編號 $number';
+  }
+
+  @override
+  String get ticketTitle => '片名';
+
+  @override
+  String get ticketRelease => '上映';
+
+  @override
+  String get ticketDirector => '導演';
+
+  @override
+  String get ticketCast => '演員';
+
+  @override
+  String get ticketEmotion => '情緒';
+
+  @override
+  String get ticketDate => '日期';
+
+  @override
+  String get ticketTime => '時間';
 }

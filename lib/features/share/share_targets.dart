@@ -9,6 +9,7 @@ import 'package:movie_journal/features/share/ticket_capture.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 const _facebookAppId = '1453372696513556';
 
@@ -50,7 +51,7 @@ Future<void> shareTicketToInstagramStory(
     if (context.mounted) {
       CustomToast.showError(
         context,
-        'Could not open Instagram. Is it installed?',
+        AppLocalizations.of(context).shareInstagramUnavailable,
       );
     }
   }
@@ -79,14 +80,17 @@ Future<void> shareToThreads(
       if (context.mounted) {
         CustomToast.showError(
           context,
-          'Could not open Threads. Is it installed?',
+          AppLocalizations.of(context).shareThreadsUnavailable,
         );
       }
     }
   } catch (e) {
     debugPrint('Threads share error: $e');
     if (context.mounted) {
-      CustomToast.showError(context, 'Could not open Threads');
+      CustomToast.showError(
+        context,
+        AppLocalizations.of(context).shareThreadsFailed,
+      );
     }
   }
 }

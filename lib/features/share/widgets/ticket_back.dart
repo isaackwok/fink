@@ -5,6 +5,7 @@ import 'package:movie_journal/features/emotion/emotion.dart';
 import 'package:movie_journal/features/share/widgets/film_strip_clipper.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class TicketBack extends StatelessWidget {
   final String movieTitle;
@@ -36,6 +37,7 @@ class TicketBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ClipPath(
       clipper: FilmStripClipper(),
       child: Container(
@@ -50,7 +52,7 @@ class TicketBack extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'FINK MOVIE JOURNAL',
+                    l10n.ticketBrand,
                     style: GoogleFonts.inriaSerif(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -59,7 +61,7 @@ class TicketBack extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'NO. $ticketNumber',
+                    l10n.ticketNumber(number: ticketNumber),
                     style: GoogleFonts.inriaSerif(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -92,7 +94,7 @@ class TicketBack extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Title',
+                                l10n.ticketTitle,
                                 style: GoogleFonts.inriaSans(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
@@ -134,11 +136,11 @@ class TicketBack extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
                       child: Column(
                         children: [
-                          _buildDetailRow('Release', releaseDate),
+                          _buildDetailRow(l10n.ticketRelease, releaseDate),
                           const SizedBox(height: 12),
-                          _buildDetailRow('Director', director),
+                          _buildDetailRow(l10n.ticketDirector, director),
                           const SizedBox(height: 12),
-                          _buildDetailRow('Cast', cast),
+                          _buildDetailRow(l10n.ticketCast, cast),
                         ],
                       ),
                     ),
@@ -151,7 +153,7 @@ class TicketBack extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Emotion',
+                            l10n.ticketEmotion,
                             style: GoogleFonts.inriaSans(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
@@ -191,7 +193,7 @@ class TicketBack extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Text(
-                                    'Date',
+                                    l10n.ticketDate,
                                     style: GoogleFonts.inriaSans(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w700,
@@ -221,7 +223,7 @@ class TicketBack extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Text(
-                                    'Time',
+                                    l10n.ticketTime,
                                     style: GoogleFonts.inriaSans(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w700,

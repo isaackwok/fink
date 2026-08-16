@@ -488,5 +488,100 @@
   "discardChangesAction": "Discard",
   "@discardChangesAction": {
     "description": "Action to discard journal edits"
+  },
+  "posterOriginalLanguage": "Original Language",
+  "@posterOriginalLanguage": {
+    "description": "Poster filter for the movie's original language"
+  },
+  "posterPickerTitle": "Choose a Ticket Poster",
+  "@posterPickerTitle": {
+    "description": "Title of the ticket poster picker"
+  },
+  "posterPickerEmpty": "No posters available",
+  "@posterPickerEmpty": {
+    "description": "Empty state when no ticket posters are available"
+  },
+  "shareCopySocial": "Copy text to post on Social",
+  "@shareCopySocial": {
+    "description": "Heading above journal thoughts in the share sheet"
+  },
+  "shareOptionsTitle": "Share Option",
+  "@shareOptionsTitle": {
+    "description": "Heading above destinations in the share sheet"
+  },
+  "shareStory": "Story",
+  "@shareStory": {
+    "description": "Instagram Story destination label"
+  },
+  "shareCopiedToClipboard": "Copied to clipboard",
+  "@shareCopiedToClipboard": {
+    "description": "Success toast after copying journal thoughts"
+  },
+  "shareCopyText": "Copy Text",
+  "@shareCopyText": {
+    "description": "Action to copy journal thoughts"
+  },
+  "sharePhotoAccessDenied": "Photo library access denied",
+  "@sharePhotoAccessDenied": {
+    "description": "Error after photo-library permission is denied"
+  },
+  "shareImageSaved": "Image saved to camera roll",
+  "@shareImageSaved": {
+    "description": "Success toast after saving a ticket image"
+  },
+  "shareImageSaveFailed": "Failed to save image",
+  "@shareImageSaveFailed": {
+    "description": "Error toast after a ticket image cannot be saved"
+  },
+  "shareInstagramUnavailable": "Could not open Instagram. Is it installed?",
+  "@shareInstagramUnavailable": {
+    "description": "Error when Instagram cannot be opened"
+  },
+  "shareThreadsUnavailable": "Could not open Threads. Is it installed?",
+  "@shareThreadsUnavailable": {
+    "description": "Error when Threads is not installed"
+  },
+  "shareThreadsFailed": "Could not open Threads",
+  "@shareThreadsFailed": {
+    "description": "Generic error when Threads cannot be opened"
+  },
+  "ticketBrand": "FINK MOVIE JOURNAL",
+  "@ticketBrand": {
+    "description": "Brand line on the back of a journal ticket"
+  },
+  "ticketNumber": "NO. {number}",
+  "@ticketNumber": {
+    "description": "Ticket number on the back of a journal ticket",
+    "placeholders": {
+      "number": {"type": "int"}
+    }
+  },
+  "ticketTitle": "Title",
+  "@ticketTitle": {
+    "description": "Movie title field label on a journal ticket"
+  },
+  "ticketRelease": "Release",
+  "@ticketRelease": {
+    "description": "Release date field label on a journal ticket"
+  },
+  "ticketDirector": "Director",
+  "@ticketDirector": {
+    "description": "Director field label on a journal ticket"
+  },
+  "ticketCast": "Cast",
+  "@ticketCast": {
+    "description": "Cast field label on a journal ticket"
+  },
+  "ticketEmotion": "Emotion",
+  "@ticketEmotion": {
+    "description": "Emotion field label on a journal ticket"
+  },
+  "ticketDate": "Date",
+  "@ticketDate": {
+    "description": "Journal date field label on a journal ticket"
+  },
+  "ticketTime": "Time",
+  "@ticketTime": {
+    "description": "Journal time field label on a journal ticket"
   }
 }
