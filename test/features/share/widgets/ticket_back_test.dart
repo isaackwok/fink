@@ -6,6 +6,7 @@ import 'package:movie_journal/features/share/widgets/film_strip_clipper.dart';
 import 'package:movie_journal/features/share/widgets/ticket_back.dart';
 
 import '../../../helpers/widget_test_setup.dart';
+import '../../../helpers/localized_test_app.dart';
 
 void main() {
   setUpAll(() => setUpWidgetTests());
@@ -27,8 +28,10 @@ void main() {
     String? scenePath = '/scene.jpg',
     Jiffy? createdAt,
     int ticketNumber = 7,
+    Locale locale = const Locale('en'),
   }) {
-    return MaterialApp(
+    return localizedTestApp(
+      locale: locale,
       home: Scaffold(
         body: SizedBox(
           width: 350,
@@ -50,6 +53,36 @@ void main() {
   }
 
   group('TicketBack', () {
+    testWidgets('localizes labels, keeps emotion names and date format', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(
+          emotions: const [
+            Emotion(
+              id: 'joyful',
+              name: 'Joyful',
+              group: 'Uplifting',
+              energyLevel: 'high',
+            ),
+          ],
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('片名'), findsOneWidget);
+      expect(find.text('上映'), findsOneWidget);
+      expect(find.text('情緒'), findsOneWidget);
+      expect(find.text('Joyful'), findsOneWidget);
+      expect(find.text('Mar 15'), findsOneWidget);
+      expect(find.text('14:30'), findsOneWidget);
+    });
+
     group('header', () {
       testWidgets('renders FINK MOVIE JOURNAL text', (tester) async {
         await tester.pumpWidget(buildSubject());
@@ -194,8 +227,9 @@ void main() {
         expect(find.byType(Image), findsOneWidget);
       });
 
-      testWidgets('does not render image when scenePath is null',
-          (tester) async {
+      testWidgets('does not render image when scenePath is null', (
+        tester,
+      ) async {
         await tester.pumpWidget(buildSubject(scenePath: null));
         await tester.pumpAndSettle();
         expect(find.byType(Image), findsNothing);
@@ -213,8 +247,9 @@ void main() {
         );
       });
 
-      testWidgets('image has grayscale ColorFiltered via saturation blend',
-          (tester) async {
+      testWidgets('image has grayscale ColorFiltered via saturation blend', (
+        tester,
+      ) async {
         await tester.pumpWidget(buildSubject(scenePath: '/scene.jpg'));
         await tester.pumpAndSettle();
         final colorFiltered = tester.widget<ColorFiltered>(
@@ -252,8 +287,9 @@ void main() {
         expect(container, findsOneWidget);
       });
 
-      testWidgets('bordered container uses foregroundDecoration',
-          (tester) async {
+      testWidgets('bordered container uses foregroundDecoration', (
+        tester,
+      ) async {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
         final container = find.byWidgetPredicate(

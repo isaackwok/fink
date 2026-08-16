@@ -8,6 +8,7 @@ import 'package:movie_journal/features/home/widgets/journal_card.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
 
 import '../../../helpers/test_journal.dart';
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 import 'package:movie_journal/themes.dart';
 
@@ -19,6 +20,7 @@ void main() {
     String movieTitle = 'Fight Club',
     String moviePoster = '/poster.jpg',
     Jiffy? updatedAt,
+    Locale locale = const Locale('en'),
   }) {
     final journal = makeJournal(
       movieTitle: movieTitle,
@@ -27,7 +29,10 @@ void main() {
     );
 
     return ProviderScope(
-      child: MaterialApp(home: Scaffold(body: JournalCard(journal: journal))),
+      child: localizedTestApp(
+        locale: locale,
+        home: Scaffold(body: JournalCard(journal: journal)),
+      ),
     );
   }
 
@@ -43,6 +48,23 @@ void main() {
       );
       // Jiffy formats 'MMM. do yyyy' → "Mar. 15th 2024"
       expect(find.textContaining('Mar'), findsOneWidget);
+    });
+
+    testWidgets('keeps the date format unchanged in Taiwan Chinese', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(
+          updatedAt: Jiffy.parseFromDateTime(DateTime(2024, 3, 15)),
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+
+      expect(find.text('Mar. 15th 2024'), findsOneWidget);
     });
 
     testWidgets('renders the poster at the w342 bucket', (tester) async {

@@ -6,6 +6,7 @@ import 'package:movie_journal/features/movie/movie_providers.dart';
 import 'package:movie_journal/features/search_movie/widgets/movie_search_bar.dart';
 
 import '../../../helpers/widget_test_setup.dart';
+import '../../../helpers/localized_test_app.dart';
 
 /// Records every `search()` call and never touches the network, so the
 /// widget's debounce timing can be asserted in isolation.
@@ -21,10 +22,16 @@ class _FakeSearchMovieController extends SearchMovieController {
   }
 }
 
-Widget _wrap(ProviderContainer container) {
+Widget _wrap(
+  ProviderContainer container, {
+  Locale locale = const Locale('en'),
+}) {
   return UncontrolledProviderScope(
     container: container,
-    child: const MaterialApp(home: Scaffold(body: MovieSearchBar())),
+    child: localizedTestApp(
+      locale: locale,
+      home: const Scaffold(body: MovieSearchBar()),
+    ),
   );
 }
 
@@ -39,9 +46,7 @@ void main() {
     setUp(() {
       fake = _FakeSearchMovieController();
       container = ProviderContainer(
-        overrides: [
-          searchMovieControllerProvider.overrideWith(() => fake),
-        ],
+        overrides: [searchMovieControllerProvider.overrideWith(() => fake)],
       );
     });
 
@@ -61,6 +66,23 @@ void main() {
 
       // Unmount to cancel the still-pending debounce timer.
       await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('renders the Taiwan Traditional Chinese search hint', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+
+      expect(find.text('搜尋電影'), findsOneWidget);
     });
 
     testWidgets('searches once after 300ms of inactivity', (tester) async {
@@ -110,24 +132,25 @@ void main() {
       expect(fake.searchCalls, ['inception', '']);
     });
 
-    testWidgets('explicit submit searches immediately and pre-empts the timer', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_wrap(container));
+    testWidgets(
+      'explicit submit searches immediately and pre-empts the timer',
+      (tester) async {
+        await tester.pumpWidget(_wrap(container));
 
-      await tester.enterText(find.byType(TextField), 'matrix');
-      // Submit before the 300ms debounce would have fired.
-      await tester.pump(const Duration(milliseconds: 100));
-      await tester.testTextInput.receiveAction(TextInputAction.search);
-      await tester.pump();
+        await tester.enterText(find.byType(TextField), 'matrix');
+        // Submit before the 300ms debounce would have fired.
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.testTextInput.receiveAction(TextInputAction.search);
+        await tester.pump();
 
-      // One immediate call from the submit...
-      expect(fake.searchCalls, ['matrix']);
+        // One immediate call from the submit...
+        expect(fake.searchCalls, ['matrix']);
 
-      // ...and the cancelled debounce never adds a second.
-      await tester.pump(const Duration(milliseconds: 300));
-      expect(fake.searchCalls, ['matrix']);
-    });
+        // ...and the cancelled debounce never adds a second.
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(fake.searchCalls, ['matrix']);
+      },
+    );
 
     // The debounce does not serialize searches: a submit right after a
     // debounced fire produces two overlapping search() calls. This pins the

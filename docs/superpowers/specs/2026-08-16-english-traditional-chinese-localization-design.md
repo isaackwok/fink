@@ -27,11 +27,14 @@ Fink will use Flutter's first-party localization stack:
 The source resources are:
 
 - `lib/l10n/app_en.arb`
+- `lib/l10n/app_zh.arb` (generator-required base fallback; identical to the Taiwan Traditional Chinese copy)
 - `lib/l10n/app_zh_Hant_TW.arb`
+
+Flutter requires a base-language ARB whenever a script/country-specific ARB exists. The generated delegate therefore understands generic `zh` as a technical fallback, but Fink's production `MaterialApp` and iOS bundle expose only `en` and `zh-Hant-TW` to users.
 
 `l10n.yaml` configures generation into the source tree. Generated getters are non-nullable, dynamic message arguments use named parameters, and English remains the preferred supported locale.
 
-`MaterialApp` declares `AppLocalizations.localizationsDelegates` and `AppLocalizations.supportedLocales`. It does not set `locale` or add a custom locale-resolution callback. Consequently, Flutter follows the locale supplied by iOS, including a per-app language override, and falls back through Flutter's standard supported-locale resolution.
+`MaterialApp` declares `AppLocalizations.localizationsDelegates` and a production locale list containing only `en` and `zh-Hant-TW`. It does not set `locale` or add a custom locale-resolution callback. Consequently, Flutter follows the locale supplied by iOS, including a per-app language override, and falls back through Flutter's standard supported-locale resolution.
 
 No localization facade, Riverpod locale provider, or app-owned locale persistence is introduced in this phase. Widgets access the generated `AppLocalizations` API directly from `BuildContext`.
 
@@ -107,8 +110,8 @@ This phase does not localize or alter:
 - displayed dates or times
 - the existing Jiffy locale or any existing Jiffy format pattern
 - internal month-grouping keys such as `yyyy-MM`
-- TMDB movie titles, summaries, or other remote movie metadata
-- AI-generated review text or review-source content
+- the underlying content of TMDB movie metadata beyond selecting its requested translation
+- the underlying AI review sources beyond selecting the generation language
 - server, SDK, or operating-system error details embedded in an app-owned localized error wrapper
 - analytics event and property names
 - route names, database values, domain identifiers, asset paths, and URLs
@@ -118,13 +121,11 @@ In particular, date output remains byte-for-byte governed by the current pattern
 
 ## Backend Locale Behavior
 
-`QuesgenController` continues reading `PlatformDispatcher.instance.locale`. With iOS as the locale owner, the per-app language override is the process locale and therefore remains the appropriate source.
+`MaterialApp` exposes its resolved locale through `appLocaleProvider`. Both TMDB title-bearing requests and Quesgen review generation derive their backend language tag from that provider, mapping English to `en-US` and Taiwan Traditional Chinese to `zh-TW`.
 
-The existing `toBackendLocaleTag()` behavior intentionally removes the script subtag, converting `zh-Hant-TW` to the backend-supported `zh-TW`. No Quesgen API change is required.
+The locale override lives in a nested `ProviderScope`, so `appLocaleProvider` and every provider that transitively reads it declare Riverpod `dependencies`. Without that scoped dependency chain, downstream providers resolve in the root container and receive the English fallback even while the UI is Chinese.
 
-TMDB request localization is outside this hard-coded-copy migration.
-
-When an in-app language setting is added later, backend locale selection must move from `PlatformDispatcher` to the app-selected locale source as part of that separate feature.
+TMDB applies the language to popular, search, and movie-detail requests. Poster image filtering keeps its explicit per-tab language behavior.
 
 ## Error and Fallback Behavior
 

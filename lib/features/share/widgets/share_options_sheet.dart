@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 /// The bottom sheet behind ShareTicketScreen's "Share" button: copy-thoughts
 /// block (when there are thoughts) plus the three share destinations.
@@ -52,6 +53,7 @@ class ShareOptionsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
@@ -75,9 +77,9 @@ class ShareOptionsSheet extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               if (thoughts.isNotEmpty) ...[
-                const Text(
-                  'Copy text to post on Social',
-                  style: TextStyle(
+                Text(
+                  l10n.shareCopySocial,
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -87,9 +89,9 @@ class ShareOptionsSheet extends StatelessWidget {
                 _CopyThoughtsBlock(thoughts: thoughts),
                 const SizedBox(height: 24),
               ],
-              const Text(
-                'Share Option',
-                style: TextStyle(
+              Text(
+                l10n.shareOptionsTitle,
+                style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -99,7 +101,7 @@ class ShareOptionsSheet extends StatelessWidget {
               Row(
                 children: [
                   _ShareOptionTile(
-                    label: 'Story',
+                    label: l10n.shareStory,
                     icon: Image.asset(
                       'assets/images/instagram_logo.png',
                       width: 48,
@@ -119,7 +121,7 @@ class ShareOptionsSheet extends StatelessWidget {
                   ),
                   const Spacer(),
                   _ShareOptionTile(
-                    label: 'Others',
+                    label: l10n.commonOthers,
                     icon: const Icon(
                       Icons.more_horiz,
                       color: Colors.white,
@@ -145,6 +147,7 @@ class _CopyThoughtsBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -185,7 +188,7 @@ class _CopyThoughtsBlock extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: () {
               Clipboard.setData(ClipboardData(text: thoughts));
-              CustomToast.showSuccess(context, 'Copied to clipboard');
+              CustomToast.showSuccess(context, l10n.shareCopiedToClipboard);
             },
             child: Padding(
               // Vertical padding enlarges the touch target so it matches the
@@ -201,7 +204,7 @@ class _CopyThoughtsBlock extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Copy Text',
+                    l10n.shareCopyText,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,

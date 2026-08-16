@@ -5,6 +5,7 @@ import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/onboarding/controllers/splash_posters.dart';
 import 'package:movie_journal/features/onboarding/controllers/splash_shown.dart';
 import 'package:movie_journal/features/onboarding/widgets/poster_marquee.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class BrandingSplashScreen extends ConsumerStatefulWidget {
   const BrandingSplashScreen({super.key});
@@ -76,6 +77,8 @@ class _BrandingSplashScreenState extends ConsumerState<BrandingSplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return ScreenViewTracker(
       screenName: 'OnboardingSplash',
       child: Scaffold(
@@ -106,10 +109,10 @@ class _BrandingSplashScreenState extends ConsumerState<BrandingSplashScreen>
                       height: 160,
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      'From film to ink,\nBuild your movie journey.',
+                    Text(
+                      l10n.onboardingTagline,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         height: 1.35,

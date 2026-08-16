@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/themes.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;
   final String description;
-  final String cancelText;
-  final String confirmText;
+  final String? cancelText;
+  final String? confirmText;
   final Function onCancel;
   final Function onConfirm;
   final TextStyle cancelTextStyle;
@@ -19,8 +20,8 @@ class ConfirmationDialog extends StatelessWidget {
     required this.description,
     required this.onCancel,
     required this.onConfirm,
-    this.cancelText = 'Cancel',
-    this.confirmText = 'Confirm',
+    this.cancelText,
+    this.confirmText,
     this.titleTextStyle = const TextStyle(
       fontFamily: 'AvenirNext',
       fontSize: 24,
@@ -53,6 +54,8 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Dialog(
       backgroundColor: DarkSurfaces.card,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -84,7 +87,10 @@ class ConfirmationDialog extends StatelessWidget {
                       vertical: 12,
                     ),
                   ),
-                  child: Text(cancelText, style: cancelTextStyle),
+                  child: Text(
+                    cancelText ?? l10n.commonCancel,
+                    style: cancelTextStyle,
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -97,7 +103,10 @@ class ConfirmationDialog extends StatelessWidget {
                       vertical: 12,
                     ),
                   ),
-                  child: Text(confirmText, style: confirmTextStyle),
+                  child: Text(
+                    confirmText ?? l10n.commonConfirm,
+                    style: confirmTextStyle,
+                  ),
                 ),
               ],
             ),

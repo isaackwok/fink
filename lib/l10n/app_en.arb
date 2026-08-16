@@ -1,0 +1,611 @@
+{
+  "@@locale": "en",
+  "appTitle": "Movie Journal",
+  "@appTitle": {
+    "description": "The application title used by the operating system"
+  },
+  "commonAdd": "Add",
+  "@commonAdd": {
+    "description": "Generic action to add an item"
+  },
+  "commonCancel": "Cancel",
+  "@commonCancel": {
+    "description": "Generic action to dismiss without saving"
+  },
+  "commonDelete": "Delete",
+  "@commonDelete": {
+    "description": "Generic destructive action"
+  },
+  "commonDone": "Done",
+  "@commonDone": {
+    "description": "Generic action to finish editing"
+  },
+  "commonEdit": "Edit",
+  "@commonEdit": {
+    "description": "Generic action to edit an item"
+  },
+  "commonErrorWithDetails": "Error: {error}",
+  "@commonErrorWithDetails": {
+    "description": "Generic error prefix followed by opaque error details",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "commonGoBack": "Go Back",
+  "@commonGoBack": {
+    "description": "Action to return to the previous screen"
+  },
+  "commonOthers": "Others",
+  "@commonOthers": {
+    "description": "Label for other choices not listed explicitly"
+  },
+  "commonRetry": "Retry",
+  "@commonRetry": {
+    "description": "Action to repeat a failed operation"
+  },
+  "commonSave": "Save",
+  "@commonSave": {
+    "description": "Generic action to save changes"
+  },
+  "commonShare": "Share",
+  "@commonShare": {
+    "description": "Generic action to share content"
+  },
+  "commonConfirm": "Confirm",
+  "@commonConfirm": {
+    "description": "Generic action to confirm a choice"
+  },
+  "commonLoading": "Loading...",
+  "@commonLoading": {
+    "description": "Generic loading label"
+  },
+  "commonUser": "User",
+  "@commonUser": {
+    "description": "Fallback display label for a user"
+  },
+  "commonUnknown": "Unknown",
+  "@commonUnknown": {
+    "description": "Fallback label for unavailable information"
+  },
+  "loginTitle": "Start your movie journals.",
+  "@loginTitle": {
+    "description": "Headline on the sign-in screen"
+  },
+  "loginSubtitle": "Get started by signing in with your\nGoogle or Apple accounts.",
+  "@loginSubtitle": {
+    "description": "Instructions on the sign-in screen"
+  },
+  "loginWithGoogle": "Sign in with Google",
+  "@loginWithGoogle": {
+    "description": "Google sign-in button"
+  },
+  "loginWithApple": "Sign in with Apple",
+  "@loginWithApple": {
+    "description": "Apple sign-in button"
+  },
+  "loginFailed": "Sign-in failed. Please try again.",
+  "@loginFailed": {
+    "description": "Toast shown when provider sign-in fails"
+  },
+  "createUserTitle": "Pick a name.",
+  "@createUserTitle": {
+    "description": "Headline on the username creation screen"
+  },
+  "createUserSubtitle": "Tell me more about you.",
+  "@createUserSubtitle": {
+    "description": "Supporting copy on the username creation screen"
+  },
+  "usernameLabel": "Username",
+  "@usernameLabel": {
+    "description": "Label for the username field"
+  },
+  "usernameHint": "name or nickname",
+  "@usernameHint": {
+    "description": "Hint inside the username field"
+  },
+  "startJournaling": "Start Journaling",
+  "@startJournaling": {
+    "description": "Action that finishes profile creation"
+  },
+  "usernameEmpty": "Username cannot be empty",
+  "@usernameEmpty": {
+    "description": "Validation error for an empty username"
+  },
+  "usernameInvalidCharacters": "Username can only contain letters, numbers, _ and .",
+  "@usernameInvalidCharacters": {
+    "description": "Validation error for invalid username characters"
+  },
+  "usernameOnlySymbols": "Username cannot contain only _ and .",
+  "@usernameOnlySymbols": {
+    "description": "Validation error for a username made only of punctuation"
+  },
+  "usernameTrailingSymbol": "Username cannot end with _ or .",
+  "@usernameTrailingSymbol": {
+    "description": "Validation error for a username ending in punctuation"
+  },
+  "usernameTooLong": "Username cannot be longer than 30 characters",
+  "@usernameTooLong": {
+    "description": "Validation error for a username over 30 characters"
+  },
+  "usernameTaken": "Username already taken. Please choose another one.",
+  "@usernameTaken": {
+    "description": "Validation error for an unavailable username"
+  },
+  "accountSecured": "Account secured",
+  "@accountSecured": {
+    "description": "Toast after successfully linking an identity"
+  },
+  "accountSecureFailed": "Couldn't secure your account. Please try again.",
+  "@accountSecureFailed": {
+    "description": "Toast after identity linking fails"
+  },
+  "accountBannerTitle": "Your account isn't secured",
+  "@accountBannerTitle": {
+    "description": "Persistent warning headline for an anonymous account"
+  },
+  "accountBannerBody": "Attach Apple or Google so reinstalling the app doesn't lose your journals.",
+  "@accountBannerBody": {
+    "description": "Persistent warning explanation for an anonymous account"
+  },
+  "accountSheetHeadline": "Keep your journals safe",
+  "@accountSheetHeadline": {
+    "description": "Generic secure-account sheet headline when journal count is unknown"
+  },
+  "accountSheetHeadlineCount": "{count, plural, =1{Keep your 1 journal safe} other{Keep your {count} journals safe}}",
+  "@accountSheetHeadlineCount": {
+    "description": "Secure-account sheet headline containing the journal count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountSheetBody": "They currently live on this device only. Attach an Apple or Google account and you can sign back in after a reinstall, or on a new phone.",
+  "@accountSheetBody": {
+    "description": "Explanation of why an anonymous account should be secured"
+  },
+  "accountContinueGoogle": "Continue with Google",
+  "@accountContinueGoogle": {
+    "description": "Button to link a Google identity"
+  },
+  "accountContinueApple": "Continue with Apple",
+  "@accountContinueApple": {
+    "description": "Button to link an Apple identity"
+  },
+  "accountNotNow": "Not now",
+  "@accountNotNow": {
+    "description": "Action to defer securing an account"
+  },
+  "accountConflict": "That {provider} account is already attached to another Fink account, so it can't also hold this one. Try {otherProvider} instead — or get in touch and we can join the two accounts for you.",
+  "@accountConflict": {
+    "description": "Explanation when an identity belongs to another Fink account",
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      },
+      "otherProvider": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingTagline": "From film to ink,\nBuild your movie journey.",
+  "@onboardingTagline": {
+    "description": "Tagline on the branded splash screen"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Settings screen title"
+  },
+  "settingsLanguageSection": "LANGUAGE",
+  "@settingsLanguageSection": {
+    "description": "Heading above the interface and AI review language settings"
+  },
+  "settingsInterfaceLanguage": "Interface",
+  "@settingsInterfaceLanguage": {
+    "description": "Setting that controls app UI and TMDB content language"
+  },
+  "settingsAiReviewsLanguage": "AI Reviews",
+  "@settingsAiReviewsLanguage": {
+    "description": "Setting that controls generated AI review language"
+  },
+  "languageSystemDefault": "System Default",
+  "@languageSystemDefault": {
+    "description": "Language option that follows the device setting"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "English language option"
+  },
+  "languageTraditionalChineseTaiwan": "繁體中文 (台灣)",
+  "@languageTraditionalChineseTaiwan": {
+    "description": "Taiwan Traditional Chinese language option"
+  },
+  "settingsAccountSection": "ACCOUNT",
+  "@settingsAccountSection": {
+    "description": "Heading above account settings"
+  },
+  "settingsSecureAccount": "Secure Account",
+  "@settingsSecureAccount": {
+    "description": "Action to link an identity to an anonymous account"
+  },
+  "settingsLogout": "Logout",
+  "@settingsLogout": {
+    "description": "Action and dialog title for signing out"
+  },
+  "settingsDeleteAccount": "Delete Account",
+  "@settingsDeleteAccount": {
+    "description": "Action and dialog title for deleting the account"
+  },
+  "settingsLogoutDeviceWarning": "Your account has no Apple or Google sign-in attached yet, so getting back in depends on this device — and reinstalling the app would lose your journals for good. Secure your account first.",
+  "@settingsLogoutDeviceWarning": {
+    "description": "Logout warning for an anonymous account tied to one device"
+  },
+  "settingsLogoutConfirmation": "Are you sure you want to logout?",
+  "@settingsLogoutConfirmation": {
+    "description": "Logout confirmation question"
+  },
+  "settingsDeleteAccountDescription": "All your data will be permanently deleted.",
+  "@settingsDeleteAccountDescription": {
+    "description": "Permanent account deletion warning"
+  },
+  "settingsReauthenticationRequired": "Re-authentication required: {error}",
+  "@settingsReauthenticationRequired": {
+    "description": "Error shown when account deletion reauthentication fails",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "settingsDeleteAccountFailed": "Failed to delete account: {error}",
+  "@settingsDeleteAccountFailed": {
+    "description": "Error shown when account deletion fails",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "homeJournalCount": "{count, plural, =1{1 movie journal} other{{count} movie journals}}",
+  "@homeJournalCount": {
+    "description": "Number of movie journals shown below the username",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeEmptyTitle": "Your movie journal starts here",
+  "@homeEmptyTitle": {
+    "description": "Headline on the empty home screen"
+  },
+  "homeEmptyBody": "Add your first movie to keep your memories going",
+  "@homeEmptyBody": {
+    "description": "Supporting copy on the empty home screen"
+  },
+  "addJournal": "Add Journal",
+  "@addJournal": {
+    "description": "Action and screen title for adding a movie journal"
+  },
+  "homeErrorCheckingUser": "Error checking user: {error}",
+  "@homeErrorCheckingUser": {
+    "description": "Error shown while checking whether a user profile exists",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "homeErrorLoadingJournals": "Error loading journals: {error}",
+  "@homeErrorLoadingJournals": {
+    "description": "Error shown when journals cannot be loaded",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "searchMovieHint": "Search movie",
+  "@searchMovieHint": {
+    "description": "Hint in the movie search field"
+  },
+  "searchPopularHeader": "People watched",
+  "@searchPopularHeader": {
+    "description": "Heading above the list of popular movies"
+  },
+  "searchErrorLoadingMovies": "Error loading movies",
+  "@searchErrorLoadingMovies": {
+    "description": "Error shown when a movie list cannot be loaded"
+  },
+  "moviePreviewErrorLoading": "Error loading movie",
+  "@moviePreviewErrorLoading": {
+    "description": "Error shown when movie details cannot be loaded"
+  },
+  "ratingPrompt": "How much did you enjoy this movie?",
+  "@ratingPrompt": {
+    "description": "Prompt above the movie rating control"
+  },
+  "ratingSemantics": "{value} out of {max}",
+  "@ratingSemantics": {
+    "description": "Accessibility label for one rating value",
+    "placeholders": {
+      "value": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "emotionsPrompt": "What are your feelings about this movie?",
+  "@emotionsPrompt": {
+    "description": "Prompt above the emotion selector"
+  },
+  "emotionsSelect": "Select Emotions",
+  "@emotionsSelect": {
+    "description": "Empty-state action in the emotion selector"
+  },
+  "emotionsSummaryPrefix": "You felt ",
+  "@emotionsSummaryPrefix": {
+    "description": "Text before styled English emotion names"
+  },
+  "emotionsSummarySuffix": " by this movie.",
+  "@emotionsSummarySuffix": {
+    "description": "Text after styled English emotion names"
+  },
+  "emotionsListSeparator": ", ",
+  "@emotionsListSeparator": {
+    "description": "Separator between non-final English emotion names"
+  },
+  "emotionsListFinalSeparator": " and ",
+  "@emotionsListFinalSeparator": {
+    "description": "Separator before the final English emotion name"
+  },
+  "selectionUpToStatus": "Select up to {limit} ({selected}/{limit})",
+  "@selectionUpToStatus": {
+    "description": "Current count for a selector with a maximum",
+    "placeholders": {
+      "limit": {"type": "int"},
+      "selected": {"type": "int"}
+    }
+  },
+  "emotionsSelectionLimit": "You can select up to {limit} emotions",
+  "@emotionsSelectionLimit": {
+    "description": "Error shown when too many emotions are selected",
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "scenesTitle": "Scenes",
+  "@scenesTitle": {
+    "description": "Title of the scene selector"
+  },
+  "scenesPrompt": "What are the memorable scenes?",
+  "@scenesPrompt": {
+    "description": "Prompt above selected movie scenes"
+  },
+  "scenesAdd": "+  Add Scenes",
+  "@scenesAdd": {
+    "description": "Action to select movie scenes"
+  },
+  "sceneAdd": "Add Scene",
+  "@sceneAdd": {
+    "description": "Action to add a single movie scene"
+  },
+  "scenesMissingTitle": "Scene missing!",
+  "@scenesMissingTitle": {
+    "description": "Title when TMDB has no scene images"
+  },
+  "scenesMissingBody": "We couldn't find any scene photos for this movie.",
+  "@scenesMissingBody": {
+    "description": "Explanation when TMDB has no scene images"
+  },
+  "scenesMissingTagline": "Keep this one in your memory. ✨",
+  "@scenesMissingTagline": {
+    "description": "Supporting line when no scene images are available"
+  },
+  "sceneErrorLoadingImage": "Error loading image",
+  "@sceneErrorLoadingImage": {
+    "description": "Error in a single scene image"
+  },
+  "sceneErrorLoadingImages": "Error loading images",
+  "@sceneErrorLoadingImages": {
+    "description": "Error while loading scene images"
+  },
+  "scenesSelectionLimit": "You can select up to {limit} scenes",
+  "@scenesSelectionLimit": {
+    "description": "Error shown when too many scenes are selected",
+    "placeholders": {
+      "limit": {"type": "int"}
+    }
+  },
+  "sceneCaptionHint": "Add a caption...",
+  "@sceneCaptionHint": {
+    "description": "Hint for a scene caption"
+  },
+  "commonMore": "more",
+  "@commonMore": {
+    "description": "Action to expand truncated text"
+  },
+  "thoughtsTitle": "Thoughts",
+  "@thoughtsTitle": {
+    "description": "Title of the thoughts editor"
+  },
+  "thoughtsPrompt": "Write down your thoughts & feelings.",
+  "@thoughtsPrompt": {
+    "description": "Prompt above the thoughts editor"
+  },
+  "thoughtsHint": "Enter your text here...",
+  "@thoughtsHint": {
+    "description": "Hint in the thoughts editor"
+  },
+  "thoughtsAdd": "Add",
+  "@thoughtsAdd": {
+    "description": "Action to add a generated review to thoughts"
+  },
+  "itemPosition": "{current} of {total}",
+  "@itemPosition": {
+    "description": "Current position in a set of items",
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "reviewsTitle": "Movie Reviews",
+  "@reviewsTitle": {
+    "description": "Title of the generated reviews sheet"
+  },
+  "reviewsLabel": "Reviews",
+  "@reviewsLabel": {
+    "description": "Short label for movie reviews"
+  },
+  "reviewsDescription": "We summarized reviews from Letterboxd and Reddit with AI, add these insights to your notes!",
+  "@reviewsDescription": {
+    "description": "Explanation of AI-generated review summaries"
+  },
+  "reviewsEmpty": "No reviews generated",
+  "@reviewsEmpty": {
+    "description": "Empty state when no generated reviews are available"
+  },
+  "journalSaved": "You've saved a journal",
+  "@journalSaved": {
+    "description": "Success message after saving a journal"
+  },
+  "shareTicket": "Share Ticket",
+  "@shareTicket": {
+    "description": "Action to share a journal ticket"
+  },
+  "viewJournal": "View Journal",
+  "@viewJournal": {
+    "description": "Action to open a saved journal"
+  },
+  "journalUpdated": "Your journal has been updated.",
+  "@journalUpdated": {
+    "description": "Success toast after updating a journal"
+  },
+  "journalSaveFailed": "Failed to save journal. Please try again.",
+  "@journalSaveFailed": {
+    "description": "Error toast after a journal cannot be saved"
+  },
+  "journalDeleteTitle": "Delete Journal",
+  "@journalDeleteTitle": {
+    "description": "Title of the journal deletion dialog"
+  },
+  "journalDeleteConfirmation": "Are you sure you want to delete this journal?",
+  "@journalDeleteConfirmation": {
+    "description": "Journal deletion confirmation question"
+  },
+  "journalDeleted": "Journal deleted successfully",
+  "@journalDeleted": {
+    "description": "Success toast after deleting a journal"
+  },
+  "journalDeleteFailed": "Failed to delete journal",
+  "@journalDeleteFailed": {
+    "description": "Error toast after a journal cannot be deleted"
+  },
+  "discardChangesTitle": "Discard Changes",
+  "@discardChangesTitle": {
+    "description": "Title of the discard changes dialog"
+  },
+  "discardChangesDescription": "Are you sure you want to discard the changes? All changes will not be saved.",
+  "@discardChangesDescription": {
+    "description": "Warning shown before discarding journal edits"
+  },
+  "discardChangesAction": "Discard",
+  "@discardChangesAction": {
+    "description": "Action to discard journal edits"
+  },
+  "posterOriginalLanguage": "Original Language",
+  "@posterOriginalLanguage": {
+    "description": "Poster filter for the movie's original language"
+  },
+  "posterPickerTitle": "Choose a Ticket Poster",
+  "@posterPickerTitle": {
+    "description": "Title of the ticket poster picker"
+  },
+  "posterPickerEmpty": "No posters available",
+  "@posterPickerEmpty": {
+    "description": "Empty state when no ticket posters are available"
+  },
+  "shareCopySocial": "Copy text to post on Social",
+  "@shareCopySocial": {
+    "description": "Heading above journal thoughts in the share sheet"
+  },
+  "shareOptionsTitle": "Share Option",
+  "@shareOptionsTitle": {
+    "description": "Heading above destinations in the share sheet"
+  },
+  "shareStory": "Story",
+  "@shareStory": {
+    "description": "Instagram Story destination label"
+  },
+  "shareCopiedToClipboard": "Copied to clipboard",
+  "@shareCopiedToClipboard": {
+    "description": "Success toast after copying journal thoughts"
+  },
+  "shareCopyText": "Copy Text",
+  "@shareCopyText": {
+    "description": "Action to copy journal thoughts"
+  },
+  "sharePhotoAccessDenied": "Photo library access denied",
+  "@sharePhotoAccessDenied": {
+    "description": "Error after photo-library permission is denied"
+  },
+  "shareImageSaved": "Image saved to camera roll",
+  "@shareImageSaved": {
+    "description": "Success toast after saving a ticket image"
+  },
+  "shareImageSaveFailed": "Failed to save image",
+  "@shareImageSaveFailed": {
+    "description": "Error toast after a ticket image cannot be saved"
+  },
+  "shareInstagramUnavailable": "Could not open Instagram. Is it installed?",
+  "@shareInstagramUnavailable": {
+    "description": "Error when Instagram cannot be opened"
+  },
+  "shareThreadsUnavailable": "Could not open Threads. Is it installed?",
+  "@shareThreadsUnavailable": {
+    "description": "Error when Threads is not installed"
+  },
+  "shareThreadsFailed": "Could not open Threads",
+  "@shareThreadsFailed": {
+    "description": "Generic error when Threads cannot be opened"
+  },
+  "ticketBrand": "FINK MOVIE JOURNAL",
+  "@ticketBrand": {
+    "description": "Brand line on the back of a journal ticket"
+  },
+  "ticketNumber": "NO. {number}",
+  "@ticketNumber": {
+    "description": "Ticket number on the back of a journal ticket",
+    "placeholders": {
+      "number": {"type": "int"}
+    }
+  },
+  "ticketTitle": "Title",
+  "@ticketTitle": {
+    "description": "Movie title field label on a journal ticket"
+  },
+  "ticketRelease": "Release",
+  "@ticketRelease": {
+    "description": "Release date field label on a journal ticket"
+  },
+  "ticketDirector": "Director",
+  "@ticketDirector": {
+    "description": "Director field label on a journal ticket"
+  },
+  "ticketCast": "Cast",
+  "@ticketCast": {
+    "description": "Cast field label on a journal ticket"
+  },
+  "ticketEmotion": "Emotion",
+  "@ticketEmotion": {
+    "description": "Emotion field label on a journal ticket"
+  },
+  "ticketDate": "Date",
+  "@ticketDate": {
+    "description": "Journal date field label on a journal ticket"
+  },
+  "ticketTime": "Time",
+  "@ticketTime": {
+    "description": "Journal time field label on a journal ticket"
+  }
+}

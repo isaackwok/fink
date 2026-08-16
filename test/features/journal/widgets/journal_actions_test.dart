@@ -7,6 +7,7 @@ import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen
 import 'package:movie_journal/features/share/share_flow.dart';
 
 import '../../../helpers/test_journal.dart';
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 void main() {
@@ -24,7 +25,7 @@ void main() {
       void Function(bool) onResult,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
+        localizedTestApp(
           home: Builder(
             builder: (context) => TextButton(
               onPressed: () async {
@@ -82,7 +83,7 @@ void main() {
 
         await tester.pumpWidget(
           ProviderScope(
-            child: MaterialApp(
+            child: localizedTestApp(
               navigatorObservers: [observer],
               home: Builder(
                 builder: (context) => TextButton(

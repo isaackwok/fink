@@ -1,8 +1,20 @@
 import 'dart:ui';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:movie_journal/features/quesgen/api.dart';
 import 'package:movie_journal/features/quesgen/controller.dart';
+import 'package:movie_journal/features/quesgen/provider.dart';
 import 'package:movie_journal/features/quesgen/review.dart';
+import 'package:movie_journal/l10n/supported_locales.dart';
+
+class _LanguageEchoQuesgenApi extends QuesgenAPI {
+  @override
+  Future<List<Review>> generateReviews({
+    required int movieId,
+    String? locale,
+  }) async => [Review(text: 'Review $locale', source: 'reddit')];
+}
 
 void main() {
   group('QuesgenState value equality', () {
@@ -68,30 +80,35 @@ void main() {
     });
   });
 
-  group('toBackendLocaleTag', () {
-    test('language + country → "lang-COUNTRY"', () {
-      expect(toBackendLocaleTag(const Locale('en', 'US')), 'en-US');
-    });
-
-    test('language only → language', () {
-      expect(toBackendLocaleTag(const Locale('ja')), 'ja');
-    });
-
-    test('empty country → language only', () {
-      expect(toBackendLocaleTag(const Locale('en', '')), 'en');
-    });
-
-    test('script subtag is dropped (zh-Hant-TW → zh-TW)', () {
-      const locale = Locale.fromSubtags(
-        languageCode: 'zh',
-        scriptCode: 'Hant',
-        countryCode: 'TW',
+  testWidgets(
+    'AI reviews use the resolved app locale instead of the OS locale',
+    (tester) async {
+      tester.binding.platformDispatcher.localesTestValue = const [
+        Locale('en', 'US'),
+      ];
+      addTearDown(tester.binding.platformDispatcher.clearLocalesTestValue);
+      final container = ProviderContainer(
+        overrides: [
+          appLocaleProvider.overrideWithValue(
+            const Locale.fromSubtags(
+              languageCode: 'zh',
+              scriptCode: 'Hant',
+              countryCode: 'TW',
+            ),
+          ),
+          quesgenApiProvider.overrideWithValue(_LanguageEchoQuesgenApi()),
+        ],
       );
-      expect(toBackendLocaleTag(locale), 'zh-TW');
-    });
+      addTearDown(container.dispose);
 
-    test('blank language → null so caller omits ?lang=', () {
-      expect(toBackendLocaleTag(const Locale(' ')), isNull);
-    });
-  });
+      await container
+          .read(quesgenControllerProvider.notifier)
+          .generateReviews(movieId: 42);
+
+      expect(
+        container.read(quesgenControllerProvider).reviews.single.text,
+        'Review zh-TW',
+      );
+    },
+  );
 }

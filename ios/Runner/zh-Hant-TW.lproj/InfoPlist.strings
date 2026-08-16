@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Fink";
+"NSPhotoLibraryAddUsageDescription" = "我們需要相簿權限，才能儲存你的電影票根。";
+"NSPhotoLibraryUsageDescription" = "我們需要相簿權限，才能分享你的電影票根。";

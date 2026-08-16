@@ -49,7 +49,7 @@ The app follows a feature-based architecture where each feature is self-containe
 
 - **quesgen/** - AI review fetching service for movie reviews from external sources
   - `review.dart` - Review data model with `text` and `source` fields (sources: "letterboxd", "reddit")
-  - `controller.dart` - Review generation logic (QuesgenController, QuesgenState). Also exports `toBackendLocaleTag()`, a top-level public function (public for testability, like `validateUsername`) converting the OS `Locale` to the BCP 47 tag the backend accepts — drops script subtags (`zh-Hant-TW` → `zh-TW`)
+  - `controller.dart` - Review generation logic (QuesgenController, QuesgenState). Review generation reads `aiReviewLocaleProvider`, which is independent of the Interface/TMDB `appLocaleProvider`. Both are scoped inside `MaterialApp.builder`; locale-sensitive providers and every downstream provider in their graph must declare Riverpod `dependencies` or they silently resolve against the root fallback.
   - `provider.dart` - Riverpod provider
   - `api.dart` - API integration (GET `/generate/{movieId}`) returning `{ reviews: [{ text, source }] }`
 
@@ -74,7 +74,8 @@ The app follows a feature-based architecture where each feature is self-containe
   - `widgets/` - `SecureAccountSheet` (dismissible modal, `show(context, journalCount:)`; renders the conflict explanation **inline** rather than as a dialog so the untried provider's button stays visible beside it), `SecureAccountBanner` (persistent, non-dismissible, self-clearing; also owns the one-time auto-prompt, scheduled to a post-frame callback because both flipping the Riverpod gate and pushing a route are illegal mid-build).
 
 - **settings/** - User settings and account management
-  - `screens/` - SettingsScreen (displays username, sign out, delete account options). Logout and delete flows invalidate journal/username providers to prevent stale data on re-login. When `needsAccountLinkProvider` is true it grows a warning-colored **Secure Account** item (the only entry point once the one-time prompt is gone) and the Logout dialog swaps in copy saying that getting back in depends on this device. Deliberately *not* "you will lose everything" — logging out is recoverable; see the `supabase-migration` skill.
+  - `controllers/language_settings.dart` - Device-local Interface and AI Reviews language preferences. Each supports System Default, English, and Taiwan Traditional Chinese; values persist with `shared_preferences`. Interface also controls TMDB language, while AI Reviews controls Quesgen only.
+  - `screens/` - SettingsScreen (displays language preferences, username, sign out, and delete account options). Logout and delete flows invalidate journal/username providers to prevent stale data on re-login. When `needsAccountLinkProvider` is true it grows a warning-colored **Secure Account** item (the only entry point once the one-time prompt is gone) and the Logout dialog swaps in copy saying that getting back in depends on this device. Deliberately *not* "you will lose everything" — logging out is recoverable; see the `supabase-migration` skill.
 
 - **toast/** - Toast notification utilities
   - `custom_toast.dart` - Custom toast built on `fluttertoast`. Three static entry points — `showSuccess(context, msg)`, `showError(context, msg, {gravity})`, `showWarning(context, msg)` — all render the same dark bordered card via a private `_show(...)`; only the icon glyph + accent vary. The icon is a filled circle in the status color with a **plain black** inner glyph. Colors come from `StatusColors` in `themes.dart` (success = primary `#A8DADD`, error `#FF615D`, warning `#FF9F1C`) — the single source of truth. There is no `init` step: `_show` re-inits its `FToast` from the passed context on every call (the old `CustomToast.init(context)` + show pairing is gone). `showError` takes an optional `gravity` (default `ToastGravity.BOTTOM`; the enum is re-exported from `custom_toast.dart` so call sites don't import fluttertoast) — CreateUserScreen passes `ToastGravity.TOP` to stay above the keyboard. This is the app's only error surface: no raw `Fluttertoast` or `SnackBar` calls. Status→color mapping pinned by `custom_toast_test.dart`.
@@ -170,6 +171,17 @@ The app requires a `.env` file in the root directory with:
 - Other environment-specific configuration
 
 Firebase configuration is in `lib/firebase_options.dart` (auto-generated).
+
+### iOS debug console
+
+`SystemKeyboardConstraintLogPolicy` in `ios/Runner/AppDelegate.swift` disables
+UIKit's `_UIConstraintBasedLayoutLogUnsatisfiable` diagnostic in Debug builds.
+This suppresses iOS 26 TextInputUI warnings whose constraints name
+`TUIPredictionViewCell` / `TUICandidateGradientContentLabel`; those views belong
+to the system keyboard, not Flutter. `SWIFT_ACTIVE_COMPILATION_CONDITIONS` must
+retain `$(inherited) DEBUG` for the Runner Debug configuration. To restore native
+constraint logs for one Xcode run, add
+`-_UIConstraintBasedLayoutLogUnsatisfiable YES` to the scheme's launch arguments.
 
 ## UI/UX Guidelines
 

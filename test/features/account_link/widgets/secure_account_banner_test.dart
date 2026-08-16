@@ -4,9 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/account_link/controllers/account_link.dart';
 import 'package:movie_journal/features/account_link/widgets/secure_account_banner.dart';
 
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
-ProviderContainer _container({required bool needsLink, bool promptShown = false}) {
+ProviderContainer _container({
+  required bool needsLink,
+  bool promptShown = false,
+}) {
   final container = ProviderContainer(
     overrides: [needsAccountLinkProvider.overrideWithValue(needsLink)],
   );
@@ -24,10 +28,8 @@ Future<void> _pumpBanner(
   await tester.pumpWidget(
     UncontrolledProviderScope(
       container: container,
-      child: MaterialApp(
-        home: Scaffold(
-          body: SecureAccountBanner(journalCount: journalCount),
-        ),
+      child: localizedTestApp(
+        home: Scaffold(body: SecureAccountBanner(journalCount: journalCount)),
       ),
     ),
   );

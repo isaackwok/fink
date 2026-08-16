@@ -5,6 +5,7 @@ import 'package:movie_journal/features/account_link/controllers/account_link.dar
 import 'package:movie_journal/features/account_link/widgets/secure_account_sheet.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
 
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 /// Stands in for the real service, which needs a live `Supabase.instance` plus
@@ -47,14 +48,18 @@ Future<void> _openSheet(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [accountLinkServiceProvider.overrideWithValue(service)],
-      child: MaterialApp(
+      child: localizedTestApp(
         home: Scaffold(
           body: Builder(
-            builder: (context) => ElevatedButton(
-              onPressed: () =>
-                  SecureAccountSheet.show(context, journalCount: journalCount),
-              child: const Text('open'),
-            ),
+            builder:
+                (context) => ElevatedButton(
+                  onPressed:
+                      () => SecureAccountSheet.show(
+                        context,
+                        journalCount: journalCount,
+                      ),
+                  child: const Text('open'),
+                ),
           ),
         ),
       ),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/login/screens/create_user.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 // Note: create_user.dart includes AnalyticsManager calls (screen view + sign_up event)
@@ -13,6 +15,18 @@ import '../../../helpers/widget_test_setup.dart';
 
 void main() {
   group('validateUsername', () {
+    test('returns Taiwan Traditional Chinese validation copy', () async {
+      final l10n = await AppLocalizations.delegate.load(
+        const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hant',
+          countryCode: 'TW',
+        ),
+      );
+
+      expect(validateUsername('', l10n), '使用者名稱不能留白');
+    });
+
     group('valid usernames', () {
       test('accepts lowercase letters', () {
         expect(validateUsername('john'), isNull);
@@ -81,54 +95,33 @@ void main() {
 
     group('only special characters', () {
       test('rejects only underscores', () {
-        expect(
-          validateUsername('___'),
-          'Username cannot contain only _ and .',
-        );
+        expect(validateUsername('___'), 'Username cannot contain only _ and .');
       });
 
       test('rejects only dots', () {
-        expect(
-          validateUsername('...'),
-          'Username cannot contain only _ and .',
-        );
+        expect(validateUsername('...'), 'Username cannot contain only _ and .');
       });
 
       test('rejects mix of only underscores and dots', () {
-        expect(
-          validateUsername('_._'),
-          'Username cannot contain only _ and .',
-        );
+        expect(validateUsername('_._'), 'Username cannot contain only _ and .');
       });
 
       test('rejects single underscore', () {
-        expect(
-          validateUsername('_'),
-          'Username cannot contain only _ and .',
-        );
+        expect(validateUsername('_'), 'Username cannot contain only _ and .');
       });
 
       test('rejects single dot', () {
-        expect(
-          validateUsername('.'),
-          'Username cannot contain only _ and .',
-        );
+        expect(validateUsername('.'), 'Username cannot contain only _ and .');
       });
     });
 
     group('trailing special characters', () {
       test('rejects trailing dot', () {
-        expect(
-          validateUsername('john.'),
-          'Username cannot end with _ or .',
-        );
+        expect(validateUsername('john.'), 'Username cannot end with _ or .');
       });
 
       test('rejects trailing underscore', () {
-        expect(
-          validateUsername('john_'),
-          'Username cannot end with _ or .',
-        );
+        expect(validateUsername('john_'), 'Username cannot end with _ or .');
       });
 
       test('allows leading dot', () {
@@ -175,14 +168,15 @@ void main() {
     setUpAll(() => setUpWidgetTests());
     tearDownAll(() => tearDownWidgetTests());
 
-    Widget buildSubject() {
-      return const ProviderScope(
-        child: MaterialApp(home: CreateUserScreen()),
+    Widget buildSubject({Locale locale = const Locale('en')}) {
+      return ProviderScope(
+        child: localizedTestApp(locale: locale, home: const CreateUserScreen()),
       );
     }
 
-    testWidgets('mounts inside a ProviderScope without throwing',
-        (tester) async {
+    testWidgets('mounts inside a ProviderScope without throwing', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
       expect(find.byType(CreateUserScreen), findsOneWidget);
     });
@@ -203,6 +197,24 @@ void main() {
         find.widgetWithText(ElevatedButton, 'Start Journaling'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('renders Taiwan Traditional Chinese onboarding copy', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+
+      expect(find.text('選個名字。'), findsOneWidget);
+      expect(find.text('使用者名稱'), findsOneWidget);
+      expect(find.text('開始寫日記'), findsOneWidget);
     });
   });
 }

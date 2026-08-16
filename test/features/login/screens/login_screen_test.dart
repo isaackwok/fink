@@ -4,6 +4,7 @@ import 'package:movie_journal/features/login/screens/login.dart';
 import 'package:movie_journal/shared_widgets/provider_sign_in_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthResponse;
 
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 /// Regression tests for ISA-9 bug 2: both sign-in handlers used to swallow
@@ -18,10 +19,12 @@ void main() {
   Widget buildSubject({
     Future<AuthResponse?> Function()? googleSignIn,
     Future<AuthResponse?> Function()? appleSignIn,
+    Locale locale = const Locale('en'),
   }) {
     Future<AuthResponse?> unexpected() async =>
         fail('unexpected provider flow invoked');
-    return MaterialApp(
+    return localizedTestApp(
+      locale: locale,
       home: LoginScreen(
         googleSignIn: googleSignIn ?? unexpected,
         appleSignIn: appleSignIn ?? unexpected,
@@ -29,13 +32,32 @@ void main() {
     );
   }
 
+  testWidgets('renders Taiwan Traditional Chinese sign-in copy', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        locale: const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hant',
+          countryCode: 'TW',
+        ),
+      ),
+    );
+
+    expect(find.text('開始寫下你的電影日記。'), findsOneWidget);
+    expect(find.text('使用 Google 登入'), findsOneWidget);
+    expect(find.text('使用 Apple 登入'), findsOneWidget);
+  });
+
   Future<void> drainToastTimers(WidgetTester tester) async {
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
   }
 
-  testWidgets('a failing Google sign-in surfaces an error toast',
-      (tester) async {
+  testWidgets('a failing Google sign-in surfaces an error toast', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       buildSubject(googleSignIn: () async => throw Exception('network down')),
     );
@@ -48,8 +70,9 @@ void main() {
     await drainToastTimers(tester);
   });
 
-  testWidgets('a failing Apple sign-in surfaces an error toast',
-      (tester) async {
+  testWidgets('a failing Apple sign-in surfaces an error toast', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       buildSubject(appleSignIn: () async => throw Exception('network down')),
     );
@@ -62,8 +85,9 @@ void main() {
     await drainToastTimers(tester);
   });
 
-  testWidgets('a cancelled prompt (null) stays silent and re-enables buttons',
-      (tester) async {
+  testWidgets('a cancelled prompt (null) stays silent and re-enables buttons', (
+    tester,
+  ) async {
     // SupabaseAuthManager.cancellable maps a dismissed native prompt to null;
     // backing out is an ordinary choice and must not toast.
     await tester.pumpWidget(buildSubject(googleSignIn: () async => null));

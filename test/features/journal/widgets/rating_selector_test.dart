@@ -5,9 +5,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/journal/widgets/rating_selector.dart';
 import 'package:movie_journal/themes.dart';
 
+import '../../../helpers/localized_test_app.dart';
+
 void main() {
-  Widget buildSubject({int rating = 0, ValueChanged<int>? onChanged}) {
-    return MaterialApp(
+  Widget buildSubject({
+    int rating = 0,
+    ValueChanged<int>? onChanged,
+    Locale locale = const Locale('en'),
+  }) {
+    return localizedTestApp(
+      locale: locale,
       theme: Themes.dark,
       home: Scaffold(
         body: Padding(
@@ -29,6 +36,22 @@ void main() {
         'assets/images/rating_heart_unselected.svg',
       );
     }
+  });
+
+  testWidgets('renders the Taiwan Traditional Chinese rating prompt', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildSubject(
+        locale: const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hant',
+          countryCode: 'TW',
+        ),
+      ),
+    );
+
+    expect(find.text('你有多喜歡這部電影？'), findsOneWidget);
   });
 
   testWidgets('shows the numeric score for empty and rated states', (
@@ -125,7 +148,7 @@ void main() {
     var rating = 5;
 
     await tester.pumpWidget(
-      MaterialApp(
+      localizedTestApp(
         theme: Themes.dark,
         home: Scaffold(
           body: StatefulBuilder(

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:movie_journal/features/search_movie/screens/search_movie.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class EmptyPlaceholder extends StatelessWidget {
   const EmptyPlaceholder({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return Center(
@@ -26,9 +29,9 @@ class EmptyPlaceholder extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 36),
-              const Text(
-                'Your movie journal starts here',
-                style: TextStyle(
+              Text(
+                l10n.homeEmptyTitle,
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'AvenirNext',
@@ -36,11 +39,11 @@ class EmptyPlaceholder extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 4),
-              const SizedBox(
+              SizedBox(
                 width: 288,
                 child: Text(
-                  'Add your first movie to keep your memories going',
-                  style: TextStyle(
+                  l10n.homeEmptyBody,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     fontFamily: 'AvenirNext',
@@ -66,7 +69,9 @@ class EmptyPlaceholder extends StatelessWidget {
                   overlayColor: Theme.of(context).colorScheme.primary,
                   backgroundColor: Colors.transparent,
                   side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary, width: 1),
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1,
+                  ),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -76,9 +81,9 @@ class EmptyPlaceholder extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text(
-                  'Add Journal',
-                  style: TextStyle(
+                child: Text(
+                  l10n.addJournal,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontFamily: 'AvenirNext',
                   ),

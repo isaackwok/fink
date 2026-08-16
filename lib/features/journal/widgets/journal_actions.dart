@@ -8,6 +8,7 @@ import 'package:movie_journal/features/share/share_flow.dart';
 import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:movie_journal/shared_widgets/confirmation_dialog.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 void editJournal(BuildContext context, WidgetRef ref, JournalState journal) {
   ref.read(journalControllerProvider.notifier).loadJournal(journal);
@@ -44,14 +45,15 @@ void shareJournal(BuildContext context, JournalState journal) {
 }
 
 Future<bool> confirmDeleteJournal(BuildContext context) async {
+  final l10n = AppLocalizations.of(context);
   final shouldDelete = await showDialog<bool>(
     context: context,
     builder:
         (context) => ConfirmationDialog(
-          title: 'Delete Journal',
-          description: 'Are you sure you want to delete this journal?',
-          cancelText: 'Cancel',
-          confirmText: 'Delete',
+          title: l10n.journalDeleteTitle,
+          description: l10n.journalDeleteConfirmation,
+          cancelText: l10n.commonCancel,
+          confirmText: l10n.commonDelete,
           onCancel: () => Navigator.pop(context, false),
           onConfirm: () => Navigator.pop(context, true),
         ),
@@ -70,9 +72,15 @@ Future<void> deleteJournal(
         .removeJournal(journalId);
 
     if (!context.mounted) return;
-    CustomToast.showSuccess(context, 'Journal deleted successfully');
+    CustomToast.showSuccess(
+      context,
+      AppLocalizations.of(context).journalDeleted,
+    );
   } catch (e) {
     if (!context.mounted) return;
-    CustomToast.showError(context, 'Failed to delete journal');
+    CustomToast.showError(
+      context,
+      AppLocalizations.of(context).journalDeleteFailed,
+    );
   }
 }

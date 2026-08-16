@@ -5,12 +5,14 @@ import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/screens/thoughts.dart';
 import 'package:movie_journal/features/journal/widgets/ai_references_accordion.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class ThoughtsEditor extends ConsumerWidget {
   const ThoughtsEditor({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     // Field-level selects: this widget only cares about thoughts and
     // selectedRefs, so scene/emotion edits shouldn't rebuild it.
     final thoughts = ref.watch(
@@ -35,9 +37,9 @@ class ThoughtsEditor extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'Write down your thoughts & feelings.',
-          style: TextStyle(
+        Text(
+          l10n.thoughtsPrompt,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -64,7 +66,7 @@ class ThoughtsEditor extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                hasThoughts ? thoughts : 'Enter your text here...',
+                hasThoughts ? thoughts : l10n.thoughtsHint,
                 style:
                     hasThoughts
                         ? GoogleFonts.inter(

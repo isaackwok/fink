@@ -4,6 +4,7 @@ import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/widgets/review_item.dart';
 import 'package:movie_journal/features/quesgen/provider.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class ReviewsBottomSheet extends ConsumerWidget {
   const ReviewsBottomSheet({super.key});
@@ -22,6 +23,7 @@ class ReviewsBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final quesgenState = ref.watch(quesgenControllerProvider);
     final reviews = quesgenState.reviews;
     final isLoading = quesgenState.isLoading;
@@ -53,11 +55,11 @@ class ReviewsBottomSheet extends ConsumerWidget {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Movie Reviews',
-              style: TextStyle(
+              l10n.reviewsTitle,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'AvenirNext',
@@ -67,7 +69,7 @@ class ReviewsBottomSheet extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'We summarized reviews from Letterboxd and Reddit with AI, add these insights to your notes!',
+              l10n.reviewsDescription,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -114,9 +116,9 @@ class ReviewsBottomSheet extends ConsumerWidget {
                         ),
                       )
                       : [
-                        const Text(
-                          'No reviews generated',
-                          style: TextStyle(
+                        Text(
+                          l10n.reviewsEmpty,
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),

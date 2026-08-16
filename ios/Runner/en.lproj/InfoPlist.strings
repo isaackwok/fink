@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Fink";
+"NSPhotoLibraryAddUsageDescription" = "We need access to save your movie ticket to your photo library.";
+"NSPhotoLibraryUsageDescription" = "We need access to your photo library to share your movie ticket.";

@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/account_link/controllers/account_link.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/provider_sign_in_button.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
 import 'package:movie_journal/themes.dart';
@@ -69,7 +70,10 @@ class _SecureAccountSheetState extends ConsumerState<SecureAccountSheet> {
           unawaited(AnalyticsManager.logAccountLinked(method: method));
           // Toast before popping: FToast resolves its overlay from the context
           // it is handed, and this one is about to be torn down.
-          CustomToast.showSuccess(context, 'Account secured');
+          CustomToast.showSuccess(
+            context,
+            AppLocalizations.of(context).accountSecured,
+          );
           Navigator.of(context).pop();
         case IdentityLinkOutcome.cancelled:
           // They backed out of the system prompt. Leave the sheet open — that
@@ -84,23 +88,23 @@ class _SecureAccountSheetState extends ConsumerState<SecureAccountSheet> {
       if (!mounted) return;
       CustomToast.showError(
         context,
-        "Couldn't secure your account. Please try again.",
+        AppLocalizations.of(context).accountSecureFailed,
       );
     } finally {
       if (mounted) setState(() => _isLinking = false);
     }
   }
 
-  String get _headline {
+  String _headline(AppLocalizations l10n) {
     final count = widget.journalCount;
-    if (count == null || count <= 0) return 'Keep your journals safe';
-    return count == 1
-        ? 'Keep your 1 journal safe'
-        : 'Keep your $count journals safe';
+    if (count == null || count <= 0) return l10n.accountSheetHeadline;
+    return l10n.accountSheetHeadlineCount(count: count);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     // Scrollable because the conflict notice can push the content past a short
     // screen, and this is the one sheet a user must be able to finish.
     return SafeArea(
@@ -111,7 +115,7 @@ class _SecureAccountSheetState extends ConsumerState<SecureAccountSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _headline,
+              _headline(l10n),
               style: const TextStyle(
                 fontFamily: 'AvenirNext',
                 fontSize: 24,
@@ -122,9 +126,7 @@ class _SecureAccountSheetState extends ConsumerState<SecureAccountSheet> {
             ),
             const SizedBox(height: 16),
             Text(
-              'They currently live on this device only. Attach an Apple or '
-              'Google account and you can sign back in after a reinstall, or '
-              'on a new phone.',
+              l10n.accountSheetBody,
               style: TextStyle(
                 fontFamily: 'AvenirNext',
                 fontSize: 16,
@@ -141,14 +143,14 @@ class _SecureAccountSheetState extends ConsumerState<SecureAccountSheet> {
               disabled: _isLinking,
               onPressed: () => _link('google'),
               icon: SvgPicture.asset('assets/images/google_icon.svg'),
-              label: 'Continue with Google',
+              label: l10n.accountContinueGoogle,
             ),
             const SizedBox(height: 12),
             ProviderSignInButton(
               disabled: _isLinking,
               onPressed: () => _link('apple'),
               icon: const Icon(Icons.apple, color: Colors.white, size: 28),
-              label: 'Continue with Apple',
+              label: l10n.accountContinueApple,
             ),
             const SizedBox(height: 8),
             Center(
@@ -156,7 +158,7 @@ class _SecureAccountSheetState extends ConsumerState<SecureAccountSheet> {
                 onPressed:
                     _isLinking ? null : () => Navigator.of(context).pop(),
                 child: Text(
-                  'Not now',
+                  l10n.accountNotNow,
                   style: TextStyle(
                     fontFamily: 'AvenirNext',
                     fontSize: 14,
@@ -188,6 +190,7 @@ class _ConflictNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final provider = method == 'apple' ? 'Apple' : 'Google';
     final other = method == 'apple' ? 'Google' : 'Apple';
 
@@ -217,9 +220,7 @@ class _ConflictNotice extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'That $provider account is already attached to another Fink '
-              'account, so it can\'t also hold this one. Try $other instead — '
-              'or get in touch and we can join the two accounts for you.',
+              l10n.accountConflict(provider: provider, otherProvider: other),
               style: const TextStyle(
                 fontFamily: 'AvenirNext',
                 fontSize: 14,

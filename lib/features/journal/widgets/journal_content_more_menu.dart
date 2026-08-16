@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/features/journal/controllers/journals.dart';
 import 'package:movie_journal/features/journal/widgets/journal_actions.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 enum MoreOptionsItem { delete, edit }
 
@@ -13,6 +14,7 @@ class JournalContentMoreMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return PopupMenuButton(
       menuPadding: EdgeInsets.zero,
       offset: const Offset(0, 16),
@@ -22,17 +24,17 @@ class JournalContentMoreMenu extends ConsumerWidget {
       },
       itemBuilder:
           (BuildContext context) => <PopupMenuEntry<MoreOptionsItem>>[
-            const PopupMenuItem<MoreOptionsItem>(
+            PopupMenuItem<MoreOptionsItem>(
               value: MoreOptionsItem.edit,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text('Edit'),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Text(l10n.commonEdit),
             ),
-            const PopupMenuItem<MoreOptionsItem>(
+            PopupMenuItem<MoreOptionsItem>(
               value: MoreOptionsItem.delete,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Text(
-                'Delete',
-                style: TextStyle(color: StatusColors.error),
+                l10n.commonDelete,
+                style: const TextStyle(color: StatusColors.error),
               ),
             ),
           ],

@@ -6,6 +6,7 @@ import 'package:movie_journal/features/journal/screens/journaling.dart';
 import 'package:movie_journal/themes.dart';
 
 import '../../../helpers/test_journal.dart';
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 /// A journal controller whose save() always fails, standing in for a dead
@@ -34,8 +35,8 @@ void main() {
           overrides: [
             journalControllerProvider.overrideWith(_FailingSaveController.new),
           ],
-          child: const MaterialApp(
-            home: JournalingScreen(
+          child: localizedTestApp(
+            home: const JournalingScreen(
               movieTitle: 'Fight Club',
               moviePosterUrl: '/poster.jpg',
             ),

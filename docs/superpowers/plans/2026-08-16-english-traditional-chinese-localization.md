@@ -30,7 +30,9 @@
 **Files:**
 - Create: `l10n.yaml`
 - Create: `lib/l10n/app_en.arb`
+- Create: `lib/l10n/app_zh.arb`
 - Create: `lib/l10n/app_zh_Hant_TW.arb`
+- Create: `lib/l10n/supported_locales.dart`
 - Create: `test/helpers/localized_test_app.dart`
 - Create: `test/l10n/app_localizations_test.dart`
 - Create: `test/main_test.dart`
@@ -39,7 +41,8 @@
 - Modify: `lib/main.dart`
 
 **Interfaces:**
-- Produces: generated `AppLocalizations`, `AppLocalizations.localizationsDelegates`, and `AppLocalizations.supportedLocales`.
+- Produces: generated `AppLocalizations` and `AppLocalizations.localizationsDelegates`.
+- Produces: `appSupportedLocales`, containing only `en` and `zh-Hant-TW`; `app_zh.arb` exists only because Flutter requires a base fallback for a script/country-specific locale.
 - Produces: `localizedTestApp({required Widget home, Locale locale = const Locale('en'), ThemeData? theme, List<NavigatorObserver> navigatorObservers = const []}) -> Widget` for feature tests.
 - Produces initial keys: `appTitle`, `commonAdd`, `commonCancel`, `commonDelete`, `commonDone`, `commonEdit`, `commonErrorWithDetails`, `commonGoBack`, `commonOthers`, `commonRetry`, `commonSave`, `commonShare`.
 
@@ -71,7 +74,7 @@ preferred-supported-locales:
   - en
 ```
 
-Seed both ARB files with the initial keys above, `@@locale` values `en` and `zh_Hant_TW`, descriptions in the English template, and matching key sets.
+Seed all three ARB files with the initial keys above, `@@locale` values `en`, `zh`, and `zh_Hant_TW`, descriptions in the English template, and matching key sets. The generic `zh` values are identical to `zh_Hant_TW` and are not exposed as a production language choice.
 
 - [ ] **Step 2: Generate the localization source**
 
@@ -82,7 +85,7 @@ flutter pub get
 flutter gen-l10n
 ```
 
-Expected: generation exits 0 and `AppLocalizations.supportedLocales` contains `Locale('en')` plus `Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW')`.
+Expected: generation exits 0. Create `appSupportedLocales` containing `Locale('en')` plus `Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW')`.
 
 - [ ] **Step 3: Write localization contract and root integration tests**
 
@@ -100,7 +103,7 @@ final chinese = await AppLocalizations.delegate.load(
 
 expect(english.commonSave, 'Save');
 expect(chinese.commonSave, '儲存');
-expect(AppLocalizations.supportedLocales, <Locale>[
+expect(appSupportedLocales, <Locale>[
   const Locale('en'),
   const Locale.fromSubtags(
     languageCode: 'zh',
@@ -110,7 +113,7 @@ expect(AppLocalizations.supportedLocales, <Locale>[
 ]);
 ```
 
-Parse both ARB files with `jsonDecode` and compare literal user-message key sets after excluding keys beginning with `@`. In `test/main_test.dart`, pump `MyApp` under provider overrides and assert a descendant `Builder` resolves `zh-Hant-TW` when the test platform requests it.
+Parse all three ARB files with `jsonDecode` and compare literal user-message key sets after excluding keys beginning with `@`. Assert the generic `zh` and `zh-Hant-TW` message maps are equal. In `test/main_test.dart`, pump `MyApp` under provider overrides and assert a descendant `Builder` resolves `zh-Hant-TW` when the test platform requests it.
 
 - [ ] **Step 4: Run the root integration test and verify RED**
 
@@ -130,7 +133,7 @@ Configure production:
 return MaterialApp(
   onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
   localizationsDelegates: AppLocalizations.localizationsDelegates,
-  supportedLocales: AppLocalizations.supportedLocales,
+  supportedLocales: appSupportedLocales,
   themeMode: ThemeMode.dark,
   darkTheme: Themes.dark,
   theme: Themes.light,
@@ -138,7 +141,7 @@ return MaterialApp(
 );
 ```
 
-Implement `localizedTestApp` with the same delegates/supported locales and the explicit test locale.
+Implement `localizedTestApp` with the same delegates and `appSupportedLocales`, plus the explicit test locale.
 
 - [ ] **Step 6: Verify GREEN**
 

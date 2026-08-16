@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/provider_sign_in_button.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthResponse;
@@ -23,7 +24,9 @@ class LoginScreen extends StatefulWidget {
   final Future<AuthResponse?> Function() appleSignIn;
 
   static Future<AuthResponse?> _defaultGoogleSignIn() =>
-      SupabaseAuthManager.cancellable(() => SupabaseAuthManager.signInWithGoogle());
+      SupabaseAuthManager.cancellable(
+        () => SupabaseAuthManager.signInWithGoogle(),
+      );
 
   static Future<AuthResponse?> _defaultAppleSignIn() =>
       SupabaseAuthManager.cancellable(SupabaseAuthManager.signInWithApple);
@@ -51,7 +54,10 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       debugPrint('Sign-in with $method failed: $e');
       if (mounted) {
-        CustomToast.showError(context, 'Sign-in failed. Please try again.');
+        CustomToast.showError(
+          context,
+          AppLocalizations.of(context).loginFailed,
+        );
       }
     } finally {
       if (mounted) {
@@ -62,6 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return ScreenViewTracker(
       screenName: 'Login',
       child: Scaffold(
@@ -74,9 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const Spacer(),
                 // Title
-                const Text(
-                  'Start your movie journals.',
-                  style: TextStyle(
+                Text(
+                  l10n.loginTitle,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -87,9 +95,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 // Subtitle
-                const Text(
-                  'Get started by signing in with your\nGoogle or Apple accounts.',
-                  style: TextStyle(
+                Text(
+                  l10n.loginSubtitle,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     height: 1.5,
@@ -101,9 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Sign in with Google button
                 ProviderSignInButton(
                   disabled: _isLoading,
-                  onPressed: () => _signIn(widget.googleSignIn, method: 'google'),
+                  onPressed:
+                      () => _signIn(widget.googleSignIn, method: 'google'),
                   icon: SvgPicture.asset('assets/images/google_icon.svg'),
-                  label: 'Sign in with Google',
+                  label: l10n.loginWithGoogle,
                 ),
                 const SizedBox(height: 16),
                 // Sign in with Apple button
@@ -111,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   disabled: _isLoading,
                   onPressed: () => _signIn(widget.appleSignIn, method: 'apple'),
                   icon: const Icon(Icons.apple, color: Colors.white, size: 28),
-                  label: 'Sign in with Apple',
+                  label: l10n.loginWithApple,
                 ),
                 const Spacer(),
               ],

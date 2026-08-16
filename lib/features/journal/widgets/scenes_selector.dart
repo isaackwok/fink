@@ -8,6 +8,7 @@ import 'package:movie_journal/features/movie/movie_providers.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class SelectedSceneCard extends StatelessWidget {
   const SelectedSceneCard({
@@ -144,6 +145,7 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
   }
 
   Widget _buildEmptyScenesView(String firstBackdropPath) {
+    final l10n = AppLocalizations.of(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: _minMaxHeight,
@@ -158,7 +160,7 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
               size: TmdbImageSize.w342,
               width: double.infinity,
               height: double.infinity,
-              errorWidget: const Center(child: Text('Error loading image')),
+              errorWidget: Center(child: Text(l10n.sceneErrorLoadingImage)),
             ),
           ),
           Positioned.fill(
@@ -174,10 +176,10 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
                   child: InkWell(
                     onTap: _navigateToScenesSelectSheet,
                     borderRadius: BorderRadius.circular(8),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        "+  Add Scenes",
-                        style: TextStyle(
+                        l10n.scenesAdd,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -196,6 +198,7 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
   }
 
   Widget _buildSelectedScenesView(List<SceneItem> selectedScenes) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
@@ -224,9 +227,9 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
         OutlinedButton.icon(
           onPressed: _navigateToScenesSelectSheet,
           icon: const Icon(Icons.add, color: Colors.white, size: 20),
-          label: const Text(
-            'Add Scene',
-            style: TextStyle(
+          label: Text(
+            l10n.sceneAdd,
+            style: const TextStyle(
               color: Colors.white,
               fontFamily: 'AvenirNext',
               fontSize: 14,
@@ -250,41 +253,42 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
   }
 
   Widget _buildEmptyBackdropsState() {
+    final l10n = AppLocalizations.of(context);
     return Container(
       height: _minMaxHeight,
       decoration: BoxDecoration(
         color: DarkSurfaces.sheetSecondary,
         borderRadius: BorderRadius.circular(_borderRadius),
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Scene missing!',
-              style: TextStyle(
+              l10n.scenesMissingTitle,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 fontFamily: 'AvenirNext',
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              "We couldn't find any scene photos for this movie.",
+              l10n.scenesMissingBody,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontFamily: 'AvenirNext',
                 letterSpacing: 0,
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
-              'Keep this one in your memory. ✨',
+              l10n.scenesMissingTagline,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 letterSpacing: 0,
                 fontSize: 14,
@@ -299,6 +303,7 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final movieImagesAsync = ref.watch(
       movieImagesControllerProvider(widget.movieId),
     );
@@ -311,9 +316,9 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
       spacing: 16,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'What are the memorable scenes?',
-          style: TextStyle(
+        Text(
+          l10n.scenesPrompt,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
             fontFamily: 'AvenirNext',
@@ -339,13 +344,16 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(_borderRadius),
-                    child: const Bone(width: double.infinity, height: _minMaxHeight),
+                    child: const Bone(
+                      width: double.infinity,
+                      height: _minMaxHeight,
+                    ),
                   ),
                 ),
               ),
           error:
               (error, stack) =>
-                  const Center(child: Text('Error loading images')),
+                  Center(child: Text(l10n.sceneErrorLoadingImages)),
         ),
       ],
     );

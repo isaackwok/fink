@@ -8,6 +8,7 @@ import 'package:movie_journal/features/movie/data/models/brief_movie.dart';
 import 'package:movie_journal/features/movie/movie_providers.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class MovieResultList extends ConsumerWidget {
   final ScrollController scrollController;
@@ -17,6 +18,7 @@ class MovieResultList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(searchMovieControllerProvider);
+    final l10n = AppLocalizations.of(context);
 
     return asyncState.when(
       // A loadMore() failure preserves the loaded pages via copyWithPrevious
@@ -35,24 +37,27 @@ class MovieResultList extends ConsumerWidget {
         // is shifted down by one.
         final hasHeader = state.mode == SearchMovieMode.popular;
         return ListView.separated(
-            padding: const EdgeInsets.only(bottom: 100),
-            controller: scrollController,
-            itemCount: hasHeader ? state.movies.length + 1 : state.movies.length,
-            itemBuilder: (context, index) {
-              if (hasHeader && index == 0) {
-                return const Text(
-                  'People watched',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                );
-              }
-              return MovieResultItem(
-                movie: state.movies[hasHeader ? index - 1 : index],
+          padding: const EdgeInsets.only(bottom: 100),
+          controller: scrollController,
+          itemCount: hasHeader ? state.movies.length + 1 : state.movies.length,
+          itemBuilder: (context, index) {
+            if (hasHeader && index == 0) {
+              return Text(
+                l10n.searchPopularHeader,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               );
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 12);
-            },
-          );
+            }
+            return MovieResultItem(
+              movie: state.movies[hasHeader ? index - 1 : index],
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 12);
+          },
+        );
       },
       loading:
           () => Skeletonizer(
@@ -97,9 +102,9 @@ class MovieResultList extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Error loading movies',
-                  style: TextStyle(
+                Text(
+                  l10n.searchErrorLoadingMovies,
+                  style: const TextStyle(
                     color: Color(0xFFFCA311),
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -108,7 +113,7 @@ class MovieResultList extends ConsumerWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => ref.refresh(searchMovieControllerProvider),
-                  child: const Text('Retry'),
+                  child: Text(l10n.commonRetry),
                 ),
               ],
             ),
@@ -143,6 +148,8 @@ class MovieResultItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     return InkWell(
       onTap: () {
         _onTap(context, ref);
@@ -187,7 +194,7 @@ class MovieResultItem extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      movie.year,
+                      movie.year == 'Unknown' ? l10n.commonUnknown : movie.year,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFFA7A7A7),

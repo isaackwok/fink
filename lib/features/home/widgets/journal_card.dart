@@ -8,6 +8,7 @@ import 'package:movie_journal/features/journal/widgets/journal_actions.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class JournalCard extends ConsumerStatefulWidget {
   final JournalState journal;
@@ -42,6 +43,7 @@ class _JournalCardState extends ConsumerState<JournalCard> {
   @override
   Widget build(BuildContext context) {
     final journal = widget.journal;
+    final l10n = AppLocalizations.of(context);
     return CupertinoContextMenu.builder(
       enableHapticFeedback: true,
       actions: [
@@ -51,7 +53,7 @@ class _JournalCardState extends ConsumerState<JournalCard> {
               () => _dismissMenuThen(context, () async {
                 editJournal(this.context, ref, journal);
               }),
-          child: const Text('Edit'),
+          child: Text(l10n.commonEdit),
         ),
         CupertinoContextMenuAction(
           trailingIcon: CupertinoIcons.share,
@@ -59,7 +61,7 @@ class _JournalCardState extends ConsumerState<JournalCard> {
               () => _dismissMenuThen(context, () async {
                 shareJournal(this.context, journal);
               }),
-          child: const Text('Share'),
+          child: Text(l10n.commonShare),
         ),
         CupertinoContextMenuAction(
           isDestructiveAction: true,
@@ -70,7 +72,7 @@ class _JournalCardState extends ConsumerState<JournalCard> {
                 if (!shouldDelete || !mounted) return;
                 await deleteJournal(this.context, ref, journal.id);
               }),
-          child: const Text('Delete'),
+          child: Text(l10n.commonDelete),
         ),
       ],
       builder:

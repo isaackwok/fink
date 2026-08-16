@@ -12,6 +12,7 @@ import 'package:movie_journal/features/share/share_flow.dart';
 import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen.dart';
 import 'package:movie_journal/shared_widgets/circled_icon_button.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class JournalContent extends ConsumerStatefulWidget {
   final String journalId;
@@ -63,6 +64,7 @@ class _JournalContentState extends ConsumerState<JournalContent> {
   @override
   Widget build(BuildContext context) {
     final journalsAsync = ref.watch(journalsControllerProvider);
+    final l10n = AppLocalizations.of(context);
 
     // Handle loading and error states
     if (journalsAsync.isLoading) {
@@ -71,7 +73,9 @@ class _JournalContentState extends ConsumerState<JournalContent> {
 
     if (journalsAsync.hasError) {
       return Scaffold(
-        body: Center(child: Text('Error: ${journalsAsync.error}')),
+        body: Center(
+          child: Text(l10n.commonErrorWithDetails(error: journalsAsync.error!)),
+        ),
       );
     }
 

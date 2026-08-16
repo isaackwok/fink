@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_journal/features/journal/widgets/review_item.dart';
 import 'package:movie_journal/features/quesgen/review.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class AiReferencesAccordion extends StatefulWidget {
   const AiReferencesAccordion({
@@ -74,10 +75,10 @@ class _AiReferencesAccordionState extends State<AiReferencesAccordion>
                     size: 24,
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Reviews',
-                      style: TextStyle(
+                      AppLocalizations.of(context).reviewsLabel,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,

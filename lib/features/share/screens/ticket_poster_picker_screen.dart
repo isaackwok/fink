@@ -9,6 +9,7 @@ import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class TicketPosterPickerScreen extends ConsumerStatefulWidget {
   final JournalState journal;
@@ -27,14 +28,9 @@ class TicketPosterPickerScreen extends ConsumerStatefulWidget {
 
 class _TicketPosterPickerScreenState
     extends ConsumerState<TicketPosterPickerScreen> {
-  static const _allLanguageTabs = [
-    ('Original Language', null),
-    ('English', 'en'),
-    ('繁體中文', 'zh-TW'),
-    ('日本語', 'ja'),
-  ];
+  static const _allLanguageTabs = <String?>[null, 'en', 'zh-TW', 'ja'];
 
-  List<(String, String?)> _languageTabs = _allLanguageTabs;
+  List<String?> _languageTabs = _allLanguageTabs;
 
   List<GlobalKey> _tabKeys = List.generate(
     _allLanguageTabs.length,
@@ -98,8 +94,7 @@ class _TicketPosterPickerScreenState
     if (original == null) return;
     final originalBase = original.split('-').first.toLowerCase();
     final filtered =
-        _allLanguageTabs.where((tab) {
-          final code = tab.$2;
+        _allLanguageTabs.where((code) {
           if (code == null) return true;
           return code.split('-').first.toLowerCase() != originalBase;
         }).toList();
@@ -115,8 +110,16 @@ class _TicketPosterPickerScreenState
     if (index == 0) {
       return _resolvedOriginalLanguage ?? 'en';
     }
-    return _languageTabs[index].$2!;
+    return _languageTabs[index]!;
   }
+
+  String _languageLabel(AppLocalizations l10n, String? code) => switch (code) {
+    null => l10n.posterOriginalLanguage,
+    'en' => 'English',
+    'zh-TW' => '繁體中文',
+    'ja' => '日本語',
+    _ => code,
+  };
 
   Future<void> _fetchPostersForTab(int index) async {
     final langCode = _languageCodeForTab(index);
@@ -189,6 +192,7 @@ class _TicketPosterPickerScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ScreenViewTracker(
       screenName: 'TicketPosterPicker',
       child: Scaffold(
@@ -198,9 +202,9 @@ class _TicketPosterPickerScreenState
           elevation: 0,
           automaticallyImplyLeading: false,
           centerTitle: true,
-          title: const Text(
-            'Choose a Ticket Poster',
-            style: TextStyle(
+          title: Text(
+            l10n.posterPickerTitle,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -252,7 +256,7 @@ class _TicketPosterPickerScreenState
                           ),
                         ),
                         child: Text(
-                          _languageTabs[index].$1,
+                          _languageLabel(l10n, _languageTabs[index]),
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -286,7 +290,7 @@ class _TicketPosterPickerScreenState
                   if (pagePosters.isEmpty) {
                     return Center(
                       child: Text(
-                        'No posters available',
+                        l10n.posterPickerEmpty,
                         style: TextStyle(
                           color: Colors.white.withAlpha(128),
                           fontSize: 14,

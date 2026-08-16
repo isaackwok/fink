@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class RatingSelector extends StatelessWidget {
   const RatingSelector({
@@ -35,6 +36,7 @@ class RatingSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final hasRating = rating > 0;
     final ratingValueStyle = TextStyle(
       color: hasRating ? Colors.white : const Color(0xFF8F8E8E),
@@ -61,9 +63,9 @@ class RatingSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'How much did you enjoy this movie?',
-          style: TextStyle(
+        Text(
+          l10n.ratingPrompt,
+          style: const TextStyle(
             color: Colors.white,
             fontFamily: 'AvenirNext',
             fontSize: 16,
@@ -134,7 +136,10 @@ class RatingSelector extends StatelessWidget {
                               key: ValueKey('rating-heart-$value'),
                               button: !readonly,
                               selected: value <= rating,
-                              label: '$value out of $maxRating',
+                              label: l10n.ratingSemantics(
+                                value: value,
+                                max: maxRating,
+                              ),
                               onTap:
                                   readonly || onChanged == null
                                       ? null

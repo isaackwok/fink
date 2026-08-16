@@ -5,6 +5,7 @@ import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/screens/journaling.dart';
 import 'package:movie_journal/features/movie/movie_providers.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/pull_down_to_dismiss.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -17,6 +18,7 @@ class MoviePreviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncState = ref.watch(movieDetailControllerProvider(movieId));
+    final l10n = AppLocalizations.of(context);
 
     return asyncState.when(
       data:
@@ -88,7 +90,7 @@ class MoviePreviewScreen extends ConsumerWidget {
                                         ),
                                       ),
                                       Text(
-                                        '${movie.credits.crew.where((e) => e.job == 'Director').firstOrNull?.name ?? 'Unknown'} | ${movie.year} |  ${movie.originCountry.isNotEmpty ? movie.originCountry.first : ''}',
+                                        '${movie.credits.crew.where((e) => e.job == 'Director').firstOrNull?.name ?? l10n.commonUnknown} | ${movie.year == 'Unknown' ? l10n.commonUnknown : movie.year} |  ${movie.originCountry.isNotEmpty ? movie.originCountry.first : ''}',
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
@@ -207,7 +209,7 @@ class MoviePreviewScreen extends ConsumerWidget {
                       );
                     }
                   },
-                  child: const Text('Start Journaling'),
+                  child: Text(l10n.startJournaling),
                 ),
               ),
             ),
@@ -300,21 +302,24 @@ class MoviePreviewScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Error loading movie',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  Text(
+                    l10n.moviePreviewErrorLoading,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed:
                         () =>
                             ref.refresh(movieDetailControllerProvider(movieId)),
-                    child: const Text('Retry'),
+                    child: Text(l10n.commonRetry),
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Go Back'),
+                    child: Text(l10n.commonGoBack),
                   ),
                 ],
               ),

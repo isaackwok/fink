@@ -9,6 +9,7 @@ import 'package:movie_journal/features/journal/screens/journal_content.dart';
 import 'package:movie_journal/themes.dart';
 
 import '../../../helpers/test_journal.dart';
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 class _FakeJournalsController extends JournalsController {
@@ -31,7 +32,7 @@ void main() {
           () => _FakeJournalsController(journal),
         ),
       ],
-      child: MaterialApp(
+      child: localizedTestApp(
         theme: Themes.dark,
         home: JournalContent(journalId: journal.id),
       ),

@@ -18,5 +18,5 @@ class MovieDetailController extends AsyncNotifier<DetailedMovie> {
 
   @override
   Future<DetailedMovie> build() =>
-      ref.read(movieRepoProvider).getMovieDetails(movieId);
+      ref.watch(movieRepoProvider).getMovieDetails(movieId);
 }

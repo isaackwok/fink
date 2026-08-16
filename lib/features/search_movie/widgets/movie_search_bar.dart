@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/movie/movie_providers.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class MovieSearchBar extends ConsumerStatefulWidget {
   const MovieSearchBar({super.key});
@@ -63,7 +64,7 @@ class _MovieSearchBarState extends ConsumerState<MovieSearchBar> {
       keyboardType: TextInputType.text,
       controller: _controller,
       focusNode: _focusNode,
-      hintText: 'Search movie',
+      hintText: AppLocalizations.of(context).searchMovieHint,
       textInputAction: TextInputAction.search,
       hintStyle: WidgetStateProperty.all(
         GoogleFonts.inter(
