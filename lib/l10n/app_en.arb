@@ -52,5 +52,196 @@
   "commonShare": "Share",
   "@commonShare": {
     "description": "Generic action to share content"
+  },
+  "commonConfirm": "Confirm",
+  "@commonConfirm": {
+    "description": "Generic action to confirm a choice"
+  },
+  "commonLoading": "Loading...",
+  "@commonLoading": {
+    "description": "Generic loading label"
+  },
+  "commonUser": "User",
+  "@commonUser": {
+    "description": "Fallback display label for a user"
+  },
+  "commonUnknown": "Unknown",
+  "@commonUnknown": {
+    "description": "Fallback label for unavailable information"
+  },
+  "loginTitle": "Start your movie journals.",
+  "@loginTitle": {
+    "description": "Headline on the sign-in screen"
+  },
+  "loginSubtitle": "Get started by signing in with your\nGoogle or Apple accounts.",
+  "@loginSubtitle": {
+    "description": "Instructions on the sign-in screen"
+  },
+  "loginWithGoogle": "Sign in with Google",
+  "@loginWithGoogle": {
+    "description": "Google sign-in button"
+  },
+  "loginWithApple": "Sign in with Apple",
+  "@loginWithApple": {
+    "description": "Apple sign-in button"
+  },
+  "loginFailed": "Sign-in failed. Please try again.",
+  "@loginFailed": {
+    "description": "Toast shown when provider sign-in fails"
+  },
+  "createUserTitle": "Pick a name.",
+  "@createUserTitle": {
+    "description": "Headline on the username creation screen"
+  },
+  "createUserSubtitle": "Tell me more about you.",
+  "@createUserSubtitle": {
+    "description": "Supporting copy on the username creation screen"
+  },
+  "usernameLabel": "Username",
+  "@usernameLabel": {
+    "description": "Label for the username field"
+  },
+  "usernameHint": "name or nickname",
+  "@usernameHint": {
+    "description": "Hint inside the username field"
+  },
+  "startJournaling": "Start Journaling",
+  "@startJournaling": {
+    "description": "Action that finishes profile creation"
+  },
+  "usernameEmpty": "Username cannot be empty",
+  "@usernameEmpty": {
+    "description": "Validation error for an empty username"
+  },
+  "usernameInvalidCharacters": "Username can only contain letters, numbers, _ and .",
+  "@usernameInvalidCharacters": {
+    "description": "Validation error for invalid username characters"
+  },
+  "usernameOnlySymbols": "Username cannot contain only _ and .",
+  "@usernameOnlySymbols": {
+    "description": "Validation error for a username made only of punctuation"
+  },
+  "usernameTrailingSymbol": "Username cannot end with _ or .",
+  "@usernameTrailingSymbol": {
+    "description": "Validation error for a username ending in punctuation"
+  },
+  "usernameTooLong": "Username cannot be longer than 30 characters",
+  "@usernameTooLong": {
+    "description": "Validation error for a username over 30 characters"
+  },
+  "usernameTaken": "Username already taken. Please choose another one.",
+  "@usernameTaken": {
+    "description": "Validation error for an unavailable username"
+  },
+  "accountSecured": "Account secured",
+  "@accountSecured": {
+    "description": "Toast after successfully linking an identity"
+  },
+  "accountSecureFailed": "Couldn't secure your account. Please try again.",
+  "@accountSecureFailed": {
+    "description": "Toast after identity linking fails"
+  },
+  "accountBannerTitle": "Your account isn't secured",
+  "@accountBannerTitle": {
+    "description": "Persistent warning headline for an anonymous account"
+  },
+  "accountBannerBody": "Attach Apple or Google so reinstalling the app doesn't lose your journals.",
+  "@accountBannerBody": {
+    "description": "Persistent warning explanation for an anonymous account"
+  },
+  "accountSheetHeadline": "Keep your journals safe",
+  "@accountSheetHeadline": {
+    "description": "Generic secure-account sheet headline when journal count is unknown"
+  },
+  "accountSheetHeadlineCount": "{count, plural, =1{Keep your 1 journal safe} other{Keep your {count} journals safe}}",
+  "@accountSheetHeadlineCount": {
+    "description": "Secure-account sheet headline containing the journal count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountSheetBody": "They currently live on this device only. Attach an Apple or Google account and you can sign back in after a reinstall, or on a new phone.",
+  "@accountSheetBody": {
+    "description": "Explanation of why an anonymous account should be secured"
+  },
+  "accountContinueGoogle": "Continue with Google",
+  "@accountContinueGoogle": {
+    "description": "Button to link a Google identity"
+  },
+  "accountContinueApple": "Continue with Apple",
+  "@accountContinueApple": {
+    "description": "Button to link an Apple identity"
+  },
+  "accountNotNow": "Not now",
+  "@accountNotNow": {
+    "description": "Action to defer securing an account"
+  },
+  "accountConflict": "That {provider} account is already attached to another Fink account, so it can't also hold this one. Try {otherProvider} instead — or get in touch and we can join the two accounts for you.",
+  "@accountConflict": {
+    "description": "Explanation when an identity belongs to another Fink account",
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      },
+      "otherProvider": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingTagline": "From film to ink,\nBuild your movie journey.",
+  "@onboardingTagline": {
+    "description": "Tagline on the branded splash screen"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Settings screen title"
+  },
+  "settingsAccountSection": "ACCOUNT",
+  "@settingsAccountSection": {
+    "description": "Heading above account settings"
+  },
+  "settingsSecureAccount": "Secure Account",
+  "@settingsSecureAccount": {
+    "description": "Action to link an identity to an anonymous account"
+  },
+  "settingsLogout": "Logout",
+  "@settingsLogout": {
+    "description": "Action and dialog title for signing out"
+  },
+  "settingsDeleteAccount": "Delete Account",
+  "@settingsDeleteAccount": {
+    "description": "Action and dialog title for deleting the account"
+  },
+  "settingsLogoutDeviceWarning": "Your account has no Apple or Google sign-in attached yet, so getting back in depends on this device — and reinstalling the app would lose your journals for good. Secure your account first.",
+  "@settingsLogoutDeviceWarning": {
+    "description": "Logout warning for an anonymous account tied to one device"
+  },
+  "settingsLogoutConfirmation": "Are you sure you want to logout?",
+  "@settingsLogoutConfirmation": {
+    "description": "Logout confirmation question"
+  },
+  "settingsDeleteAccountDescription": "All your data will be permanently deleted.",
+  "@settingsDeleteAccountDescription": {
+    "description": "Permanent account deletion warning"
+  },
+  "settingsReauthenticationRequired": "Re-authentication required: {error}",
+  "@settingsReauthenticationRequired": {
+    "description": "Error shown when account deletion reauthentication fails",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "settingsDeleteAccountFailed": "Failed to delete account: {error}",
+  "@settingsDeleteAccountFailed": {
+    "description": "Error shown when account deletion fails",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
   }
 }

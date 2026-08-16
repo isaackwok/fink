@@ -174,6 +174,261 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get commonShare;
+
+  /// Generic action to confirm a choice
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get commonConfirm;
+
+  /// Generic loading label
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get commonLoading;
+
+  /// Fallback display label for a user
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get commonUser;
+
+  /// Fallback label for unavailable information
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get commonUnknown;
+
+  /// Headline on the sign-in screen
+  ///
+  /// In en, this message translates to:
+  /// **'Start your movie journals.'**
+  String get loginTitle;
+
+  /// Instructions on the sign-in screen
+  ///
+  /// In en, this message translates to:
+  /// **'Get started by signing in with your\nGoogle or Apple accounts.'**
+  String get loginSubtitle;
+
+  /// Google sign-in button
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get loginWithGoogle;
+
+  /// Apple sign-in button
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Apple'**
+  String get loginWithApple;
+
+  /// Toast shown when provider sign-in fails
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in failed. Please try again.'**
+  String get loginFailed;
+
+  /// Headline on the username creation screen
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a name.'**
+  String get createUserTitle;
+
+  /// Supporting copy on the username creation screen
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me more about you.'**
+  String get createUserSubtitle;
+
+  /// Label for the username field
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get usernameLabel;
+
+  /// Hint inside the username field
+  ///
+  /// In en, this message translates to:
+  /// **'name or nickname'**
+  String get usernameHint;
+
+  /// Action that finishes profile creation
+  ///
+  /// In en, this message translates to:
+  /// **'Start Journaling'**
+  String get startJournaling;
+
+  /// Validation error for an empty username
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot be empty'**
+  String get usernameEmpty;
+
+  /// Validation error for invalid username characters
+  ///
+  /// In en, this message translates to:
+  /// **'Username can only contain letters, numbers, _ and .'**
+  String get usernameInvalidCharacters;
+
+  /// Validation error for a username made only of punctuation
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot contain only _ and .'**
+  String get usernameOnlySymbols;
+
+  /// Validation error for a username ending in punctuation
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot end with _ or .'**
+  String get usernameTrailingSymbol;
+
+  /// Validation error for a username over 30 characters
+  ///
+  /// In en, this message translates to:
+  /// **'Username cannot be longer than 30 characters'**
+  String get usernameTooLong;
+
+  /// Validation error for an unavailable username
+  ///
+  /// In en, this message translates to:
+  /// **'Username already taken. Please choose another one.'**
+  String get usernameTaken;
+
+  /// Toast after successfully linking an identity
+  ///
+  /// In en, this message translates to:
+  /// **'Account secured'**
+  String get accountSecured;
+
+  /// Toast after identity linking fails
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t secure your account. Please try again.'**
+  String get accountSecureFailed;
+
+  /// Persistent warning headline for an anonymous account
+  ///
+  /// In en, this message translates to:
+  /// **'Your account isn\'t secured'**
+  String get accountBannerTitle;
+
+  /// Persistent warning explanation for an anonymous account
+  ///
+  /// In en, this message translates to:
+  /// **'Attach Apple or Google so reinstalling the app doesn\'t lose your journals.'**
+  String get accountBannerBody;
+
+  /// Generic secure-account sheet headline when journal count is unknown
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your journals safe'**
+  String get accountSheetHeadline;
+
+  /// Secure-account sheet headline containing the journal count
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Keep your 1 journal safe} other{Keep your {count} journals safe}}'**
+  String accountSheetHeadlineCount({required int count});
+
+  /// Explanation of why an anonymous account should be secured
+  ///
+  /// In en, this message translates to:
+  /// **'They currently live on this device only. Attach an Apple or Google account and you can sign back in after a reinstall, or on a new phone.'**
+  String get accountSheetBody;
+
+  /// Button to link a Google identity
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get accountContinueGoogle;
+
+  /// Button to link an Apple identity
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get accountContinueApple;
+
+  /// Action to defer securing an account
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get accountNotNow;
+
+  /// Explanation when an identity belongs to another Fink account
+  ///
+  /// In en, this message translates to:
+  /// **'That {provider} account is already attached to another Fink account, so it can\'t also hold this one. Try {otherProvider} instead — or get in touch and we can join the two accounts for you.'**
+  String accountConflict({
+    required String provider,
+    required String otherProvider,
+  });
+
+  /// Tagline on the branded splash screen
+  ///
+  /// In en, this message translates to:
+  /// **'From film to ink,\nBuild your movie journey.'**
+  String get onboardingTagline;
+
+  /// Settings screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// Heading above account settings
+  ///
+  /// In en, this message translates to:
+  /// **'ACCOUNT'**
+  String get settingsAccountSection;
+
+  /// Action to link an identity to an anonymous account
+  ///
+  /// In en, this message translates to:
+  /// **'Secure Account'**
+  String get settingsSecureAccount;
+
+  /// Action and dialog title for signing out
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get settingsLogout;
+
+  /// Action and dialog title for deleting the account
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get settingsDeleteAccount;
+
+  /// Logout warning for an anonymous account tied to one device
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has no Apple or Google sign-in attached yet, so getting back in depends on this device — and reinstalling the app would lose your journals for good. Secure your account first.'**
+  String get settingsLogoutDeviceWarning;
+
+  /// Logout confirmation question
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get settingsLogoutConfirmation;
+
+  /// Permanent account deletion warning
+  ///
+  /// In en, this message translates to:
+  /// **'All your data will be permanently deleted.'**
+  String get settingsDeleteAccountDescription;
+
+  /// Error shown when account deletion reauthentication fails
+  ///
+  /// In en, this message translates to:
+  /// **'Re-authentication required: {error}'**
+  String settingsReauthenticationRequired({required Object error});
+
+  /// Error shown when account deletion fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete account: {error}'**
+  String settingsDeleteAccountFailed({required Object error});
 }
 
 class _AppLocalizationsDelegate

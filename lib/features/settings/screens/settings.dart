@@ -11,6 +11,7 @@ import 'package:movie_journal/features/auth/auth_providers.dart';
 import 'package:movie_journal/features/home/screens/home.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
 import 'package:movie_journal/features/journal/controllers/journals.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/circled_icon_button.dart';
 import 'package:movie_journal/shared_widgets/confirmation_dialog.dart';
 import 'package:movie_journal/themes.dart';
@@ -21,66 +22,68 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usernameAsync = ref.watch(currentUsernameProvider);
+    final l10n = AppLocalizations.of(context);
 
     return ScreenViewTracker(
       screenName: 'Settings',
       child: Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        leading: CircledIconButton(
-          icon: Icons.arrow_back_ios_new,
-          onPressed: () => Navigator.of(context).pop(),
-          outerPadding: const EdgeInsets.only(left: 16),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        appBar: AppBar(
+          leading: CircledIconButton(
+            icon: Icons.arrow_back_ios_new,
+            onPressed: () => Navigator.of(context).pop(),
+            outerPadding: const EdgeInsets.only(left: 16),
+          ),
+          title: Text(l10n.settingsTitle),
+          titleSpacing: 10,
+          titleTextStyle: const TextStyle(
+            fontFamily: 'AvenirNext',
+            fontWeight: FontWeight.w700,
+            fontSize: 22,
+          ),
+          leadingWidth: 40 + 16,
         ),
-        title: const Text('Settings'),
-        titleSpacing: 10,
-        titleTextStyle: const TextStyle(
-          fontFamily: 'AvenirNext',
-          fontWeight: FontWeight.w700,
-          fontSize: 22,
-        ),
-        leadingWidth: 40 + 16,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Username display
-            usernameAsync.when(
-              data:
-                  (username) => Text(
-                    username,
-                    style: GoogleFonts.nothingYouCouldDo(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Username display
+              usernameAsync.when(
+                data:
+                    (username) => Text(
+                      username,
+                      style: GoogleFonts.nothingYouCouldDo(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-              loading:
-                  () => Text(
-                    'Loading...',
-                    style: GoogleFonts.nothingYouCouldDo(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
+                loading:
+                    () => Text(
+                      l10n.commonLoading,
+                      style: GoogleFonts.nothingYouCouldDo(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-              error:
-                  (error, stack) => Text(
-                    'User',
-                    style: GoogleFonts.nothingYouCouldDo(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
+                error:
+                    (error, stack) => Text(
+                      l10n.commonUser,
+                      style: GoogleFonts.nothingYouCouldDo(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-            ),
-            const SizedBox(height: 24),
+              ),
+              const SizedBox(height: 24),
 
-            // Account section
-            _AccountSection(),
-          ],
+              // Account section
+              _AccountSection(),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -88,6 +91,7 @@ class _AccountSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final needsAccountLink = ref.watch(needsAccountLinkProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -101,7 +105,7 @@ class _AccountSection extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'ACCOUNT',
+              l10n.settingsAccountSection,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -116,7 +120,7 @@ class _AccountSection extends ConsumerWidget {
           // place they can find it once the one-time prompt has been dismissed.
           if (needsAccountLink) ...[
             _SettingsItem(
-              title: 'Secure Account',
+              title: l10n.settingsSecureAccount,
               titleColor: StatusColors.warning,
               onTap: () => SecureAccountSheet.show(context),
             ),
@@ -125,19 +129,20 @@ class _AccountSection extends ConsumerWidget {
 
           // Logout option
           _SettingsItem(
-            title: 'Logout',
-            onTap: () => _showLogoutConfirmation(
-              context,
-              ref,
-              isDeviceDependent: needsAccountLink,
-            ),
+            title: l10n.settingsLogout,
+            onTap:
+                () => _showLogoutConfirmation(
+                  context,
+                  ref,
+                  isDeviceDependent: needsAccountLink,
+                ),
           ),
 
           Divider(height: 1, color: Colors.white.withValues(alpha: 0.1)),
 
           // Delete Account option
           _SettingsItem(
-            title: 'Delete Account',
+            title: l10n.settingsDeleteAccount,
             titleColor: Colors.red,
             isLast: true,
             onTap: () => _showDeleteAccountConfirmation(context, ref),
@@ -163,18 +168,17 @@ class _AccountSection extends ConsumerWidget {
     WidgetRef ref, {
     bool isDeviceDependent = false,
   }) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder:
           (context) => ConfirmationDialog(
-            title: 'Logout',
-            description: isDeviceDependent
-                ? 'Your account has no Apple or Google sign-in attached yet, '
-                      'so getting back in depends on this device — and '
-                      'reinstalling the app would lose your journals for good. '
-                      'Secure your account first.'
-                : 'Are you sure you want to logout?',
-            confirmText: 'Logout',
+            title: l10n.settingsLogout,
+            description:
+                isDeviceDependent
+                    ? l10n.settingsLogoutDeviceWarning
+                    : l10n.settingsLogoutConfirmation,
+            confirmText: l10n.settingsLogout,
             confirmTextStyle: TextStyle(
               fontFamily: 'AvenirNext',
               fontSize: 14,
@@ -193,9 +197,7 @@ class _AccountSection extends ConsumerWidget {
               if (context.mounted) {
                 unawaited(
                   Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
                     (route) => false,
                   ),
                 );
@@ -206,13 +208,14 @@ class _AccountSection extends ConsumerWidget {
   }
 
   void _showDeleteAccountConfirmation(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder:
           (context) => ConfirmationDialog(
-            title: 'Delete Account',
-            description: 'All your data will be permanently deleted.',
-            confirmText: 'Delete',
+            title: l10n.settingsDeleteAccount,
+            description: l10n.settingsDeleteAccountDescription,
+            confirmText: l10n.commonDelete,
             onCancel: () => Navigator.of(context).pop(),
             onConfirm: () async {
               await _deleteAccount(context, ref);
@@ -233,7 +236,12 @@ class _AccountSection extends ConsumerWidget {
       if (!confirmed) return; // user backed out of the prompt
     } catch (e) {
       if (context.mounted) {
-        CustomToast.showError(context, 'Re-authentication required: $e');
+        CustomToast.showError(
+          context,
+          AppLocalizations.of(
+            context,
+          ).settingsReauthenticationRequired(error: e),
+        );
       }
       return;
     }
@@ -262,7 +270,10 @@ class _AccountSection extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        CustomToast.showError(context, 'Failed to delete account: $e');
+        CustomToast.showError(
+          context,
+          AppLocalizations.of(context).settingsDeleteAccountFailed(error: e),
+        );
       }
     }
   }

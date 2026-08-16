@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/features/account_link/controllers/account_link.dart';
 import 'package:movie_journal/features/account_link/widgets/secure_account_sheet.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/themes.dart';
 
 /// Persistent nudge for a bridged user whose session has no credential behind
@@ -49,6 +50,7 @@ class _SecureAccountBannerState extends ConsumerState<SecureAccountBanner> {
   Widget build(BuildContext context) {
     if (!ref.watch(needsAccountLinkProvider)) return const SizedBox.shrink();
     _schedulePromptIfNeeded();
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -57,10 +59,11 @@ class _SecureAccountBannerState extends ConsumerState<SecureAccountBanner> {
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => SecureAccountSheet.show(
-            context,
-            journalCount: widget.journalCount,
-          ),
+          onTap:
+              () => SecureAccountSheet.show(
+                context,
+                journalCount: widget.journalCount,
+              ),
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
@@ -88,9 +91,9 @@ class _SecureAccountBannerState extends ConsumerState<SecureAccountBanner> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Your account isn\'t secured',
-                        style: TextStyle(
+                      Text(
+                        l10n.accountBannerTitle,
+                        style: const TextStyle(
                           fontFamily: 'AvenirNext',
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -99,8 +102,7 @@ class _SecureAccountBannerState extends ConsumerState<SecureAccountBanner> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Attach Apple or Google so reinstalling the app '
-                        'doesn\'t lose your journals.',
+                        l10n.accountBannerBody,
                         style: TextStyle(
                           fontFamily: 'AvenirNext',
                           fontSize: 13,

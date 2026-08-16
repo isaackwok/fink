@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/action_text_button.dart';
 
 /// The Cancel / centered-title / Done app bar used by the full-screen sheets
@@ -24,6 +25,8 @@ class SheetAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return AppBar(
       backgroundColor: backgroundColor,
       elevation: 0,
@@ -32,7 +35,7 @@ class SheetAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         children: [
           ActionTextButton(
-            text: 'Cancel',
+            text: l10n.commonCancel,
             color: Colors.white,
             onPressed: onCancel,
           ),
@@ -50,7 +53,7 @@ class SheetAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
         ],
       ),
-      actions: [ActionTextButton(text: 'Done', onPressed: onDone)],
+      actions: [ActionTextButton(text: l10n.commonDone, onPressed: onDone)],
     );
   }
 }

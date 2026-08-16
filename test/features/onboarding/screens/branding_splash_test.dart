@@ -5,12 +5,17 @@ import 'package:movie_journal/features/onboarding/controllers/splash_posters.dar
 import 'package:movie_journal/features/onboarding/controllers/splash_shown.dart';
 import 'package:movie_journal/features/onboarding/screens/branding_splash.dart';
 
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
-Widget _wrap({required ProviderContainer container, required Widget child}) {
+Widget _wrap({
+  required ProviderContainer container,
+  required Widget child,
+  Locale locale = const Locale('en'),
+}) {
   return UncontrolledProviderScope(
     container: container,
-    child: MaterialApp(home: child),
+    child: localizedTestApp(home: child, locale: locale),
   );
 }
 
@@ -30,6 +35,27 @@ void main() {
           splashPostersProvider.overrideWith((ref) async => const <String>[]),
         ],
       );
+    });
+
+    testWidgets('renders the Taiwan Traditional Chinese tagline', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          container: container,
+          child: const BrandingSplashScreen(),
+          locale: const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+            countryCode: 'TW',
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('從電影到筆尖，\n建立你的觀影旅程。'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
     });
 
     tearDown(() {

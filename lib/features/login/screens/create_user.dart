@@ -6,6 +6,8 @@ import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:movie_journal/features/auth/auth_providers.dart';
 import 'package:movie_journal/features/home/screens/home.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
+import 'package:movie_journal/l10n/app_localizations_en.dart';
 import 'package:movie_journal/supabase_auth_manager.dart';
 import 'package:movie_journal/supabase_db_manager.dart';
 
@@ -22,32 +24,33 @@ import 'package:movie_journal/supabase_db_manager.dart';
 /// rule, the database only owns the backstop.
 ///
 /// Returns an error message string if invalid, or null if valid.
-String? validateUsername(String username) {
+String? validateUsername(String username, [AppLocalizations? localizations]) {
+  final l10n = localizations ?? AppLocalizationsEn();
   if (username.isEmpty) {
-    return 'Username cannot be empty';
+    return l10n.usernameEmpty;
   }
 
   // Rule 1: Only allow a-z, 0-9, _, .
   final validCharactersRegex = RegExp(r'^[a-zA-Z0-9_.]+$');
   if (!validCharactersRegex.hasMatch(username)) {
-    return 'Username can only contain letters, numbers, _ and .';
+    return l10n.usernameInvalidCharacters;
   }
 
   // Rule 2: Cannot contain only _ and .
   final onlySpecialCharsRegex = RegExp(r'^[_.]+$');
   if (onlySpecialCharsRegex.hasMatch(username)) {
-    return 'Username cannot contain only _ and .';
+    return l10n.usernameOnlySymbols;
   }
 
   // Rule 3: Cannot end with _ or .
   if (username.endsWith('.') || username.endsWith('_')) {
-    return 'Username cannot end with _ or .';
+    return l10n.usernameTrailingSymbol;
   }
 
   // Rule 4: length ceiling — must not exceed profiles_username_shape,
   // or the DB rejects it as an unhandled 23514.
   if (username.length > 30) {
-    return 'Username cannot be longer than 30 characters';
+    return l10n.usernameTooLong;
   }
 
   return null; // Valid
@@ -89,9 +92,10 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
   /// Handle the Start Journaling button press
   Future<void> _handleStartJournaling() async {
     final username = _usernameController.text.trim();
+    final l10n = AppLocalizations.of(context);
 
     // Validate username format
-    final validationError = validateUsername(username);
+    final validationError = validateUsername(username, l10n);
     if (validationError != null) {
       // TOP so the toast stays visible above the keyboard.
       CustomToast.showError(
@@ -111,7 +115,7 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
         if (mounted) {
           CustomToast.showError(
             context,
-            'Username already taken. Please choose another one.',
+            l10n.usernameTaken,
             gravity: ToastGravity.TOP,
           );
         }
@@ -142,7 +146,11 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
       }
     } catch (e) {
       if (mounted) {
-        CustomToast.showError(context, 'Error: $e', gravity: ToastGravity.TOP);
+        CustomToast.showError(
+          context,
+          l10n.commonErrorWithDetails(error: e),
+          gravity: ToastGravity.TOP,
+        );
       }
     } finally {
       if (mounted) {
@@ -167,6 +175,8 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return ScreenViewTracker(
       screenName: 'CreateUser',
       child: Scaffold(
@@ -178,9 +188,9 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Title
-                const Text(
-                  'Pick a name.',
-                  style: TextStyle(
+                Text(
+                  l10n.createUserTitle,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     height: 1.5,
@@ -191,9 +201,9 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
                 ),
                 const SizedBox(height: 4),
                 // Subtitle
-                const Text(
-                  'Tell me more about you.',
-                  style: TextStyle(
+                Text(
+                  l10n.createUserSubtitle,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontFamily: 'AvenirNext',
@@ -202,11 +212,11 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
                 ),
                 const SizedBox(height: 24),
                 // Username label
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Username',
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                    l10n.usernameLabel,
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -217,7 +227,7 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
                   autocorrect: false,
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                   decoration: InputDecoration(
-                    hintText: 'name or nickname',
+                    hintText: l10n.usernameHint,
                     hintStyle: TextStyle(
                       color: Colors.white.withAlpha(76),
                       fontSize: 16,
@@ -280,9 +290,9 @@ class _CreateUserScreenState extends ConsumerState<CreateUserScreen> {
                                 ),
                               ),
                             )
-                            : const Text(
-                              'Start Journaling',
-                              style: TextStyle(
+                            : Text(
+                              l10n.startJournaling,
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
