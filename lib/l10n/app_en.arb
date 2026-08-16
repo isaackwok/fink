@@ -243,5 +243,60 @@
         "type": "Object"
       }
     }
+  },
+  "homeJournalCount": "{count, plural, =1{1 movie journal} other{{count} movie journals}}",
+  "@homeJournalCount": {
+    "description": "Number of movie journals shown below the username",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeEmptyTitle": "Your movie journal starts here",
+  "@homeEmptyTitle": {
+    "description": "Headline on the empty home screen"
+  },
+  "homeEmptyBody": "Add your first movie to keep your memories going",
+  "@homeEmptyBody": {
+    "description": "Supporting copy on the empty home screen"
+  },
+  "addJournal": "Add Journal",
+  "@addJournal": {
+    "description": "Action and screen title for adding a movie journal"
+  },
+  "homeErrorCheckingUser": "Error checking user: {error}",
+  "@homeErrorCheckingUser": {
+    "description": "Error shown while checking whether a user profile exists",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "homeErrorLoadingJournals": "Error loading journals: {error}",
+  "@homeErrorLoadingJournals": {
+    "description": "Error shown when journals cannot be loaded",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "searchMovieHint": "Search movie",
+  "@searchMovieHint": {
+    "description": "Hint in the movie search field"
+  },
+  "searchPopularHeader": "People watched",
+  "@searchPopularHeader": {
+    "description": "Heading above the list of popular movies"
+  },
+  "searchErrorLoadingMovies": "Error loading movies",
+  "@searchErrorLoadingMovies": {
+    "description": "Error shown when a movie list cannot be loaded"
+  },
+  "moviePreviewErrorLoading": "Error loading movie",
+  "@moviePreviewErrorLoading": {
+    "description": "Error shown when movie details cannot be loaded"
   }
 }

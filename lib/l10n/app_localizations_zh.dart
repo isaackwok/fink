@@ -184,6 +184,42 @@ class AppLocalizationsZh extends AppLocalizations {
   String settingsDeleteAccountFailed({required Object error}) {
     return '無法刪除帳號：$error';
   }
+
+  @override
+  String homeJournalCount({required int count}) {
+    return '$count 篇電影日記';
+  }
+
+  @override
+  String get homeEmptyTitle => '你的電影日記從這裡開始';
+
+  @override
+  String get homeEmptyBody => '新增第一部電影，留下你的觀影回憶';
+
+  @override
+  String get addJournal => '新增日記';
+
+  @override
+  String homeErrorCheckingUser({required Object error}) {
+    return '檢查使用者時發生錯誤：$error';
+  }
+
+  @override
+  String homeErrorLoadingJournals({required Object error}) {
+    return '載入日記時發生錯誤：$error';
+  }
+
+  @override
+  String get searchMovieHint => '搜尋電影';
+
+  @override
+  String get searchPopularHeader => '大家都在看';
+
+  @override
+  String get searchErrorLoadingMovies => '無法載入電影';
+
+  @override
+  String get moviePreviewErrorLoading => '無法載入電影';
 }
 
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
@@ -366,4 +402,40 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String settingsDeleteAccountFailed({required Object error}) {
     return '無法刪除帳號：$error';
   }
+
+  @override
+  String homeJournalCount({required int count}) {
+    return '$count 篇電影日記';
+  }
+
+  @override
+  String get homeEmptyTitle => '你的電影日記從這裡開始';
+
+  @override
+  String get homeEmptyBody => '新增第一部電影，留下你的觀影回憶';
+
+  @override
+  String get addJournal => '新增日記';
+
+  @override
+  String homeErrorCheckingUser({required Object error}) {
+    return '檢查使用者時發生錯誤：$error';
+  }
+
+  @override
+  String homeErrorLoadingJournals({required Object error}) {
+    return '載入日記時發生錯誤：$error';
+  }
+
+  @override
+  String get searchMovieHint => '搜尋電影';
+
+  @override
+  String get searchPopularHeader => '大家都在看';
+
+  @override
+  String get searchErrorLoadingMovies => '無法載入電影';
+
+  @override
+  String get moviePreviewErrorLoading => '無法載入電影';
 }

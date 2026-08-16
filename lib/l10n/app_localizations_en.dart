@@ -197,4 +197,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String settingsDeleteAccountFailed({required Object error}) {
     return 'Failed to delete account: $error';
   }
+
+  @override
+  String homeJournalCount({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count movie journals',
+      one: '1 movie journal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeEmptyTitle => 'Your movie journal starts here';
+
+  @override
+  String get homeEmptyBody =>
+      'Add your first movie to keep your memories going';
+
+  @override
+  String get addJournal => 'Add Journal';
+
+  @override
+  String homeErrorCheckingUser({required Object error}) {
+    return 'Error checking user: $error';
+  }
+
+  @override
+  String homeErrorLoadingJournals({required Object error}) {
+    return 'Error loading journals: $error';
+  }
+
+  @override
+  String get searchMovieHint => 'Search movie';
+
+  @override
+  String get searchPopularHeader => 'People watched';
+
+  @override
+  String get searchErrorLoadingMovies => 'Error loading movies';
+
+  @override
+  String get moviePreviewErrorLoading => 'Error loading movie';
 }

@@ -5,6 +5,7 @@ import 'package:movie_journal/features/search_movie/widgets/movie_result_list.da
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/search_movie/widgets/movie_search_bar.dart';
 import 'package:movie_journal/shared_widgets/circled_icon_button.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 class SearchMovieScreen extends ConsumerStatefulWidget {
   const SearchMovieScreen({super.key});
@@ -52,7 +53,7 @@ class _SearchMovieScreenState extends ConsumerState<SearchMovieScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Add Journal'),
+            title: Text(AppLocalizations.of(context).addJournal),
             centerTitle: false,
             leadingWidth: 40 + 16,
             leading: CircledIconButton(

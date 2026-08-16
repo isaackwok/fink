@@ -53,5 +53,15 @@
   "settingsLogoutConfirmation": "確定要登出嗎？",
   "settingsDeleteAccountDescription": "你的所有資料都會被永久刪除。",
   "settingsReauthenticationRequired": "需要重新驗證身分：{error}",
-  "settingsDeleteAccountFailed": "無法刪除帳號：{error}"
+  "settingsDeleteAccountFailed": "無法刪除帳號：{error}",
+  "homeJournalCount": "{count} 篇電影日記",
+  "homeEmptyTitle": "你的電影日記從這裡開始",
+  "homeEmptyBody": "新增第一部電影，留下你的觀影回憶",
+  "addJournal": "新增日記",
+  "homeErrorCheckingUser": "檢查使用者時發生錯誤：{error}",
+  "homeErrorLoadingJournals": "載入日記時發生錯誤：{error}",
+  "searchMovieHint": "搜尋電影",
+  "searchPopularHeader": "大家都在看",
+  "searchErrorLoadingMovies": "無法載入電影",
+  "moviePreviewErrorLoading": "無法載入電影"
 }

@@ -8,6 +8,7 @@ import 'package:movie_journal/features/search_movie/widgets/movie_result_list.da
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../helpers/test_movie.dart';
+import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
 
 /// Serves a fixed state instead of hitting the TMDB repository.
@@ -25,8 +26,8 @@ class _FixedSearchMovieController extends SearchMovieController {
   /// NOT the seamless refresh flavor.
   void reloadKeepingValue() {
     state = const AsyncLoading<SearchMovieState>()
-        // ignore: invalid_use_of_internal_member
-        .copyWithPrevious(state, isRefresh: false);
+    // ignore: invalid_use_of_internal_member
+    .copyWithPrevious(state, isRefresh: false);
   }
 }
 
@@ -50,8 +51,9 @@ void main() {
 
   Future<ScrollController> pumpList(
     WidgetTester tester,
-    SearchMovieState state,
-  ) async {
+    SearchMovieState state, {
+    Locale locale = const Locale('en'),
+  }) async {
     final scrollController = ScrollController();
     addTearDown(scrollController.dispose);
     await tester.pumpWidget(
@@ -61,7 +63,8 @@ void main() {
             () => _FixedSearchMovieController(state),
           ),
         ],
-        child: MaterialApp(
+        child: localizedTestApp(
+          locale: locale,
           home: Scaffold(
             body: MovieResultList(scrollController: scrollController),
           ),
@@ -86,6 +89,22 @@ void main() {
       expect(find.byType(MovieResultItem), findsNWidgets(2));
       expect(find.textContaining('First Movie'), findsOneWidget);
       expect(find.textContaining('Second Movie'), findsOneWidget);
+    });
+
+    testWidgets('localizes the popular header for Taiwan Chinese', (
+      tester,
+    ) async {
+      await pumpList(
+        tester,
+        SearchMovieState(movies: movies, mode: SearchMovieMode.popular),
+        locale: const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hant',
+          countryCode: 'TW',
+        ),
+      );
+
+      expect(find.text('大家都在看'), findsOneWidget);
     });
   });
 
@@ -126,7 +145,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(
+          child: localizedTestApp(
             home: Scaffold(
               body: MovieResultList(scrollController: scrollController),
             ),
@@ -136,8 +155,9 @@ void main() {
       await tester.pump();
       expect(find.byType(MovieResultItem), findsNWidgets(2));
 
-      final notifier = container.read(searchMovieControllerProvider.notifier)
-          as _FixedSearchMovieController;
+      final notifier =
+          container.read(searchMovieControllerProvider.notifier)
+              as _FixedSearchMovieController;
       notifier.reloadKeepingValue();
       await tester.pump();
 

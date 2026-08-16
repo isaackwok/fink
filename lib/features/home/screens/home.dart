@@ -13,6 +13,7 @@ import 'package:movie_journal/features/login/screens/create_user.dart';
 import 'package:movie_journal/features/onboarding/controllers/splash_shown.dart';
 import 'package:movie_journal/features/onboarding/screens/branding_splash.dart';
 import 'package:movie_journal/features/settings/screens/settings.dart';
+import 'package:movie_journal/l10n/app_localizations.dart';
 
 /// Reusable loading widget with centered circular progress indicator
 class LoadingScaffold extends StatelessWidget {
@@ -30,6 +31,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
+    final l10n = AppLocalizations.of(context);
 
     // Show loading while checking auth state
     return authState.when(
@@ -53,8 +55,8 @@ class HomeScreen extends ConsumerWidget {
           return bridge.when(
             // On success the auth stream re-emits with the new session and
             // this branch is replaced by the signed-in path.
-            data: (claimed) =>
-                claimed ? const LoadingScaffold() : signedOutUi(),
+            data:
+                (claimed) => claimed ? const LoadingScaffold() : signedOutUi(),
             loading: () => const LoadingScaffold(),
             // AnonymousBridge.attempt() is written not to throw, so this is
             // defence in depth: a bridge problem must never cost a normal user
@@ -68,25 +70,34 @@ class HomeScreen extends ConsumerWidget {
         return ref
             .watch(hasProfileProvider)
             .when(
-              data: (hasProfile) => hasProfile
-                  ? _buildHomeScreen(context, ref)
-                  : const CreateUserScreen(),
+              data:
+                  (hasProfile) =>
+                      hasProfile
+                          ? _buildHomeScreen(context, ref)
+                          : const CreateUserScreen(),
               loading: () => const LoadingScaffold(),
-              error: (error, stack) => Scaffold(
-                body: Center(child: Text('Error checking user: $error')),
-              ),
+              error:
+                  (error, stack) => Scaffold(
+                    body: Center(
+                      child: Text(l10n.homeErrorCheckingUser(error: error)),
+                    ),
+                  ),
             );
       },
       loading: () => const LoadingScaffold(),
       error:
-          (error, stack) =>
-              Scaffold(body: Center(child: Text('Error: $error'))),
+          (error, stack) => Scaffold(
+            body: Center(
+              child: Text(l10n.commonErrorWithDetails(error: error)),
+            ),
+          ),
     );
   }
 
   Widget _buildHomeScreen(BuildContext context, WidgetRef ref) {
     final journalsAsync = ref.watch(journalsControllerProvider);
     final usernameAsync = ref.watch(currentUsernameProvider);
+    final l10n = AppLocalizations.of(context);
 
     return journalsAsync.when(
       data: (journalsState) {
@@ -94,110 +105,114 @@ class HomeScreen extends ConsumerWidget {
         return ScreenViewTracker(
           screenName: 'Home',
           child: Scaffold(
-          key: const PageStorageKey('home'),
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          appBar: AppBar(
-            toolbarHeight: 76,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        usernameAsync.when(
-                          data:
-                              (username) => Text(
-                                username,
-                                style: GoogleFonts.nothingYouCouldDo(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                          loading:
-                              () => Text(
-                                'Loading...',
-                                style: GoogleFonts.nothingYouCouldDo(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                          error:
-                              (_, _) => Text(
-                                'User',
-                                style: GoogleFonts.nothingYouCouldDo(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              '${journals.length} movie journals',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => const SettingsScreen(),
+            key: const PageStorageKey('home'),
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            appBar: AppBar(
+              toolbarHeight: 76,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          usernameAsync.when(
+                            data:
+                                (username) => Text(
+                                  username,
+                                  style: GoogleFonts.nothingYouCouldDo(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w700,
                                   ),
-                                );
-                              },
-                              child: Icon(
-                                Icons.settings,
-                                size: 16,
-                                color: Theme.of(context).colorScheme.primary,
+                                ),
+                            loading:
+                                () => Text(
+                                  l10n.commonLoading,
+                                  style: GoogleFonts.nothingYouCouldDo(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                            error:
+                                (_, _) => Text(
+                                  l10n.commonUser,
+                                  style: GoogleFonts.nothingYouCouldDo(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                l10n.homeJournalCount(count: journals.length),
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                              const SizedBox(width: 6),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => const SettingsScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.settings,
+                                  size: 16,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const AddMovieButton(),
+                ],
+              ),
+              centerTitle: false,
+            ),
+            body: Column(
+              children: [
+                // Renders nothing unless this user came through the anonymous
+                // bridge and still holds a credential-less session.
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SecureAccountBanner(journalCount: journals.length),
                 ),
-                const AddMovieButton(),
+                // EmptyPlaceholder stays outside a scroll view: its LayoutBuilder
+                // needs a bounded height, which Expanded gives it and a
+                // SingleChildScrollView would not.
+                Expanded(
+                  child:
+                      journals.isEmpty
+                          ? const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: EmptyPlaceholder(),
+                          )
+                          : const SingleChildScrollView(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: JournalsList(),
+                          ),
+                ),
               ],
             ),
-            centerTitle: false,
           ),
-          body: Column(
-            children: [
-              // Renders nothing unless this user came through the anonymous
-              // bridge and still holds a credential-less session.
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SecureAccountBanner(journalCount: journals.length),
-              ),
-              // EmptyPlaceholder stays outside a scroll view: its LayoutBuilder
-              // needs a bounded height, which Expanded gives it and a
-              // SingleChildScrollView would not.
-              Expanded(
-                child: journals.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: EmptyPlaceholder(),
-                      )
-                    : const SingleChildScrollView(
-                        padding: EdgeInsets.only(left: 20, right: 20),
-                        child: JournalsList(),
-                      ),
-              ),
-            ],
-          ),
-        ));
+        );
       },
       loading: () => const LoadingScaffold(),
       error:
           (error, stack) => Scaffold(
-            body: Center(child: Text('Error loading journals: $error')),
+            body: Center(
+              child: Text(l10n.homeErrorLoadingJournals(error: error)),
+            ),
           ),
     );
   }

@@ -429,6 +429,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to delete account: {error}'**
   String settingsDeleteAccountFailed({required Object error});
+
+  /// Number of movie journals shown below the username
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 movie journal} other{{count} movie journals}}'**
+  String homeJournalCount({required int count});
+
+  /// Headline on the empty home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Your movie journal starts here'**
+  String get homeEmptyTitle;
+
+  /// Supporting copy on the empty home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first movie to keep your memories going'**
+  String get homeEmptyBody;
+
+  /// Action and screen title for adding a movie journal
+  ///
+  /// In en, this message translates to:
+  /// **'Add Journal'**
+  String get addJournal;
+
+  /// Error shown while checking whether a user profile exists
+  ///
+  /// In en, this message translates to:
+  /// **'Error checking user: {error}'**
+  String homeErrorCheckingUser({required Object error});
+
+  /// Error shown when journals cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading journals: {error}'**
+  String homeErrorLoadingJournals({required Object error});
+
+  /// Hint in the movie search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search movie'**
+  String get searchMovieHint;
+
+  /// Heading above the list of popular movies
+  ///
+  /// In en, this message translates to:
+  /// **'People watched'**
+  String get searchPopularHeader;
+
+  /// Error shown when a movie list cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading movies'**
+  String get searchErrorLoadingMovies;
+
+  /// Error shown when movie details cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading movie'**
+  String get moviePreviewErrorLoading;
 }
 
 class _AppLocalizationsDelegate
