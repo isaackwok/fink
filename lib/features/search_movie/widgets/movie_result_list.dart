@@ -148,6 +148,8 @@ class MovieResultItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+
     return InkWell(
       onTap: () {
         _onTap(context, ref);
