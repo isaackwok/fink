@@ -14,11 +14,13 @@ final movieRepoProvider = Provider(
     ref.watch(movieApiProvider),
     language: appLanguageTag(ref.watch(appLocaleProvider)),
   ),
+  dependencies: [appLocaleProvider],
 );
 
 final searchMovieControllerProvider =
     AsyncNotifierProvider<SearchMovieController, SearchMovieState>(
       SearchMovieController.new,
+      dependencies: [movieRepoProvider],
     );
 
 // Both are keyed by TMDB movie id. Deliberately NOT autoDispose: instances
@@ -36,11 +38,13 @@ Duration? _noRetry(int retryCount, Object error) => null;
 final movieDetailControllerProvider =
     AsyncNotifierProvider.family<MovieDetailController, DetailedMovie, int>(
       MovieDetailController.new,
+      dependencies: [movieRepoProvider],
       retry: _noRetry,
     );
 
 final movieImagesControllerProvider =
     AsyncNotifierProvider.family<MovieImagesController, MovieImagesState, int>(
       MovieImagesController.new,
+      dependencies: [movieRepoProvider],
       retry: _noRetry,
     );

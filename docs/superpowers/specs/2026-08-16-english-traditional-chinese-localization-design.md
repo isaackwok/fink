@@ -123,6 +123,8 @@ In particular, date output remains byte-for-byte governed by the current pattern
 
 `MaterialApp` exposes its resolved locale through `appLocaleProvider`. Both TMDB title-bearing requests and Quesgen review generation derive their backend language tag from that provider, mapping English to `en-US` and Taiwan Traditional Chinese to `zh-TW`.
 
+The locale override lives in a nested `ProviderScope`, so `appLocaleProvider` and every provider that transitively reads it declare Riverpod `dependencies`. Without that scoped dependency chain, downstream providers resolve in the root container and receive the English fallback even while the UI is Chinese.
+
 TMDB applies the language to popular, search, and movie-detail requests. Poster image filtering keeps its explicit per-tab language behavior.
 
 ## Error and Fallback Behavior

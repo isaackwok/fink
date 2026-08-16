@@ -49,7 +49,7 @@ The app follows a feature-based architecture where each feature is self-containe
 
 - **quesgen/** - AI review fetching service for movie reviews from external sources
   - `review.dart` - Review data model with `text` and `source` fields (sources: "letterboxd", "reddit")
-  - `controller.dart` - Review generation logic (QuesgenController, QuesgenState). Review generation reads `appLocaleProvider`, so the backend language follows the locale resolved by `MaterialApp` rather than the raw OS locale.
+  - `controller.dart` - Review generation logic (QuesgenController, QuesgenState). Review generation reads `appLocaleProvider`, so the backend language follows the locale resolved by `MaterialApp` rather than the raw OS locale. `appLocaleProvider` is scoped inside `MaterialApp.builder`; locale-sensitive providers and every downstream provider in their graph must declare Riverpod `dependencies` or they silently resolve against the root English fallback.
   - `provider.dart` - Riverpod provider
   - `api.dart` - API integration (GET `/generate/{movieId}`) returning `{ reviews: [{ text, source }] }`
 

@@ -9,4 +9,7 @@ const appSupportedLocales = <Locale>[
 String appLanguageTag(Locale locale) =>
     locale.languageCode == 'zh' ? 'zh-TW' : 'en-US';
 
-final appLocaleProvider = Provider<Locale>((_) => appSupportedLocales.first);
+final appLocaleProvider = Provider<Locale>(
+  (_) => appSupportedLocales.first,
+  dependencies: const [],
+);
