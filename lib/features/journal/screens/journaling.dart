@@ -34,6 +34,7 @@ class JournalingScreen extends ConsumerStatefulWidget {
 
 class _JournalingScreenState extends ConsumerState<JournalingScreen> {
   final ScrollController _scrollController = ScrollController();
+  late final JournalState _initialJournal;
   bool _showTitle = false;
   bool _isSaving = false;
 
@@ -42,6 +43,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
   @override
   void initState() {
     super.initState();
+    _initialJournal = ref.read(journalControllerProvider);
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
@@ -69,11 +71,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
   }
 
   bool _hasUnsavedChanges() {
-    final journal = ref.read(journalControllerProvider);
-    return journal.rating > 0 ||
-        journal.emotions.isNotEmpty ||
-        journal.selectedScenes.isNotEmpty ||
-        journal.thoughts.isNotEmpty;
+    return ref.read(journalControllerProvider) != _initialJournal;
   }
 
   void _cleanupState() {
@@ -359,8 +357,90 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
               ),
             ],
           ),
-        ),
+        ).withEdgeSwipeBack(() => unawaited(_confirmDiscardAndPop())),
       ),
+    );
+  }
+}
+
+extension _EdgeSwipeBackWidget on Widget {
+  Widget withEdgeSwipeBack(VoidCallback onSwipeBack) {
+    return _EdgeSwipeBackDetector(onSwipeBack: onSwipeBack, child: this);
+  }
+}
+
+/// Observes an iOS-style rightward swipe from the left edge without joining
+/// the gesture arena, so the editor's vertical scroll and horizontal controls
+/// keep their normal gesture behavior.
+class _EdgeSwipeBackDetector extends StatefulWidget {
+  const _EdgeSwipeBackDetector({
+    required this.child,
+    required this.onSwipeBack,
+  });
+
+  final Widget child;
+  final VoidCallback onSwipeBack;
+
+  @override
+  State<_EdgeSwipeBackDetector> createState() => _EdgeSwipeBackDetectorState();
+}
+
+class _EdgeSwipeBackDetectorState extends State<_EdgeSwipeBackDetector> {
+  static const double _edgeWidth = 24;
+  static const double _dismissThreshold = 80;
+  static const double _flingVelocity = 700;
+
+  int? _pointer;
+  Offset? _startPosition;
+  Duration? _startTimestamp;
+
+  void _handlePointerDown(PointerDownEvent event) {
+    if (_pointer != null || event.localPosition.dx > _edgeWidth) return;
+
+    _pointer = event.pointer;
+    _startPosition = event.localPosition;
+    _startTimestamp = event.timeStamp;
+  }
+
+  void _handlePointerUp(PointerUpEvent event) {
+    if (event.pointer != _pointer || _startPosition == null) return;
+
+    final travel = event.localPosition - _startPosition!;
+    final elapsed = event.timeStamp - _startTimestamp!;
+    final seconds = elapsed.inMicroseconds / Duration.microsecondsPerSecond;
+    final velocity = seconds > 0 ? travel.dx / seconds : 0.0;
+    final travelledFar = travel.dx >= _dismissThreshold;
+    final flicked =
+        travel.dx >= _dismissThreshold / 4 && velocity >= _flingVelocity;
+    final isRightwardSwipe =
+        travel.dx > travel.dy.abs() && (travelledFar || flicked);
+    _reset();
+
+    if (isRightwardSwipe) {
+      widget.onSwipeBack();
+    }
+  }
+
+  void _handlePointerCancel(PointerCancelEvent event) {
+    if (event.pointer == _pointer) {
+      _reset();
+    }
+  }
+
+  void _reset() {
+    _pointer = null;
+    _startPosition = null;
+    _startTimestamp = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: _handlePointerDown,
+      onPointerUp: _handlePointerUp,
+      onPointerCancel: _handlePointerCancel,
+      child: widget.child,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/screens/journaling.dart';
+import 'package:movie_journal/features/quesgen/review.dart';
 import 'package:movie_journal/themes.dart';
 
 import '../../../helpers/test_journal.dart';
@@ -21,9 +22,249 @@ class _FailingSaveController extends JournalController {
   }
 }
 
+class _InitialJournalController extends JournalController {
+  _InitialJournalController(this.initialState);
+
+  final JournalState initialState;
+
+  @override
+  JournalState build() => initialState;
+}
+
+Widget _buildSwipeSubject(
+  ProviderContainer container, {
+  String? editJournalId,
+}) {
+  return UncontrolledProviderScope(
+    container: container,
+    child: localizedTestApp(
+      theme: Themes.dark,
+      home: Builder(
+        builder:
+            (context) => Scaffold(
+              body: Center(
+                child: TextButton(
+                  onPressed:
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder:
+                              (_) => JournalingScreen(
+                                movieTitle: 'Fight Club',
+                                moviePosterUrl: '/poster.jpg',
+                                editJournalId: editJournalId,
+                              ),
+                        ),
+                      ),
+                  child: const Text('Open editor'),
+                ),
+              ),
+            ),
+      ),
+    ),
+  );
+}
+
+Future<void> _openEditor(WidgetTester tester) async {
+  await tester.tap(find.text('Open editor'));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 400));
+}
+
+Future<void> _swipeRight(
+  WidgetTester tester, {
+  double startX = 5,
+  double distance = 240,
+  Duration duration = const Duration(milliseconds: 300),
+}) async {
+  await tester.timedDragFrom(
+    Offset(startX, 300),
+    Offset(distance, 0),
+    duration,
+  );
+  await tester.pump();
+}
+
 void main() {
   setUpAll(() => setUpWidgetTests());
   tearDownAll(() => tearDownWidgetTests());
+
+  group('JournalingScreen edge swipe', () {
+    late ProviderContainer container;
+
+    tearDown(() {
+      container.dispose();
+    });
+
+    testWidgets('goes back immediately when the journal has no changes', (
+      tester,
+    ) async {
+      container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal()),
+          ),
+        ],
+      );
+      await tester.pumpWidget(_buildSwipeSubject(container));
+      await _openEditor(tester);
+
+      await _swipeRight(tester);
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('Open editor'), findsOneWidget);
+      expect(find.text('Discard Changes'), findsNothing);
+      expect(container.read(journalControllerProvider).tmdbId, 0);
+    });
+
+    testWidgets('a short fast flick from the left edge goes back', (
+      tester,
+    ) async {
+      container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal()),
+          ),
+        ],
+      );
+      await tester.pumpWidget(_buildSwipeSubject(container));
+      await _openEditor(tester);
+
+      await _swipeRight(
+        tester,
+        distance: 50,
+        duration: const Duration(milliseconds: 50),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('Open editor'), findsOneWidget);
+    });
+
+    testWidgets('confirms and discards changes when editing a journal', (
+      tester,
+    ) async {
+      container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal(rating: 3)),
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        _buildSwipeSubject(container, editJournalId: 'journal-1'),
+      );
+      await _openEditor(tester);
+      container.read(journalControllerProvider.notifier).setRating(4);
+      await tester.pump();
+
+      await _swipeRight(tester);
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Discard Changes'), findsOneWidget);
+      expect(find.text('Open editor'), findsNothing);
+
+      await tester.tap(find.text('Discard'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('Open editor'), findsOneWidget);
+      expect(container.read(journalControllerProvider).rating, 0);
+    });
+
+    testWidgets('goes back directly when an existing journal is unchanged', (
+      tester,
+    ) async {
+      container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal(rating: 3)),
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        _buildSwipeSubject(container, editJournalId: 'journal-1'),
+      );
+      await _openEditor(tester);
+
+      await _swipeRight(tester);
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('Open editor'), findsOneWidget);
+      expect(find.text('Discard Changes'), findsNothing);
+    });
+
+    testWidgets('confirms when an AI review is the only unsaved change', (
+      tester,
+    ) async {
+      container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal()),
+          ),
+        ],
+      );
+      await tester.pumpWidget(_buildSwipeSubject(container));
+      await _openEditor(tester);
+      container
+          .read(journalControllerProvider.notifier)
+          .addSelectedReview(
+            Review(text: 'A memorable review', source: 'reddit'),
+          );
+      await tester.pump();
+
+      await _swipeRight(tester);
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Discard Changes'), findsOneWidget);
+    });
+
+    testWidgets('stays on the editor when swipe discard is cancelled', (
+      tester,
+    ) async {
+      container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal(rating: 3)),
+          ),
+        ],
+      );
+      await tester.pumpWidget(_buildSwipeSubject(container));
+      await _openEditor(tester);
+      container.read(journalControllerProvider.notifier).setRating(4);
+      await tester.pump();
+
+      await _swipeRight(tester);
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('Cancel'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byType(JournalingScreen), findsOneWidget);
+      expect(find.text('Discard Changes'), findsNothing);
+      expect(container.read(journalControllerProvider).rating, 4);
+    });
+
+    testWidgets('ignores horizontal drags that start away from the left edge', (
+      tester,
+    ) async {
+      container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal(rating: 3)),
+          ),
+        ],
+      );
+      await tester.pumpWidget(_buildSwipeSubject(container));
+      await _openEditor(tester);
+      container.read(journalControllerProvider.notifier).setRating(4);
+      await tester.pump();
+
+      await _swipeRight(tester, startX: 100);
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byType(JournalingScreen), findsOneWidget);
+      expect(find.text('Discard Changes'), findsNothing);
+    });
+  });
 
   group('JournalingScreen save failure', () {
     // Regression test for ISA-9 bug 1: the catch block used to call
