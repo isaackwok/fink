@@ -24,18 +24,35 @@ class JournalContent extends ConsumerStatefulWidget {
 
 class _JournalContentState extends ConsumerState<JournalContent> {
   late PageController _pageController;
+  final ScrollController _scrollController = ScrollController();
+  bool _showTitle = false;
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    // Show title when scrolled down more than 100 pixels — mirrors
+    // JournalingScreen's collapsing-title behavior.
+    final showTitle =
+        _scrollController.hasClients && _scrollController.offset > 100;
+    if (showTitle != _showTitle) {
+      setState(() {
+        _showTitle = showTitle;
+      });
+    }
   }
 
   void _onPageChanged(int page) {
@@ -83,6 +100,7 @@ class _JournalContentState extends ConsumerState<JournalContent> {
       screenName: 'JournalContent',
       child: Scaffold(
         body: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             SliverAppBar(
               backgroundColor: Theme.of(context).colorScheme.surface,
@@ -91,6 +109,19 @@ class _JournalContentState extends ConsumerState<JournalContent> {
               snap: true,
               automaticallyImplyLeading: false,
               centerTitle: true,
+              title: AnimatedOpacity(
+                opacity: _showTitle ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                  journal.movieTitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
               actions: [
                 IconButton(
                   onPressed: () {

@@ -94,7 +94,8 @@ docs_touched=$(
     git diff --name-only 2>/dev/null
   }
 )
-claude_md_changed=$(printf '%s\n' "$docs_touched" | grep '^CLAUDE\.md$')
+# CLAUDE.md is a symlink to AGENTS.md, so git reports edits as AGENTS.md.
+claude_md_changed=$(printf '%s\n' "$docs_touched" | grep -E '^(CLAUDE|AGENTS)\.md$')
 readme_md_changed=$(printf '%s\n' "$docs_touched" | grep '^README\.md$')
 
 missing=""

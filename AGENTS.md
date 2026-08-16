@@ -8,55 +8,7 @@ This is a Flutter movie journal application that allows users to search for movi
 
 ## Development Commands
 
-### Running the App
-```bash
-flutter run
-```
-
-### Building
-```bash
-# Development build
-flutter build apk --debug
-
-# Production build
-flutter build apk --release
-flutter build ios --release
-```
-
-### Deploying to App Store / TestFlight
-```bash
-# Full build + upload (build number auto-managed by App Store Connect)
-./deploy.sh
-
-# With explicit build number
-./deploy.sh --build-number 29
-```
-
-Requires one-time setup: App Store Connect API Key (`.p8` file at `~/.appstoreconnect/private_keys/`) and credentials in `.deploy.env`. See deploy script comments for details.
-
-### Testing and Linting
-```bash
-# Run static analysis
-flutter analyze
-
-# Run tests
-flutter test
-
-# Run a single test file
-flutter test test/path/to/test_file.dart
-```
-
-### Dependencies
-```bash
-# Install dependencies
-flutter pub get
-
-# Update dependencies
-flutter pub upgrade
-
-# Check for outdated packages
-flutter pub outdated
-```
+Standard Flutter tooling: `flutter run` / `flutter test` / `flutter analyze` / `flutter pub get`. Deploys to App Store Connect / TestFlight go through `./deploy.sh` (one-time credential setup required) — see the `deploy` skill.
 
 ## Architecture
 
@@ -75,6 +27,8 @@ The app follows a feature-based architecture where each feature is self-containe
 - **journal/** - Core journaling features with full workflow from movie selection to saving
   - `controllers/` - `journal_state.dart` (SceneItem + JournalState model), `journal_mode.dart` (JournalMode enum + JournalModeNotifier), `journal.dart` (JournalController + provider; re-exports the other two, so `controllers/journal.dart` remains the one import for journal state), `journals.dart` (JournalsState list)
   - `screens/` - Journaling (main editor), JournalComplete (post-save success screen), JournalContent (view saved journal), MoviePreview, ThoughtsScreen (`thoughts.dart`), CaptionEditor. Note `ThoughtsScreen` (screen) and `ThoughtsEditor` (widget, below) are different classes — don't confuse them.
+    - `MoviePreview` supports pull-down-to-close via the shared `PullDownToDismiss` wrapper (see `lib/shared_widgets/`); its scroll views use `AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics())` so the gesture works when content fits the viewport and feels identical on Android.
+    - `JournalContent` mirrors `Journaling`'s collapsing-title pattern: a `ScrollController` listener flips `_showTitle` at offset > 100 and the pinned `SliverAppBar` fades the movie title in via `AnimatedOpacity` (200ms). Pinned by the "movie title in header" group in `journal_content_test.dart`.
   - `widgets/` - RatingSelector (10-heart rating), EmotionsSelectorButton, EmotionsSelectorBottomSheet, ScenesSelector (whose selected-scene card is `SelectedSceneCard`), ScenesSelectSheet (whose grid tile is `SceneGridTile`), SceneCard, ReviewItem, ReviewsBottomSheet (opened only via `ReviewsBottomSheet.show(context)` — ThoughtsScreen and ReviewsFloatingButton share it), ThoughtsEditor, AiReferencesAccordion, JournalContentMoreMenu, and `journal_actions.dart` — a set of shared helper functions (`editJournal`, `shareJournal`, `confirmDeleteJournal`, `deleteJournal`) that encapsulate the domain actions a journal can undergo. Reused by both the more-menu on `JournalContent` and the long-press menu on `JournalCard`. The helpers own the *domain action* (load state / navigate to editor, confirm dialog, Supabase delete + toast, navigate to `TicketPosterPickerScreen`) but intentionally leave post-action navigation (e.g. popping after delete) to the caller, since that depends on which screen initiated the action.
 
 - **movie/** - Movie data management with repository pattern
@@ -142,6 +96,7 @@ The app follows a feature-based architecture where each feature is self-containe
   - Props: `icon` (required), `onPressed` (required), `iconSize` (default: 16), `iconColor`, `borderColor`, `outerPadding`, `size` (default: 36)
 - `sheet_app_bar.dart` - `SheetAppBar({title?, onCancel, onDone, backgroundColor?})`, the Cancel / centered-title / Done app bar shared by ThoughtsScreen, ScenesSelectSheet, and CaptionEditor (which passes no title). Implements `PreferredSizeWidget`.
 - `provider_sign_in_button.dart` - `ProviderSignInButton`, the outlined Apple/Google button. Extracted from `login.dart`'s private `_SignInButton` when `SecureAccountSheet` needed the same control: both flows ask for the same credential through the same native prompt, so they must look identical. Only the label differs ("Sign in with…" vs "Continue with…").
+- `pull_down_to_dismiss.dart` - `PullDownToDismiss({child, onDismiss, dismissThreshold: 120, flingVelocity: 700})`, the bottom-sheet "drag down to close" gesture for full-screen scrollables (used by `MoviePreviewScreen`, both data and loading states). It is a `NotificationListener<ScrollNotification>`, **not** a `GestureDetector`, so it never competes with the scroll view in the gesture arena. Two non-obvious decisions are load-bearing: (1) the pull is measured as **raw finger travel** from `dragDetails.delta`, not the scroll position — `BouncingScrollPhysics` friction is much stronger when content is shorter than the viewport (a 400px drag yields ~150px overscroll with tall content but only ~70px with short content), so a position threshold behaves inconsistently; (2) fling dismissal uses a **velocity estimate from drag-event timestamps** — a 2000px/s fling's ballistic bounce only travels ~10px deeper than the drag left it, so bounce depth cannot detect flings. Release is detected by the first ballistic frame (`dragDetails == null`) under bouncing physics and by `ScrollEndNotification` under clamping physics; `depth != 0` notifications are ignored so nested scrollables can't trigger it. The wrapped scrollable needs `AlwaysScrollableScrollPhysics` or the gesture is dead when content fits the viewport. Pinned by `pull_down_to_dismiss_test.dart` (covers both physics families).
 
 **Root-level managers:**
 - `analytics_manager.dart` - Firebase Analytics wrapper (screen views, user ID, custom events). Also exports `ScreenViewTracker` widget for wrapping ConsumerWidget screens
@@ -154,9 +109,6 @@ The app follows a feature-based architecture where each feature is self-containe
 ### State Management
 
 Uses **Riverpod** for state management:
-- Providers are typically defined in feature-specific files (e.g., `movie_providers.dart`)
-- Controllers use Riverpod notifiers for complex state logic
-- Follow patterns: `Provider` for computed values, `NotifierProvider` for simple and complex state, `FutureProvider`/`AsyncNotifierProvider` for async operations
 - Note: Riverpod 3.x removed `StateProvider` — use a `Notifier` with a `set()` method instead (see `JournalModeNotifier` for pattern)
 - **State classes carry value equality.** `JournalState`, `JournalsState`, `SearchMovieState`, `QuesgenState`, `MovieImagesState` and their element models (`SceneItem`, `Emotion`, `Review`, `BriefMovie`, `MovieImage`) implement hand-rolled `==`/`hashCode` (deliberately no freezed/codegen). Riverpod's default `updateShouldNotify` compares with `==`, so a no-op `state = state.copyWith(...)` no longer notifies listeners. **Adding a field to one of these classes means updating its `==`/`hashCode` too** — the equality groups in the mirrored test files will catch a missed field only if you extend them.
 - `JournalState` is immutable (all fields `final`). Its public constructor is a factory so a defaulted `updatedAt` equals the *resolved* `createdAt` (identical `Jiffy`, not a second `Jiffy.now()`).
@@ -199,36 +151,16 @@ Uses **Riverpod** for state management:
 
 ## Key Dependencies
 
-- **flutter_riverpod** (3.0.3) - State management framework
-- **dio** (5.8.0+1) - HTTP client for API calls
-- **supabase_flutter** (2.16.0) - Auth + Postgres data layer (replaced `cloud_firestore`)
+The full list and versions live in `pubspec.yaml`. Entries below carry constraints that are not obvious from the manifest:
+
 - **sign_in_with_apple** (8.1.0) - Native Apple credential for `signInWithIdToken`. 8.x moved the Apple sources to `darwin/sign_in_with_apple/` and added a `Package.swift`, so this plugin builds via SPM rather than the CocoaPods fallback. It is why `pubspec.yaml` now declares `environment.flutter: ">=3.41.0"`. Neither major-version break touches this app: the 8.0.0 `IconAlignment` → `SignInWithAppleIconAlignment` rename only affects `SignInWithAppleButton` (we render `ProviderSignInButton`), and the 7.0.0 `AuthorizationErrorCode` additions (`notInteractive`, `credentialExport`) only break exhaustive switches — `cancellable()` does a single `== canceled` check, so new codes correctly `rethrow`.
-- **firebase_core** (4.10.0) - Firebase initialization
 - **firebase_auth** (6.5.2) - **Transitional.** Only the anonymous-account bridge uses this; not for auth in new code. Removed at the Firestore freeze.
-- **firebase_analytics** (12.4.2) - Google Analytics for Firebase (screen views, custom events, user properties)
-  - **Keep the FlutterFire suite version-aligned.** Each Firebase plugin pins a specific `flutterfire` Swift package version (tracking `firebase_core`). If `firebase_auth` / `firebase_analytics` drift to versions released against *different* `firebase_core` builds, `flutter build ipa` fails at "Adding Swift Package Manager integration" with `Could not resolve package dependencies` (mismatched `flutterfire` pins). Fix: `flutter pub upgrade firebase_core firebase_auth firebase_analytics` to land a coordinated set.
-- **google_sign_in** (7.2.0) - Google authentication integration
-- **flutter_dotenv** (6.0.0) - Environment variables (API keys stored in `.env`)
-- **skeletonizer** (2.0.1) - Loading state skeleton animations
+- **firebase_core / firebase_analytics** - **Keep the FlutterFire suite version-aligned.** Each Firebase plugin pins a specific `flutterfire` Swift package version (tracking `firebase_core`). If `firebase_auth` / `firebase_analytics` drift to versions released against *different* `firebase_core` builds, `flutter build ipa` fails at "Adding Swift Package Manager integration" with `Could not resolve package dependencies` (mismatched `flutterfire` pins). Fix: `flutter pub upgrade firebase_core firebase_auth firebase_analytics` to land a coordinated set.
 - **cached_network_image** (3.4.1) - Disk-backed image loading; every TMDB image goes through it via `TmdbImage`. See [Working with TMDB imagery](#working-with-tmdb-imagery) for why it was adopted.
 - **flutter_cache_manager** (3.4.2) - A direct dependency, not just a transitive one: `TmdbImageCache` configures its `CacheManager`/`Config` explicitly. Brings `sqflite` (the only new platform dependency in the set) and `path_provider` (already present).
-- **google_fonts** (6.2.1) - Custom typography (e.g., Nothing You Could Do font)
-- **flutter_svg** (2.1.0) - SVG rendering support
-- **jiffy** (6.4.3) - Date formatting and manipulation
 - **fluttertoast** (9.1.0) - Toast notifications. 9.1.0's entire changelog is "Migrated ios to SPM"; no API change.
-- **uuid** (4.5.1) - Unique ID generation for journal entries
-- **cupertino_icons** (1.0.8) - iOS-style icons
-- **gal** (2.3.0) - Save images/videos to device gallery (used by share ticket feature)
-- **share_plus** (12.0.1) - Native share sheet for sharing files/text (used by share ticket feature)
 - **appinio_social_share** (0.3.2) - Instagram Story sticker sharing via pasteboard/intent (requires Facebook App ID). **The last non-SPM plugin** and unmaintained (0.3.2 is the latest; no release since 2024-08). Its archive ships only `ios/*.podspec` + `ios/Classes/`, no `Package.swift` — Flutter detects SPM by that exact file layout (`<platform>/<plugin_name>/Package.swift`), not by pub.dev metadata, so the package page's mention of "Swift Package" (which refers to adding the TikTok SDK) is irrelevant. Flutter still falls back to CocoaPods for it, so iOS builds fine; it is the sole reason the "plugins not using SPM" warning persists. Options if that ever matters: own the ~40 lines of Instagram Story code directly (pasteboard + `instagram-stories://` URL scheme), vendor a fork with a `Package.swift`, or wait.
-- **url_launcher** (6.3.1) - Opens URLs externally (used for Threads Web Intent sharing)
-
-### Dev Dependencies
-- **flutter_lints** (6.0.0) - Recommended linting rules
-- **custom_lint** (0.8.0) - Custom lint rule framework
-- **riverpod_lint** (3.0.3) - Riverpod-specific linting
-- **mocktail** (1.0.4) - Lightweight mocking (no codegen)
-- **file** (7.0.1) - Only for `test/helpers/fake_cache_manager.dart`: `BaseCacheManager` traffics in `package:file`'s `File`, so the fake serves bytes from a `MemoryFileSystem`.
+- **file** (7.0.1, dev) - Only for `test/helpers/fake_cache_manager.dart`: `BaseCacheManager` traffics in `package:file`'s `File`, so the fake serves bytes from a `MemoryFileSystem`.
 
 ## Environment Setup
 
@@ -238,34 +170,6 @@ The app requires a `.env` file in the root directory with:
 - Other environment-specific configuration
 
 Firebase configuration is in `lib/firebase_options.dart` (auto-generated).
-
-## Coding Standards
-
-### Widget Development
-- Prefer `StatelessWidget` over `StatefulWidget`
-- Use `const` constructors for performance
-- Follow single responsibility principle
-- Name widgets descriptively (screens end with "Screen", e.g., `HomeScreen`)
-
-### File Naming
-- Use snake_case for file names: `movie_detail_screen.dart`
-- Use PascalCase for classes: `MovieDetailScreen`
-- Use camelCase for variables/functions: `fetchMovieDetails`
-
-### Feature Organization
-Within each feature directory:
-```
-feature_name/
-├── controllers/     # Riverpod notifiers and state logic
-├── data/           # Data models and repositories
-├── screens/        # Full-screen UI components
-└── widgets/        # Reusable UI components
-```
-
-### Error Handling
-- Always handle errors in async operations with try-catch
-- Use Riverpod's `AsyncValue` for loading/error/data states
-- Provide meaningful error messages to users via toast notifications
 
 ## UI/UX Guidelines
 
@@ -288,7 +192,6 @@ feature_name/
 
 ### Responsive Design
 - **Web is not a supported target.** The `web/`, `linux/`, and `windows/` scaffolds are deleted; `SupabaseAuthManager._assertNative()` throws `UnsupportedError` under `kIsWeb`. The throw is deliberate (decision 9): web auth would need an Apple Services ID, a `.p8`, and the OAuth redirect flow.
-- Use `MediaQuery` for responsive breakpoints
 - Mobile (iOS/Android) is the only functional platform
 
 ## Supabase Migration (transitional)
@@ -312,7 +215,7 @@ Two rules are here because breaking them is unrecoverable and the cost is not ob
   code. It goes away at the Firestore freeze.
 
 Permanent Supabase behavior — schema, RLS/GRANT column rules, timestamp conversion —
-is under [Supabase Integration](#supabase-integration) below, not in the skill.
+lives in the separate **`supabase-data` skill**, not in this transitional one.
 
 ## Supabase Integration
 
@@ -329,25 +232,14 @@ is under [Supabase Integration](#supabase-integration) below, not in the skill.
 - Ownership is enforced by RLS in the database; the `.eq('user_id', …)` filters are belt-and-braces, not the security boundary.
 - Username availability goes through the `username_available` RPC, because RLS stops clients from scanning `profiles`. It compares **case-insensitively**, matching the `lower(username)` unique index.
 
-### Schema, RLS, and grants
+### Schema, RLS, grants, and timestamps
 
-- `supabase/migrations/` — versioned schema (`profiles`, `journals`, `sync_tombstones`, `firebase_identity_map`), RLS on every table, tombstone triggers, and the `username_available` / `claim_migrated_data` RPCs. `supabase/tests/rls_smoke.sql` holds 63 pgTAP assertions; run with `supabase test db`.
-- `supabase/functions/delete-account/` — deletes the caller's account server-side. The `auth.users` delete cascades to profiles and journals, so unlike the old client-side flow there is no window where data is gone but the account remains.
-- **RLS scopes rows; GRANTs scope columns.** A policy like `journals_update_own` proves `auth.uid() = user_id` and says nothing about *which columns* the UPDATE touches — that is the GRANT's job, and `grant update on table` means all of them. `20260725071500_lock_migration_control_columns.sql` therefore replaces the blanket INSERT/UPDATE grants with **column allowlists that mirror `lib/supabase_db_manager.dart` exactly**. Consequences worth knowing before you debug a 403:
-  - **Adding a column to `journalToRow()` (or the profiles writers) without adding it to that migration makes the write fail with 403**, not silently drop the column.
-  - `user_id` *is* in the journals UPDATE allowlist — `journalToRow()` always sends it, even on edit. `WITH CHECK` is what stops it pointing at another user; the grant never was.
-  - `created_at` is *not* in the journals UPDATE allowlist, so "an edit preserves `created_at`" is now a database guarantee rather than a client convention.
-  - Ungranted to clients on both tables: `firestore_id`, `migrated_updated_at`, `raw`, `firebase_uid`, `journals.id`. These belong to the delta-sync. The reason is not tidiness: a client that could set its own `firestore_id` and then delete the row would make the `AFTER DELETE` trigger write a tombstone against **another user's** Firestore doc, and `import_data.ts` reads `sync_tombstones` as "deleted in the new app" and skips it for the rest of the window.
-- **`alter default privileges … revoke execute on functions` does not work on Supabase Postgres 17.6** (measured; the table equivalent in `20260725033216` does). New functions still come out `proacl = NULL`, i.e. EXECUTE to PUBLIC, i.e. anon-callable. So **every new function in `public` needs an explicit `revoke execute … from public, anon`**. `rls_smoke.sql` enforces this: one assertion fails if any callable function is anon-executable, another pins the exact set callable by `authenticated`. Both name the offending function in the failure output.
+The schema layout, RLS/GRANT column-allowlist rules, and the timestamp conversion contract live in the **`supabase-data` skill** — read it before touching `supabase/migrations/`, `supabase_db_manager.dart`'s row translation, or anything that adds/writes columns. Two hazards stay here because they bite fast:
 
-### Timestamps
+- **Adding a column to `journalToRow()` (or the profiles writers) without extending the column-allowlist migration makes the write fail with 403** — grants scope columns, RLS only scopes rows.
+- **Every new SQL function in `public` needs an explicit `revoke execute … from public, anon`** — default-privilege revocation doesn't work on Supabase Postgres 17.6, and `rls_smoke.sql` will fail naming the offender.
 
-Journals store `Jiffy.toString()`, a **naive local** string with no zone. Postgres stores `timestamptz`, so the boundary must convert both ways, and `SupabaseDbManager` is the only place that happens:
-
-- **Write**: `jiffyToUtcIso()` → absolute UTC. Never `jiffy.toString()` — Postgres would read that as UTC and shift every timestamp by 8 hours.
-- **Read**: `pgTimestampToLocalNaive()` → local wall time. `JournalState.fromJson` feeds the value straight into `Jiffy.parse`, so handing it a UTC instant would render every journal 8 hours early. Pinned by `test/supabase_db_manager_test.dart`.
-
-`JournalState` stays untouched — `toMap()`/`fromMap()` (with `fromJson` as a thin decode-then-`fromMap` wrapper) remain the serialization seam, and all snake_case ↔ camelCase translation happens in the manager layer. `rowToJournal` hands the row map straight to `fromMap` — no per-row `jsonEncode`/`jsonDecode` round trip.
+Timestamps cross the client/Postgres boundary only inside `SupabaseDbManager` (`jiffyToUtcIso()` on write, `pgTimestampToLocalNaive()` on read) — never hand `jiffy.toString()` to Postgres or a UTC instant to `Jiffy.parse`; details in the skill.
 
 ### Initialization
 - `main.dart` calls `WidgetsFlutterBinding.ensureInitialized()` **first** — `Supabase.initialize` persists sessions over platform channels and needs a live binding. Then dotenv, then `Firebase.initializeApp` (analytics), then `Supabase.initialize`.
@@ -398,23 +290,6 @@ Tests mirror `lib/features/` under `test/features/`. Shared helpers live in `tes
 
 ## Common Development Workflows
 
-### Adding a New Feature
-1. Create feature directory under `lib/features/feature_name/`
-2. Organize into subdirectories as needed:
-   - `controllers/` for Riverpod notifiers and state logic
-   - `data/` for models, repositories, and data sources
-   - `screens/` for full-screen UI components
-   - `widgets/` for reusable UI components specific to the feature
-3. Define Riverpod providers for state management (create `providers.dart` or define in controller files)
-4. For navigation:
-   - From HomeScreen: Add navigation in `lib/features/home/screens/home.dart`
-   - Within feature: Use `Navigator.push()` or `Navigator.of(context).push()`
-5. Follow existing patterns from similar features:
-   - For data-heavy features: See `movie/` (repository pattern, controllers, data models)
-   - For UI-heavy features: See `journal/` (screens with bottom sheets, selectors)
-   - For simple screens: See `settings/` (single screen, straightforward layout)
-6. If the feature requires shared widgets used across multiple features, add them to `lib/shared_widgets/`
-
 ### Working with TMDB API
 - API client: `lib/core/network/tmdb_dio_client.dart`
 - Images render through `TmdbImage`, which picks the size bucket — see [Working with TMDB imagery](#working-with-tmdb-imagery). **Do not fetch `/t/p/original` into phone-width boxes**: original posters run 2000×3000+ (~24MB decoded), and `w780` already exceeds a phone-width box at 3x.
@@ -454,41 +329,13 @@ State lives in `lib/features/journal/controllers/`: `JournalState` (single) and 
 - **Selection-limit UX (scenes & emotions share one pattern)**: both `ScenesSelectSheet` (cap `_maxSceneLimit = 10`) and `EmotionsSelectorBottomSheet` (`maxSelectionLimit = 3`) show the same limit text — `'Select up to N (M/N)'`, styled `AvenirNext / 14 / w500 / height 1.5 / Colors.white.withAlpha(153)`, no color change at the cap. In `ScenesSelectSheet` this count is a **fixed header** above an `Expanded(SingleChildScrollView(GridView))` so it stays visible while the grid scrolls (don't move it back inside the scroll view). Tapping an *unselected* item while already at the cap is blocked **and** shows `CustomToast.showError(context, 'You can select up to N scenes/emotions')`; deselect/re-select stay silent. **Testing gotcha**: the toast spawns chained `fluttertoast` timers (≈2s show + fade), so any widget test that triggers an over-cap tap must drain them with `await tester.pump(const Duration(seconds: 3)); await tester.pumpAndSettle();` or it fails with "Timer still pending" (see `scenes_select_sheet_test.dart` / `emotions_selector_bottom_sheet_test.dart`).
 
 ### Working with Share Ticket
-Feature lives under `lib/features/share/`. Flow: callers → `TicketPosterPickerScreen` → `ShareTicketScreen`.
-
-- **`ShareTicketEntry` enum** (`journalContent` / `journalComplete`): identifies which screen opened the flow so the close button can route back correctly. Both `TicketPosterPickerScreen` and `ShareTicketScreen` close via the shared `closeShareFlow(context, entry)` helper. The enum, `kShareFlowRouteName`, and `closeShareFlow` all live in `lib/features/share/share_flow.dart`:
-  - `journalComplete` (just-saved journal) → `popUntil(isFirst)` → back to Home (skipping the celebration screen).
-  - `journalContent` (sharing existing journal) → `popUntil((r) => r.settings.name != kShareFlowRouteName)` → back to JournalContent.
-- **`kShareFlowRouteName` route tagging**: every push into the share flow sets `MaterialPageRoute(settings: const RouteSettings(name: kShareFlowRouteName), …)`. The `journalContent` close path uses this to pop until it leaves the flow — robust if intermediate screens are added/removed. **If you add a new screen inside the share flow, tag its route or close-back will overshoot.** Currently tagged at: `journal_complete.dart`, `journal_content.dart`, `journal_actions.dart`, and the in-flow push in `ticket_poster_picker_screen.dart`.
-- **`TicketPosterPickerScreen`** has no Next button and no default-selected poster; tapping a poster pushes `ShareTicketScreen` immediately with that poster path. The AppBar carries only a close (X) action that calls `closeShareFlow`.
-- **`JournalCompleteScreen`** has its own close (X) in the top-right (a `Stack` overlay, not an AppBar, so the centered animation layout is not shifted). It does *not* call `closeShareFlow` — this screen isn't part of the share flow — but it pops to the same destination as the `journalComplete` close (`Navigator.popUntil((r) => r.isFirst)` → Home), since this screen only ever appears for a just-saved journal.
-- **Ticket number**: `ticketNumberProvider(journalId)` (in `share/controllers/ticket_number.dart`) = journal's chronological 1-based position (sort by `createdAt` asc, index + 1; 0 while loading or if the id is unknown). A `.family` provider so the sort is memoized per journals change instead of re-running on every `ShareTicketScreen` rebuild.
-- **Poster picker language tabs**: after the movie detail loads, `_applyLanguageTabFilter()` drops any fixed-language tab whose base code matches the movie's `originalLanguage` to avoid duplicates (e.g. an English movie hides the "English" tab). 繁體中文 uses `zh-TW`.
-- **FlippableTicket peek animation**: `hintOnMount: true` triggers a 500ms-delayed peek (0 → 0.30 → 0) on mount. **Must use `animateBack(0.0)` for the return, not `animateTo(0.0)`** — `animateTo` leaves controller status as `completed`, which breaks `_flip()`'s `isCompleted` check. See the `flutter-animation-testing` skill for related pitfalls.
-- **Image capture**: `ticket_capture.dart`'s `captureTicketAsBytes(repaintKey, pixelRatio:)` → PNG `Uint8List` from `RepaintBoundary`; `captureTicketToFile(...)` writes it to a temp file. All save/share paths route through these two helpers; read `devicePixelRatio` from context *before* any async gap and pass it in.
-- **"Copy Text" tap target**: the copy-thoughts-to-clipboard control is a `GestureDetector` with `behavior: HitTestBehavior.opaque` (so the whole row width is tappable, not just the centered icon+text glyphs — the default `deferToChild` ignores the empty space) wrapping a `Padding(vertical: 8)` to enlarge the vertical hit area to match the visible button.
-- **Share destinations**: `share_targets.dart` — Instagram Story via `appinio_social_share` (requires the Facebook App ID const kept there), Threads via `url_launcher` to `threads.net/intent/post`, native share via `SharePlus`.
-- **Platform config (don't forget)**:
-  - iOS `Info.plist`: `LSApplicationQueriesSchemes` for `instagram-stories` + `threads`, Facebook App ID in `CFBundleURLSchemes`, `NSPhotoLibraryAddUsageDescription` for gallery save, `UIApplicationSceneManifest` for Flutter scene lifecycle.
-  - `AppDelegate.swift` uses `FlutterImplicitEngineDelegate` — register plugins in `didInitializeImplicitFlutterEngine`, **not** `application:didFinishLaunchingWithOptions`.
-  - Android `AndroidManifest.xml`: `<queries>` for Instagram + Threads intents, `FileProvider` with `filepaths.xml`.
+Feature lives under `lib/features/share/`; flow: callers → `TicketPosterPickerScreen` → `ShareTicketScreen`. The close/route-tagging rules (`ShareTicketEntry`, `kShareFlowRouteName`), ticket-number provider, capture helpers, share destinations, and required iOS/Android platform config live in the **`share-ticket` skill** — read it before touching `lib/features/share/` or pushing any route inside the share flow (untagged routes break close-back).
 
 ### Working with Emotions
-- Emotion definitions in `lib/features/emotion/emotion.dart`
-- **35 emotions** organized into 5 groups:
-  - **Uplifting** (high energy, positive): Joyful, Funny, Inspired, Hopeful, Fulfilling, Exhilarated
-  - **Intense** (high energy, negative): Shocked, Angry, Terrified, Anxious, Overwhelmed, Disgusted
-  - **Soothing** (low energy, positive): Heartwarming, Touched, Peaceful, Nostalgic, Cozy, Satisfied
-  - **Quiet** (low energy, negative): Melancholic, Confused, Bittersweet, Powerless, Bored, Conflicted
-- **Perspectives** (neutral evaluation, represented as low energy by the current model): Cheesy, Cinematic, Cringe, Dark Humor, Ironic, Predictable, Quirky, Slow-burn, Surreal, Thought-provoking, Unconventional
-- Each emotion has:
-  - `id`: Unique identifier (camelCase string)
-  - `name`: Display name (with proper capitalization)
-  - `group`: Group name (Uplifting, Intense, Soothing, Quiet, or Perspectives)
-  - `energyLevel`: "high" or "low"
-- Emotion colors are handled in the UI layer (EmotionsSelectorButton, EmotionsSelectorBottomSheet) rather than the data model
-- Access emotions via `emotionList` map using `EmotionType` enum keys
-- Users can select multiple emotions per journal entry
+- Emotion definitions in `lib/features/emotion/emotion.dart` — **35 emotions in 5 groups** (Uplifting, Intense, Soothing, Quiet, Perspectives), each with `id` / `name` / `group` / `energyLevel`; access via the `emotionList` map keyed by `EmotionType`. Read the source for the current list.
+- **Perspectives** entries are neutral evaluations, represented as low energy by the current model.
+- Emotion colors are handled in the UI layer (EmotionsSelectorButton, EmotionsSelectorBottomSheet) rather than the data model.
+- Users can select multiple emotions per journal entry (cap 3 — see Selection-limit UX above).
 
 ### Linting
 - Uses `flutter_lints`, `custom_lint`, and `riverpod_lint`
@@ -498,29 +345,7 @@ Feature lives under `lib/features/share/`. Flow: callers → `TicketPosterPicker
 
 ## Agent Configuration
 
-### Directory Structure
-```
-.claude/
-├── settings.local.json              # Local permissions and hook config (gitignored)
-├── hooks/
-│   ├── pre-commit-test.sh           # Runs flutter test before git commits
-│   ├── stop-update-claude-md.sh     # Reminds to update CLAUDE.md after code changes
-│   └── stop-sync-tests.sh          # Reminds to update tests when source files change
-└── skills/
-    ├── journal-data-access/
-    │   ├── SKILL.md                 # Riverpod patterns for journal CRUD
-    │   └── references/
-    │       └── journal-state-model.md  # JournalState fields and Postgres schema
-    ├── flutter-animation-testing/
-    │   └── SKILL.md                 # Animation test pitfalls and patterns
-    ├── deploy/
-    │   └── SKILL.md                 # App Store Connect / TestFlight deploy flow
-    └── supabase-migration/
-        └── SKILL.md                 # Firebase→Supabase bridge + cutover runbook
-
-.agents/
-└── skills -> ../.claude/skills      # Codex-compatible skill discovery
-```
+Hooks live in `.claude/hooks/`, skills in `.claude/skills/` (`.agents/skills` is a tracked symlink for Codex discovery — see Skills below). Hook registration is in the gitignored `.claude/settings.local.json`.
 
 ### Hooks
 - **pre-commit-test.sh** — A `PreToolUse` hook on the `Bash` tool that intercepts `git commit` commands. Runs `flutter test` before allowing the commit. If tests fail, the commit is blocked with test output shown as the reason. Non-commit Bash commands pass through unaffected.
@@ -533,4 +358,6 @@ Feature lives under `lib/features/share/`. Flow: callers → `TicketPosterPicker
 - **journal-data-access** — Documents the Riverpod provider architecture for journal data. Covers the three core providers (`journalControllerProvider`, `journalsControllerProvider`, `journalModeProvider`), `ref.watch` vs `ref.read` patterns, CRUD operations, create vs edit mode, and AsyncValue handling. Reference file includes full JournalState fields and the Postgres `journals` schema.
 - **flutter-animation-testing** — Pitfalls and patterns for testing Flutter animations. Covers: (1) `animateTo` vs `animateBack` status corruption (`animateTo(0.0)` leaves `isCompleted=true`), (2) `pumpAndSettle` not advancing past `Future.delayed` timers, (3) `pumpAndSettle` exiting between chained async animations. Includes a checklist and explicit-pump patterns.
 - **deploy** — The App Store Connect / TestFlight deploy flow (`./deploy.sh`), its one-time credential setup, and upload troubleshooting.
+- **share-ticket** — The share ticket feature's close/route-tagging rules, capture helpers, share destinations, and platform config. Extracted from AGENTS.md; loads when working under `lib/features/share/`.
+- **supabase-data** — The permanent Supabase data layer: schema, RLS/GRANT column allowlists, RPC execute-revocation rule, and the timestamp conversion contract. Extracted from AGENTS.md.
 - **supabase-migration** — The transitional Firebase→Supabase runbook: the anonymous-account bridge, the credential-less session, the device-bound failure mode, the `migration/` scripts, and the order to delete it all in. Extracted from AGENTS.md so it loads only when the migration is actually in play. **Delete at the Firestore freeze.**

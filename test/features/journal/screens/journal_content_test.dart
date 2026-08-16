@@ -71,4 +71,56 @@ void main() {
 
     expect(find.byKey(const ValueKey('journal-rating-badge')), findsNothing);
   });
+
+  group('movie title in header', () {
+    // Mirrors JournalingScreen: the app-bar title is transparent at the top
+    // and fades in once the body title has scrolled up past 100px.
+    Finder headerTitle() => find.descendant(
+      of: find.byType(SliverAppBar),
+      matching: find.byType(AnimatedOpacity),
+    );
+
+    JournalState makeScrollableJournal() => makeJournal(
+      id: 'scrolling-journal',
+      movieTitle: 'Perfect Days',
+      // Enough thoughts text to make the scroll view taller than the
+      // viewport — otherwise there is nothing to scroll.
+      thoughts: 'A long reflection on the film. ' * 200,
+    );
+
+    testWidgets('is transparent while at the top', (tester) async {
+      await tester.pumpWidget(buildSubject(makeScrollableJournal()));
+      await tester.pump();
+
+      expect(tester.widget<AnimatedOpacity>(headerTitle()).opacity, 0.0);
+      expect(
+        find.descendant(of: headerTitle(), matching: find.text('Perfect Days')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('fades in after scrolling down past 100px', (tester) async {
+      await tester.pumpWidget(buildSubject(makeScrollableJournal()));
+      await tester.pump();
+
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -300));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<AnimatedOpacity>(headerTitle()).opacity, 1.0);
+    });
+
+    testWidgets('goes transparent again when scrolled back to the top', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject(makeScrollableJournal()));
+      await tester.pump();
+
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -300));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, 300));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<AnimatedOpacity>(headerTitle()).opacity, 0.0);
+    });
+  });
 }
