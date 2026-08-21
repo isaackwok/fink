@@ -374,6 +374,91 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewJournal => 'View Journal';
 
   @override
+  String achievementsHeader({required num count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Your $count achievements of this film',
+      one: 'Your 1 achievement of this film',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String achievementFilmByDirector({
+    required String ordinal,
+    required String name,
+  }) {
+    return '$ordinal film by $name';
+  }
+
+  @override
+  String achievementFilmWithActor({
+    required String ordinal,
+    required String name,
+  }) {
+    return '$ordinal film with $name';
+  }
+
+  @override
+  String achievementFilmFromCountry({
+    required String ordinal,
+    required String name,
+  }) {
+    return '$ordinal film from $name';
+  }
+
+  @override
+  String achievementFilmInGenre({
+    required String ordinal,
+    required String name,
+  }) {
+    return '$ordinal film in $name';
+  }
+
+  @override
+  String achievementFilmFromDecade({
+    required String ordinal,
+    required String name,
+  }) {
+    return '$ordinal film from the $name';
+  }
+
+  @override
+  String achievementFilmFromYear({
+    required String ordinal,
+    required String name,
+  }) {
+    return '$ordinal film from $name';
+  }
+
+  @override
+  String decadeLabel({required int decade}) {
+    return '${decade}s';
+  }
+
+  @override
+  String yearLabel({required int year}) {
+    return '$year';
+  }
+
+  @override
+  String get emotionEchoHeaderPrefix => 'You also felt ';
+
+  @override
+  String get emotionEchoHeaderSuffix => ' when watching…';
+
+  @override
+  String get emotionEchoNoThoughts =>
+      'You felt something but had no words at the time. ';
+
+  @override
+  String get emotionEchoAddNow => 'Add now';
+
+  @override
+  String get emotionEchoMore => '…more';
+
+  @override
   String get journalUpdated => 'Your journal has been updated.';
 
   @override

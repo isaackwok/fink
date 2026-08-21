@@ -477,6 +477,125 @@
   "@viewJournal": {
     "description": "Action to open a saved journal"
   },
+  "achievementsHeader": "{count, plural, =1{Your 1 achievement of this film} other{Your {count} achievements of this film}}",
+  "@achievementsHeader": {
+    "description": "Header above the achievements grid on the journal complete screen",
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "achievementFilmByDirector": "{ordinal} film by {name}",
+  "@achievementFilmByDirector": {
+    "description": "Achievement card: nth distinct film by this director",
+    "placeholders": {
+      "ordinal": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementFilmWithActor": "{ordinal} film with {name}",
+  "@achievementFilmWithActor": {
+    "description": "Achievement card: nth distinct film featuring this actor",
+    "placeholders": {
+      "ordinal": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementFilmFromCountry": "{ordinal} film from {name}",
+  "@achievementFilmFromCountry": {
+    "description": "Achievement card: nth distinct film from this country",
+    "placeholders": {
+      "ordinal": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementFilmInGenre": "{ordinal} film in {name}",
+  "@achievementFilmInGenre": {
+    "description": "Achievement card: nth distinct film in this genre",
+    "placeholders": {
+      "ordinal": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementFilmFromDecade": "{ordinal} film from the {name}",
+  "@achievementFilmFromDecade": {
+    "description": "Achievement card: nth distinct film from a pre-2020 decade; name comes from decadeLabel",
+    "placeholders": {
+      "ordinal": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementFilmFromYear": "{ordinal} film from {name}",
+  "@achievementFilmFromYear": {
+    "description": "Achievement card: nth distinct film from a specific year (2020 or later); name comes from yearLabel",
+    "placeholders": {
+      "ordinal": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "decadeLabel": "{decade}s",
+  "@decadeLabel": {
+    "description": "Display label for a decade era bucket (e.g. 1990s)",
+    "placeholders": {
+      "decade": {
+        "type": "int"
+      }
+    }
+  },
+  "yearLabel": "{year}",
+  "@yearLabel": {
+    "description": "Display label for a single-year era bucket (2020 or later)",
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "emotionEchoHeaderPrefix": "You also felt ",
+  "@emotionEchoHeaderPrefix": {
+    "description": "Emotion echoes header text before the bolded emotion names"
+  },
+  "emotionEchoHeaderSuffix": " when watching…",
+  "@emotionEchoHeaderSuffix": {
+    "description": "Emotion echoes header text after the bolded emotion names"
+  },
+  "emotionEchoNoThoughts": "You felt something but had no words at the time. ",
+  "@emotionEchoNoThoughts": {
+    "description": "Shown on an echo card when the previous journal has no thoughts text"
+  },
+  "emotionEchoAddNow": "Add now",
+  "@emotionEchoAddNow": {
+    "description": "Action on a thought-less echo card that opens the edit flow"
+  },
+  "emotionEchoMore": "…more",
+  "@emotionEchoMore": {
+    "description": "Trailing link after the truncated thoughts excerpt on an echo card"
+  },
   "journalUpdated": "Your journal has been updated.",
   "@journalUpdated": {
     "description": "Success toast after updating a journal"

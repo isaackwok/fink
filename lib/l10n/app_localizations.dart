@@ -730,6 +730,108 @@ abstract class AppLocalizations {
   /// **'View Journal'**
   String get viewJournal;
 
+  /// Header above the achievements grid on the journal complete screen
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Your 1 achievement of this film} other{Your {count} achievements of this film}}'**
+  String achievementsHeader({required num count});
+
+  /// Achievement card: nth distinct film by this director
+  ///
+  /// In en, this message translates to:
+  /// **'{ordinal} film by {name}'**
+  String achievementFilmByDirector({
+    required String ordinal,
+    required String name,
+  });
+
+  /// Achievement card: nth distinct film featuring this actor
+  ///
+  /// In en, this message translates to:
+  /// **'{ordinal} film with {name}'**
+  String achievementFilmWithActor({
+    required String ordinal,
+    required String name,
+  });
+
+  /// Achievement card: nth distinct film from this country
+  ///
+  /// In en, this message translates to:
+  /// **'{ordinal} film from {name}'**
+  String achievementFilmFromCountry({
+    required String ordinal,
+    required String name,
+  });
+
+  /// Achievement card: nth distinct film in this genre
+  ///
+  /// In en, this message translates to:
+  /// **'{ordinal} film in {name}'**
+  String achievementFilmInGenre({
+    required String ordinal,
+    required String name,
+  });
+
+  /// Achievement card: nth distinct film from a pre-2020 decade; name comes from decadeLabel
+  ///
+  /// In en, this message translates to:
+  /// **'{ordinal} film from the {name}'**
+  String achievementFilmFromDecade({
+    required String ordinal,
+    required String name,
+  });
+
+  /// Achievement card: nth distinct film from a specific year (2020 or later); name comes from yearLabel
+  ///
+  /// In en, this message translates to:
+  /// **'{ordinal} film from {name}'**
+  String achievementFilmFromYear({
+    required String ordinal,
+    required String name,
+  });
+
+  /// Display label for a decade era bucket (e.g. 1990s)
+  ///
+  /// In en, this message translates to:
+  /// **'{decade}s'**
+  String decadeLabel({required int decade});
+
+  /// Display label for a single-year era bucket (2020 or later)
+  ///
+  /// In en, this message translates to:
+  /// **'{year}'**
+  String yearLabel({required int year});
+
+  /// Emotion echoes header text before the bolded emotion names
+  ///
+  /// In en, this message translates to:
+  /// **'You also felt '**
+  String get emotionEchoHeaderPrefix;
+
+  /// Emotion echoes header text after the bolded emotion names
+  ///
+  /// In en, this message translates to:
+  /// **' when watching…'**
+  String get emotionEchoHeaderSuffix;
+
+  /// Shown on an echo card when the previous journal has no thoughts text
+  ///
+  /// In en, this message translates to:
+  /// **'You felt something but had no words at the time. '**
+  String get emotionEchoNoThoughts;
+
+  /// Action on a thought-less echo card that opens the edit flow
+  ///
+  /// In en, this message translates to:
+  /// **'Add now'**
+  String get emotionEchoAddNow;
+
+  /// Trailing link after the truncated thoughts excerpt on an echo card
+  ///
+  /// In en, this message translates to:
+  /// **'…more'**
+  String get emotionEchoMore;
+
   /// Success toast after updating a journal
   ///
   /// In en, this message translates to:

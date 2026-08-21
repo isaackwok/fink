@@ -353,6 +353,89 @@ class AppLocalizationsZh extends AppLocalizations {
   String get viewJournal => '查看日記';
 
   @override
+  String achievementsHeader({required num count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '這部電影的 $count 項成就',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String achievementFilmByDirector({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 執導的電影';
+  }
+
+  @override
+  String achievementFilmWithActor({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 演出的電影';
+  }
+
+  @override
+  String achievementFilmFromCountry({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部來自$name的電影';
+  }
+
+  @override
+  String achievementFilmInGenre({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部$name電影';
+  }
+
+  @override
+  String achievementFilmFromDecade({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 的電影';
+  }
+
+  @override
+  String achievementFilmFromYear({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 的電影';
+  }
+
+  @override
+  String decadeLabel({required int decade}) {
+    return '$decade 年代';
+  }
+
+  @override
+  String yearLabel({required int year}) {
+    return '$year 年';
+  }
+
+  @override
+  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到';
+
+  @override
+  String get emotionEchoHeaderSuffix => '';
+
+  @override
+  String get emotionEchoNoThoughts => '當時你有些感受，卻沒留下文字。';
+
+  @override
+  String get emotionEchoAddNow => '立即補寫';
+
+  @override
+  String get emotionEchoMore => '…更多';
+
+  @override
   String get journalUpdated => '日記已更新。';
 
   @override
@@ -798,6 +881,89 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get viewJournal => '查看日記';
+
+  @override
+  String achievementsHeader({required num count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '這部電影的 $count 項成就',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String achievementFilmByDirector({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 執導的電影';
+  }
+
+  @override
+  String achievementFilmWithActor({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 演出的電影';
+  }
+
+  @override
+  String achievementFilmFromCountry({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部來自$name的電影';
+  }
+
+  @override
+  String achievementFilmInGenre({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部$name電影';
+  }
+
+  @override
+  String achievementFilmFromDecade({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 的電影';
+  }
+
+  @override
+  String achievementFilmFromYear({
+    required String ordinal,
+    required String name,
+  }) {
+    return '第 $ordinal 部 $name 的電影';
+  }
+
+  @override
+  String decadeLabel({required int decade}) {
+    return '$decade 年代';
+  }
+
+  @override
+  String yearLabel({required int year}) {
+    return '$year 年';
+  }
+
+  @override
+  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到';
+
+  @override
+  String get emotionEchoHeaderSuffix => '';
+
+  @override
+  String get emotionEchoNoThoughts => '當時你有些感受，卻沒留下文字。';
+
+  @override
+  String get emotionEchoAddNow => '立即補寫';
+
+  @override
+  String get emotionEchoMore => '…更多';
 
   @override
   String get journalUpdated => '日記已更新。';
