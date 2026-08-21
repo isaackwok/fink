@@ -20,3 +20,8 @@ create table public.movie_facts (
 -- The Edge Function's admin client (service role) bypasses RLS; nothing else
 -- can touch the table at all.
 alter table public.movie_facts enable row level security;
+
+-- The hardened default ACL (20260725033216) means a new table carries NO
+-- grants for anyone — including service_role, which bypasses RLS but not
+-- table privileges. The Edge Function reads the cache and upserts misses.
+grant select, insert, update on public.movie_facts to service_role;

@@ -11,7 +11,7 @@
 
 begin;
 -- Explicit count (not no_plan) so a test that silently stops running is caught.
-select plan(70);
+select plan(72);
 
 -- ---------------------------------------------------------------- fixtures
 -- Two users. Fixed UUIDs so failures are reproducible.
@@ -54,6 +54,13 @@ select ok(not has_table_privilege('authenticated','public.movie_facts','INSERT')
           'authenticated cannot write movie_facts (service role only)');
 select ok(not has_table_privilege('anon','public.movie_facts','SELECT'),
           'anon cannot read movie_facts');
+-- service_role bypasses RLS but NOT table privileges, and the hardened
+-- default ACL grants nothing — the journal-insights function needs these.
+select ok(has_table_privilege('service_role','public.movie_facts','SELECT'),
+          'service_role can read movie_facts (journal-insights cache hit)');
+select ok(has_table_privilege('service_role','public.movie_facts','INSERT')
+          and has_table_privilege('service_role','public.movie_facts','UPDATE'),
+          'service_role can upsert movie_facts (journal-insights miss fill)');
 
 -- anon must hold no data privilege on anything.
 select ok(not has_table_privilege('anon','public.journals','SELECT'),  'anon cannot SELECT journals');
