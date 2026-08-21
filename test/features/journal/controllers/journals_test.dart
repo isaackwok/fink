@@ -131,14 +131,8 @@ void main() {
         final groups = container.read(groupedJournalsProvider);
 
         expect(groups.map((g) => g.key), ['2026-07', '2026-06']);
-        expect(
-          groups[0].value.map((j) => j.id),
-          ['july-late', 'july-early'],
-        );
-        expect(
-          groups[1].value.map((j) => j.id),
-          ['june-late', 'june-early'],
-        );
+        expect(groups[0].value.map((j) => j.id), ['july-late', 'july-early']);
+        expect(groups[1].value.map((j) => j.id), ['june-late', 'june-early']);
       },
     );
 

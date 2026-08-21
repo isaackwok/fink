@@ -99,9 +99,10 @@ void main() {
       await container.read(journalInsightsControllerProvider(550).future);
 
       final second = api.queue();
-      final refreshing = container
-          .read(journalInsightsControllerProvider(550).notifier)
-          .refresh();
+      final refreshing =
+          container
+              .read(journalInsightsControllerProvider(550).notifier)
+              .refresh();
 
       final during = container.read(journalInsightsControllerProvider(550));
       expect(during.isLoading, isTrue);
@@ -109,10 +110,10 @@ void main() {
 
       second.complete([_fincher, _nineties]);
       await refreshing;
-      expect(
-        container.read(journalInsightsControllerProvider(550)).value,
-        [_fincher, _nineties],
-      );
+      expect(container.read(journalInsightsControllerProvider(550)).value, [
+        _fincher,
+        _nineties,
+      ]);
       expect(api.calls, [550, 550]);
     });
 
@@ -127,10 +128,9 @@ void main() {
       await container
           .read(journalInsightsControllerProvider(550).notifier)
           .refresh();
-      expect(
-        container.read(journalInsightsControllerProvider(550)).value,
-        [_fincher],
-      );
+      expect(container.read(journalInsightsControllerProvider(550)).value, [
+        _fincher,
+      ]);
     });
 
     test('a refresh failure surfaces as AsyncError', () async {
@@ -254,15 +254,14 @@ void main() {
         current: current,
         all: [current, low1, low2, high1, high2],
       );
-      expect(
-        result.echoes.map((e) => e.journal.id).toSet(),
-        {'high1', 'high2'},
-      );
+      expect(result.echoes.map((e) => e.journal.id).toSet(), {
+        'high1',
+        'high2',
+      });
       expect(result.headerEmotions, [inspired, hopeful]);
     });
 
-    test('displays only journals of the winning group, capped at maxCards',
-        () {
+    test('displays only journals of the winning group, capped at maxCards', () {
       final current = makeJournal(
         id: 'cur',
         tmdbId: 550,
@@ -270,11 +269,7 @@ void main() {
       );
       final members = [
         for (var i = 0; i < 4; i++)
-          makeJournal(
-            id: 'm$i',
-            tmdbId: 600 + i,
-            emotions: [joyful, funny],
-          ),
+          makeJournal(id: 'm$i', tmdbId: 600 + i, emotions: [joyful, funny]),
       ];
       final result = computeEmotionEchoes(
         current: current,
@@ -283,9 +278,12 @@ void main() {
       );
       expect(result.echoes, hasLength(2));
       expect(
-        result.echoes.map((e) => e.journal.id).toSet().difference(
-          {'m0', 'm1', 'm2', 'm3'},
-        ),
+        result.echoes.map((e) => e.journal.id).toSet().difference({
+          'm0',
+          'm1',
+          'm2',
+          'm3',
+        }),
         isEmpty,
       );
     });
@@ -298,17 +296,14 @@ void main() {
       );
       final members = [
         for (var i = 0; i < 6; i++)
-          makeJournal(
-            id: 'm$i',
-            tmdbId: 600 + i,
-            emotions: [joyful, funny],
-          ),
+          makeJournal(id: 'm$i', tmdbId: 600 + i, emotions: [joyful, funny]),
       ];
-      List<String> pick(int seed) => computeEmotionEchoes(
-        current: current,
-        all: [current, ...members],
-        random: Random(seed),
-      ).echoes.map((e) => e.journal.id).toList();
+      List<String> pick(int seed) =>
+          computeEmotionEchoes(
+            current: current,
+            all: [current, ...members],
+            random: Random(seed),
+          ).echoes.map((e) => e.journal.id).toList();
 
       // Same seed -> same pick; across many seeds the pick varies.
       expect(pick(1), pick(1));

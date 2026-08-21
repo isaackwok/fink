@@ -56,9 +56,10 @@ class JournalInsightsApi {
       body: {'tmdbId': tmdbId},
     );
     final data = res.data;
-    final raw = (data is Map && data['achievements'] is List)
-        ? data['achievements'] as List
-        : const [];
+    final raw =
+        (data is Map && data['achievements'] is List)
+            ? data['achievements'] as List
+            : const [];
     return raw
         .whereType<Map<String, dynamic>>()
         .map(Achievement.fromJson)

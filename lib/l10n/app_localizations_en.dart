@@ -374,63 +374,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewJournal => 'View Journal';
 
   @override
-  String achievementsHeader({required num count}) {
+  String get achievementsHeaderPrefix => 'Your ';
+
+  @override
+  String achievementsHeaderSuffix({required num count}) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Your $count achievements of this film',
-      one: 'Your 1 achievement of this film',
+      other: ' achievements of this film',
+      one: ' achievement of this film',
     );
     return '$_temp0';
   }
 
   @override
-  String achievementFilmByDirector({
-    required String ordinal,
-    required String name,
-  }) {
-    return '$ordinal film by $name';
+  String achievementOrdinal({required String ordinal}) {
+    return '$ordinal';
   }
 
   @override
-  String achievementFilmWithActor({
-    required String ordinal,
-    required String name,
-  }) {
-    return '$ordinal film with $name';
-  }
+  String get achievementConnectorDirector => 'film by';
 
   @override
-  String achievementFilmFromCountry({
-    required String ordinal,
-    required String name,
-  }) {
-    return '$ordinal film from $name';
-  }
+  String get achievementConnectorActor => 'film with';
 
   @override
-  String achievementFilmInGenre({
-    required String ordinal,
-    required String name,
-  }) {
-    return '$ordinal film in $name';
-  }
+  String get achievementConnectorCountry => 'film from';
 
   @override
-  String achievementFilmFromDecade({
-    required String ordinal,
-    required String name,
-  }) {
-    return '$ordinal film from the $name';
-  }
+  String get achievementConnectorGenre => 'film in';
 
   @override
-  String achievementFilmFromYear({
-    required String ordinal,
-    required String name,
-  }) {
-    return '$ordinal film from $name';
-  }
+  String get achievementConnectorDecade => 'film from the';
+
+  @override
+  String get achievementConnectorYear => 'film from';
 
   @override
   String decadeLabel({required int decade}) {

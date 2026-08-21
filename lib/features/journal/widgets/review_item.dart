@@ -25,7 +25,12 @@ class ReviewItem extends StatelessWidget {
       onTap: onPress,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 12,
+          bottom: 12,
+        ),
         decoration: BoxDecoration(
           color: transparent ? Colors.transparent : DarkSurfaces.raisedCard,
           borderRadius: BorderRadius.circular(12),

@@ -43,10 +43,10 @@ class JournalInsightsController extends AsyncNotifier<List<Achievement>> {
 Duration? _noRetry(int retryCount, Object error) => null;
 
 final journalInsightsControllerProvider = AsyncNotifierProvider.family<
-    JournalInsightsController, List<Achievement>, int>(
-  JournalInsightsController.new,
-  retry: _noRetry,
-);
+  JournalInsightsController,
+  List<Achievement>,
+  int
+>(JournalInsightsController.new, retry: _noRetry);
 
 // ---------------------------------------------------------------------------
 // Emotion echoes (pure Dart — no fetching; emotions already live on every
@@ -58,7 +58,7 @@ class EmotionEcho {
   final JournalState journal;
 
   /// The winning shared-emotion group, in the echo journal's own emotion
-  /// order — the card renders these chips first.
+  /// order.
   final List<Emotion> sharedEmotions;
 
   const EmotionEcho({required this.journal, required this.sharedEmotions});
@@ -123,10 +123,8 @@ EmotionEchoes computeEmotionEchoes({
   for (final journal in all) {
     if (journal.id == current.id) continue;
     if (journal.tmdbId == current.tmdbId) continue;
-    final sharedIds = journal.emotions
-        .map((e) => e.id)
-        .where(currentIds.contains)
-        .toSet();
+    final sharedIds =
+        journal.emotions.map((e) => e.id).where(currentIds.contains).toSet();
     if (sharedIds.length < 2) continue;
     final key = (sharedIds.toList()..sort()).join('|');
     groups.putIfAbsent(key, () => []).add(journal);
@@ -149,20 +147,20 @@ EmotionEchoes computeEmotionEchoes({
 
   final groupIds = bestKey!.split('|').toSet();
   final members = [...groups[bestKey]!]..shuffle(random ?? Random());
-  final echoes = members
-      .take(maxCards)
-      .map(
-        (j) => EmotionEcho(
-          journal: j,
-          sharedEmotions:
-              j.emotions.where((e) => groupIds.contains(e.id)).toList(),
-        ),
-      )
-      .toList();
+  final echoes =
+      members
+          .take(maxCards)
+          .map(
+            (j) => EmotionEcho(
+              journal: j,
+              sharedEmotions:
+                  j.emotions.where((e) => groupIds.contains(e.id)).toList(),
+            ),
+          )
+          .toList();
 
-  final headerEmotions = current.emotions
-      .where((e) => groupIds.contains(e.id))
-      .toList();
+  final headerEmotions =
+      current.emotions.where((e) => groupIds.contains(e.id)).toList();
 
   return EmotionEchoes(headerEmotions: headerEmotions, echoes: echoes);
 }
@@ -173,9 +171,9 @@ EmotionEchoes computeEmotionEchoes({
 /// nothing prefetches it.
 final emotionEchoesProvider = Provider.autoDispose
     .family<EmotionEchoes, String>((ref, journalId) {
-  final journals =
-      ref.watch(journalsControllerProvider).value?.journals ?? const [];
-  final current = journals.where((j) => j.id == journalId).firstOrNull;
-  if (current == null) return const EmotionEchoes();
-  return computeEmotionEchoes(current: current, all: journals);
-});
+      final journals =
+          ref.watch(journalsControllerProvider).value?.journals ?? const [];
+      final current = journals.where((j) => j.id == journalId).firstOrNull;
+      if (current == null) return const EmotionEchoes();
+      return computeEmotionEchoes(current: current, all: journals);
+    });

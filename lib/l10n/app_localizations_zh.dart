@@ -353,62 +353,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get viewJournal => '查看日記';
 
   @override
-  String achievementsHeader({required num count}) {
+  String get achievementsHeaderPrefix => '這部電影的 ';
+
+  @override
+  String achievementsHeaderSuffix({required num count}) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '這部電影的 $count 項成就',
+      other: ' 項成就',
     );
     return '$_temp0';
   }
 
   @override
-  String achievementFilmByDirector({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 執導的電影';
+  String achievementOrdinal({required String ordinal}) {
+    return '第 $ordinal 部';
   }
 
   @override
-  String achievementFilmWithActor({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 演出的電影';
-  }
+  String get achievementConnectorDirector => '執導作品';
 
   @override
-  String achievementFilmFromCountry({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部來自$name的電影';
-  }
+  String get achievementConnectorActor => '參演作品';
 
   @override
-  String achievementFilmInGenre({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部$name電影';
-  }
+  String get achievementConnectorCountry => '來自';
 
   @override
-  String achievementFilmFromDecade({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 的電影';
-  }
+  String get achievementConnectorGenre => '類型電影';
 
   @override
-  String achievementFilmFromYear({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 的電影';
-  }
+  String get achievementConnectorDecade => '上映於';
+
+  @override
+  String get achievementConnectorYear => '上映於';
 
   @override
   String decadeLabel({required int decade}) {
@@ -883,62 +861,40 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get viewJournal => '查看日記';
 
   @override
-  String achievementsHeader({required num count}) {
+  String get achievementsHeaderPrefix => '這部電影的 ';
+
+  @override
+  String achievementsHeaderSuffix({required num count}) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '這部電影的 $count 項成就',
+      other: ' 項成就',
     );
     return '$_temp0';
   }
 
   @override
-  String achievementFilmByDirector({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 執導的電影';
+  String achievementOrdinal({required String ordinal}) {
+    return '第 $ordinal 部';
   }
 
   @override
-  String achievementFilmWithActor({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 演出的電影';
-  }
+  String get achievementConnectorDirector => '執導作品';
 
   @override
-  String achievementFilmFromCountry({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部來自$name的電影';
-  }
+  String get achievementConnectorActor => '參演作品';
 
   @override
-  String achievementFilmInGenre({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部$name電影';
-  }
+  String get achievementConnectorCountry => '來自';
 
   @override
-  String achievementFilmFromDecade({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 的電影';
-  }
+  String get achievementConnectorGenre => '類型電影';
 
   @override
-  String achievementFilmFromYear({
-    required String ordinal,
-    required String name,
-  }) {
-    return '第 $ordinal 部 $name 的電影';
-  }
+  String get achievementConnectorDecade => '上映於';
+
+  @override
+  String get achievementConnectorYear => '上映於';
 
   @override
   String decadeLabel({required int decade}) {

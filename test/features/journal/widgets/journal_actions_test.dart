@@ -27,12 +27,13 @@ void main() {
       await tester.pumpWidget(
         localizedTestApp(
           home: Builder(
-            builder: (context) => TextButton(
-              onPressed: () async {
-                onResult(await confirmDeleteJournal(context));
-              },
-              child: const Text('open'),
-            ),
+            builder:
+                (context) => TextButton(
+                  onPressed: () async {
+                    onResult(await confirmDeleteJournal(context));
+                  },
+                  child: const Text('open'),
+                ),
           ),
         ),
       );
@@ -86,10 +87,11 @@ void main() {
             child: localizedTestApp(
               navigatorObservers: [observer],
               home: Builder(
-                builder: (context) => TextButton(
-                  onPressed: () => shareJournal(context, makeJournal()),
-                  child: const Text('share'),
-                ),
+                builder:
+                    (context) => TextButton(
+                      onPressed: () => shareJournal(context, makeJournal()),
+                      child: const Text('share'),
+                    ),
               ),
             ),
           ),

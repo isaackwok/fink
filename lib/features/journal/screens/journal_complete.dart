@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/home/widgets/journal_card.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
+import 'package:movie_journal/features/journal/controllers/journal_insights.dart';
 import 'package:movie_journal/features/journal/screens/journal_content.dart';
+import 'package:movie_journal/features/journal/widgets/achievements_section.dart';
+import 'package:movie_journal/features/journal/widgets/emotion_echoes_section.dart';
 import 'package:movie_journal/features/share/share_flow.dart';
 import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
 
-class JournalCompleteScreen extends StatefulWidget {
+class JournalCompleteScreen extends ConsumerStatefulWidget {
   final JournalState journal;
 
   const JournalCompleteScreen({super.key, required this.journal});
 
   @override
-  State<JournalCompleteScreen> createState() => _JournalCompleteScreenState();
+  ConsumerState<JournalCompleteScreen> createState() =>
+      _JournalCompleteScreenState();
 }
 
-class _JournalCompleteScreenState extends State<JournalCompleteScreen>
+class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _checkFade;
@@ -27,10 +32,25 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
   late final Animation<double> _cardFade;
   late final Animation<double> _cardScale;
   late final Animation<double> _buttonsFade;
+  late final Animation<double> _sectionsFade;
 
   @override
   void initState() {
     super.initState();
+    // Defensive refresh: the insights family instance is session-scoped (not
+    // autoDispose), so a second journal of the same movie would show the
+    // first save's counts. Riverpod keeps the cached value visible while the
+    // refetch runs, so a prefetched result still displays instantly.
+    // Post-frame: mutating a provider during build is illegal.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref
+          .read(
+            journalInsightsControllerProvider(widget.journal.tmdbId).notifier,
+          )
+          .refresh();
+    });
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -77,6 +97,13 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
       curve: const Interval(0.6, 1.0, curve: Curves.easeOut),
     );
 
+    // Achievements + emotion echoes ride the tail of the same 1200ms entry
+    // controller — no second controller, no Future.delayed.
+    _sectionsFade = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
+    );
+
     _controller.forward();
   }
 
@@ -98,9 +125,177 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
         body: SafeArea(
           child: Stack(
             children: [
-              // Close (X): this screen only appears for a just-saved journal,
-              // so close mirrors the `journalComplete` share-flow close target —
-              // pop everything down to Home.
+              // The first viewport-height slot reproduces the original
+              // centered layout exactly; the insights sections scroll in
+              // below it (pixel-identical when both sections are empty).
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: constraints.maxHeight,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Checkmark icon
+                                ScaleTransition(
+                                  scale: _checkScale,
+                                  child: FadeTransition(
+                                    opacity: _checkFade,
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white,
+                                      ),
+                                      child: const Icon(
+                                        Icons.check,
+                                        color: Colors.black,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+
+                                // Title text
+                                SlideTransition(
+                                  position: _textSlide,
+                                  child: FadeTransition(
+                                    opacity: _textFade,
+                                    child: Text(
+                                      l10n.journalSaved,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 32),
+
+                                // Journal card (reused from home)
+                                ScaleTransition(
+                                  scale: _cardScale,
+                                  child: FadeTransition(
+                                    opacity: _cardFade,
+                                    child: SizedBox(
+                                      width: 200,
+                                      child: IgnorePointer(
+                                        child: JournalCard(
+                                          journal: widget.journal,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+
+                                // Share Ticket button
+                                FadeTransition(
+                                  opacity: _buttonsFade,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          settings: const RouteSettings(
+                                            name: kShareFlowRouteName,
+                                          ),
+                                          builder:
+                                              (context) =>
+                                                  TicketPosterPickerScreen(
+                                                    journal: widget.journal,
+                                                    entry:
+                                                        ShareTicketEntry
+                                                            .journalComplete,
+                                                  ),
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: primaryColor,
+                                      foregroundColor: Colors.black,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'AvenirNext',
+                                      ),
+                                    ),
+                                    child: Text(l10n.shareTicket),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+
+                                // View Journal button
+                                FadeTransition(
+                                  opacity: _buttonsFade,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => JournalContent(
+                                                journalId: widget.journal.id,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'AvenirNext',
+                                      ),
+                                    ),
+                                    child: Text(l10n.viewJournal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        FadeTransition(
+                          opacity: _sectionsFade,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                AchievementsSection(
+                                  tmdbId: widget.journal.tmdbId,
+                                ),
+                                EmotionEchoesSection(
+                                  journalId: widget.journal.id,
+                                ),
+                                const SizedBox(height: 48),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              // Close (X), stacked LAST so it stays above the scroll view
+              // (a scrollable claims hits everywhere it covers). This screen
+              // only appears for a just-saved journal, so close mirrors the
+              // `journalComplete` share-flow close target — pop to Home.
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
@@ -116,134 +311,6 @@ class _JournalCompleteScreenState extends State<JournalCompleteScreen>
                       size: 24,
                     ),
                   ),
-                ),
-              ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Checkmark icon
-                    ScaleTransition(
-                      scale: _checkScale,
-                      child: FadeTransition(
-                        opacity: _checkFade,
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Title text
-                    SlideTransition(
-                      position: _textSlide,
-                      child: FadeTransition(
-                        opacity: _textFade,
-                        child: Text(
-                          l10n.journalSaved,
-                          style: GoogleFonts.inter(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Journal card (reused from home)
-                    ScaleTransition(
-                      scale: _cardScale,
-                      child: FadeTransition(
-                        opacity: _cardFade,
-                        child: SizedBox(
-                          width: 200,
-                          child: IgnorePointer(
-                            child: JournalCard(journal: widget.journal),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-
-                    // Share Ticket button
-                    FadeTransition(
-                      opacity: _buttonsFade,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              settings: const RouteSettings(
-                                name: kShareFlowRouteName,
-                              ),
-                              builder:
-                                  (context) => TicketPosterPickerScreen(
-                                    journal: widget.journal,
-                                    entry: ShareTicketEntry.journalComplete,
-                                  ),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'AvenirNext',
-                          ),
-                        ),
-                        child: Text(l10n.shareTicket),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-
-                    // View Journal button
-                    FadeTransition(
-                      opacity: _buttonsFade,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => JournalContent(
-                                    journalId: widget.journal.id,
-                                  ),
-                            ),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          textStyle: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'AvenirNext',
-                          ),
-                        ),
-                        child: Text(l10n.viewJournal),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ],

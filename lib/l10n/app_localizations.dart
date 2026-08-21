@@ -730,65 +730,59 @@ abstract class AppLocalizations {
   /// **'View Journal'**
   String get viewJournal;
 
-  /// Header above the achievements grid on the journal complete screen
+  /// Achievements header text before the bolded count
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{Your 1 achievement of this film} other{Your {count} achievements of this film}}'**
-  String achievementsHeader({required num count});
+  /// **'Your '**
+  String get achievementsHeaderPrefix;
 
-  /// Achievement card: nth distinct film by this director
+  /// Achievements header text after the bolded count
   ///
   /// In en, this message translates to:
-  /// **'{ordinal} film by {name}'**
-  String achievementFilmByDirector({
-    required String ordinal,
-    required String name,
-  });
+  /// **'{count, plural, =1{ achievement of this film} other{ achievements of this film}}'**
+  String achievementsHeaderSuffix({required num count});
 
-  /// Achievement card: nth distinct film featuring this actor
+  /// Bold ordinal on an achievement card; zh wraps it as 第 N 部
   ///
   /// In en, this message translates to:
-  /// **'{ordinal} film with {name}'**
-  String achievementFilmWithActor({
-    required String ordinal,
-    required String name,
-  });
+  /// **'{ordinal}'**
+  String achievementOrdinal({required String ordinal});
 
-  /// Achievement card: nth distinct film from this country
+  /// Grey connector after the ordinal on a director card; the name renders on the next line
   ///
   /// In en, this message translates to:
-  /// **'{ordinal} film from {name}'**
-  String achievementFilmFromCountry({
-    required String ordinal,
-    required String name,
-  });
+  /// **'film by'**
+  String get achievementConnectorDirector;
 
-  /// Achievement card: nth distinct film in this genre
+  /// Grey connector after the ordinal on an actor card
   ///
   /// In en, this message translates to:
-  /// **'{ordinal} film in {name}'**
-  String achievementFilmInGenre({
-    required String ordinal,
-    required String name,
-  });
+  /// **'film with'**
+  String get achievementConnectorActor;
 
-  /// Achievement card: nth distinct film from a pre-2020 decade; name comes from decadeLabel
+  /// Grey connector after the ordinal on a country card
   ///
   /// In en, this message translates to:
-  /// **'{ordinal} film from the {name}'**
-  String achievementFilmFromDecade({
-    required String ordinal,
-    required String name,
-  });
+  /// **'film from'**
+  String get achievementConnectorCountry;
 
-  /// Achievement card: nth distinct film from a specific year (2020 or later); name comes from yearLabel
+  /// Grey connector after the ordinal on a genre card
   ///
   /// In en, this message translates to:
-  /// **'{ordinal} film from {name}'**
-  String achievementFilmFromYear({
-    required String ordinal,
-    required String name,
-  });
+  /// **'film in'**
+  String get achievementConnectorGenre;
+
+  /// Grey connector after the ordinal on a pre-2020 era card; the decadeLabel renders on the next line
+  ///
+  /// In en, this message translates to:
+  /// **'film from the'**
+  String get achievementConnectorDecade;
+
+  /// Grey connector after the ordinal on a 2020+ era card; the yearLabel renders on the next line
+  ///
+  /// In en, this message translates to:
+  /// **'film from'**
+  String get achievementConnectorYear;
 
   /// Display label for a decade era bucket (e.g. 1990s)
   ///

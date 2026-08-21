@@ -477,86 +477,51 @@
   "@viewJournal": {
     "description": "Action to open a saved journal"
   },
-  "achievementsHeader": "{count, plural, =1{Your 1 achievement of this film} other{Your {count} achievements of this film}}",
-  "@achievementsHeader": {
-    "description": "Header above the achievements grid on the journal complete screen",
+  "achievementsHeaderPrefix": "Your ",
+  "@achievementsHeaderPrefix": {
+    "description": "Achievements header text before the bolded count"
+  },
+  "achievementsHeaderSuffix": "{count, plural, =1{ achievement of this film} other{ achievements of this film}}",
+  "@achievementsHeaderSuffix": {
+    "description": "Achievements header text after the bolded count",
     "placeholders": {
       "count": {
         "type": "num"
       }
     }
   },
-  "achievementFilmByDirector": "{ordinal} film by {name}",
-  "@achievementFilmByDirector": {
-    "description": "Achievement card: nth distinct film by this director",
+  "achievementOrdinal": "{ordinal}",
+  "@achievementOrdinal": {
+    "description": "Bold ordinal on an achievement card; zh wraps it as 第 N 部",
     "placeholders": {
       "ordinal": {
-        "type": "String"
-      },
-      "name": {
         "type": "String"
       }
     }
   },
-  "achievementFilmWithActor": "{ordinal} film with {name}",
-  "@achievementFilmWithActor": {
-    "description": "Achievement card: nth distinct film featuring this actor",
-    "placeholders": {
-      "ordinal": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
+  "achievementConnectorDirector": "film by",
+  "@achievementConnectorDirector": {
+    "description": "Grey connector after the ordinal on a director card; the name renders on the next line"
   },
-  "achievementFilmFromCountry": "{ordinal} film from {name}",
-  "@achievementFilmFromCountry": {
-    "description": "Achievement card: nth distinct film from this country",
-    "placeholders": {
-      "ordinal": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
+  "achievementConnectorActor": "film with",
+  "@achievementConnectorActor": {
+    "description": "Grey connector after the ordinal on an actor card"
   },
-  "achievementFilmInGenre": "{ordinal} film in {name}",
-  "@achievementFilmInGenre": {
-    "description": "Achievement card: nth distinct film in this genre",
-    "placeholders": {
-      "ordinal": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
+  "achievementConnectorCountry": "film from",
+  "@achievementConnectorCountry": {
+    "description": "Grey connector after the ordinal on a country card"
   },
-  "achievementFilmFromDecade": "{ordinal} film from the {name}",
-  "@achievementFilmFromDecade": {
-    "description": "Achievement card: nth distinct film from a pre-2020 decade; name comes from decadeLabel",
-    "placeholders": {
-      "ordinal": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
+  "achievementConnectorGenre": "film in",
+  "@achievementConnectorGenre": {
+    "description": "Grey connector after the ordinal on a genre card"
   },
-  "achievementFilmFromYear": "{ordinal} film from {name}",
-  "@achievementFilmFromYear": {
-    "description": "Achievement card: nth distinct film from a specific year (2020 or later); name comes from yearLabel",
-    "placeholders": {
-      "ordinal": {
-        "type": "String"
-      },
-      "name": {
-        "type": "String"
-      }
-    }
+  "achievementConnectorDecade": "film from the",
+  "@achievementConnectorDecade": {
+    "description": "Grey connector after the ordinal on a pre-2020 era card; the decadeLabel renders on the next line"
+  },
+  "achievementConnectorYear": "film from",
+  "@achievementConnectorYear": {
+    "description": "Grey connector after the ordinal on a 2020+ era card; the yearLabel renders on the next line"
   },
   "decadeLabel": "{decade}s",
   "@decadeLabel": {
