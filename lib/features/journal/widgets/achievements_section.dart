@@ -17,13 +17,6 @@ class AchievementsSection extends ConsumerWidget {
 
   const AchievementsSection({super.key, required this.tmdbId});
 
-  static const _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    crossAxisSpacing: 12,
-    mainAxisSpacing: 12,
-    mainAxisExtent: 140,
-  );
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final insights = ref.watch(journalInsightsControllerProvider(tmdbId));
@@ -70,15 +63,10 @@ class AchievementsSection extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 32),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            gridDelegate: _gridDelegate,
-            itemCount: achievements.length,
-            itemBuilder:
-                (context, index) =>
-                    AchievementCard(achievement: achievements[index]),
+          _AchievementGrid(
+            children: [
+              for (final a in achievements) AchievementCard(achievement: a),
+            ],
           ),
         ],
       ),
@@ -107,28 +95,58 @@ class _WithTopDivider extends StatelessWidget {
   }
 }
 
+/// Two cards per row with 12px gutters; an odd trailing card stretches to
+/// the full row (Figma 7504:13171). Rows carry a fixed height so every card
+/// in the section reads as the same tile regardless of its text length.
+class _AchievementGrid extends StatelessWidget {
+  final List<Widget> children;
+
+  const _AchievementGrid({required this.children});
+
+  static const _gap = 12.0;
+  static const _rowHeight = 140.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < children.length; i += 2) ...[
+          if (i > 0) const SizedBox(height: _gap),
+          SizedBox(
+            height: _rowHeight,
+            child:
+                i + 1 < children.length
+                    ? Row(
+                      children: [
+                        Expanded(child: children[i]),
+                        const SizedBox(width: _gap),
+                        Expanded(child: children[i + 1]),
+                      ],
+                    )
+                    : children[i],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
 class _SkeletonSection extends StatelessWidget {
   const _SkeletonSection();
 
   @override
   Widget build(BuildContext context) {
-    return Skeletonizer.zone(
+    return const Skeletonizer.zone(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Bone.text(words: 4, fontSize: 14),
           ),
-          const SizedBox(height: 32),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            gridDelegate: AchievementsSection._gridDelegate,
-            itemCount: 2,
-            itemBuilder: (context, index) => const _SkeletonCard(),
-          ),
+          SizedBox(height: 32),
+          _AchievementGrid(children: [_SkeletonCard(), _SkeletonCard()]),
         ],
       ),
     );
