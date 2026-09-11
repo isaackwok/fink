@@ -55,7 +55,7 @@ class AchievementCard extends StatelessWidget {
   }
 
   Widget _icon() => switch (achievement.kind) {
-    // Director and country ship as complete 36px assets (tinted rounded
+    // Director, country and era ship as complete 36px assets (tinted rounded
     // background included).
     AchievementKind.director => SvgPicture.asset(
       'assets/images/achievement_director.svg',
@@ -92,19 +92,11 @@ class AchievementCard extends StatelessWidget {
         height: 20,
       ),
     ),
-    // No era card exists in the Figma node; composed in the same
-    // glyph-in-tinted-box style (iOS purple).
-    AchievementKind.decade => Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: const Color(0x14BF5AF2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Icon(
-        Icons.calendar_month,
-        size: 20,
-        color: Color(0xFFBF5AF2),
-      ),
+    // Era ships as a complete 36px asset too (Figma 7504:13171).
+    AchievementKind.decade => SvgPicture.asset(
+      'assets/images/achievement_era.svg',
+      width: 36,
+      height: 36,
     ),
   };
 
