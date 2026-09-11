@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/emotion/emotion.dart';
+import 'package:movie_journal/features/emotion/emotion_group_colors.dart';
 import 'package:movie_journal/features/journal/widgets/emotions_selector_bottom_sheet.dart';
 
 import '../../../helpers/localized_test_app.dart';
@@ -97,6 +98,17 @@ void main() {
         await tester.pumpWidget(buildSubject());
         await tester.pumpAndSettle();
         expect(find.text('Uplifting'), findsOneWidget);
+      });
+
+      testWidgets('section labels use the shared group palette', (
+        tester,
+      ) async {
+        await tester.pumpWidget(buildSubject());
+        await tester.pumpAndSettle();
+        final uplifting = tester.widget<Text>(find.text('Uplifting'));
+        expect(uplifting.style?.color, EmotionGroupColors.uplifting);
+        final intense = tester.widget<Text>(find.text('Intense'));
+        expect(intense.style?.color, EmotionGroupColors.intense);
       });
 
       testWidgets('displays Intense section label', (tester) async {

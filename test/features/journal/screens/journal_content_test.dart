@@ -6,6 +6,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/controllers/journals.dart';
 import 'package:movie_journal/features/journal/screens/journal_content.dart';
+import 'package:movie_journal/features/journal/widgets/journal_content_more_menu.dart';
 import 'package:movie_journal/themes.dart';
 
 import '../../../helpers/test_journal.dart';
@@ -25,7 +26,7 @@ void main() {
   setUpAll(setUpWidgetTests);
   tearDownAll(tearDownWidgetTests);
 
-  Widget buildSubject(JournalState journal) {
+  Widget buildSubject(JournalState journal, {bool showShareAndDelete = true}) {
     return ProviderScope(
       overrides: [
         journalsControllerProvider.overrideWith(
@@ -34,10 +35,41 @@ void main() {
       ],
       child: localizedTestApp(
         theme: Themes.dark,
-        home: JournalContent(journalId: journal.id),
+        home: JournalContent(
+          journalId: journal.id,
+          showShareAndDelete: showShareAndDelete,
+        ),
       ),
     );
   }
+
+  group('share and delete actions', () {
+    testWidgets('are shown by default', (tester) async {
+      await tester.pumpWidget(buildSubject(makeJournal(id: 'j')));
+      await tester.pump();
+
+      expect(find.byIcon(Icons.ios_share), findsOneWidget);
+      await tester.tap(find.byType(JournalContentMoreMenu));
+      await tester.pumpAndSettle();
+      expect(find.text('Edit'), findsOneWidget);
+      expect(find.text('Delete'), findsOneWidget);
+    });
+
+    testWidgets('are hidden when showShareAndDelete is false, Edit stays', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(makeJournal(id: 'j'), showShareAndDelete: false),
+      );
+      await tester.pump();
+
+      expect(find.byIcon(Icons.ios_share), findsNothing);
+      await tester.tap(find.byType(JournalContentMoreMenu));
+      await tester.pumpAndSettle();
+      expect(find.text('Edit'), findsOneWidget);
+      expect(find.text('Delete'), findsNothing);
+    });
+  });
 
   testWidgets('shows the rating badge beside the date', (tester) async {
     final journal = makeJournal(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
+import 'package:movie_journal/features/journal/controllers/journal_insights.dart';
+import 'package:movie_journal/features/journal/data/journal_insights_api.dart';
 import 'package:movie_journal/features/journal/screens/journaling.dart';
 import 'package:movie_journal/features/quesgen/review.dart';
 import 'package:movie_journal/themes.dart';
@@ -29,6 +31,16 @@ class _InitialJournalController extends JournalController {
 
   @override
   JournalState build() => initialState;
+}
+
+class _RecordingInsightsApi extends JournalInsightsApi {
+  final calls = <int>[];
+
+  @override
+  Future<List<Achievement>> fetchAchievements(int tmdbId) async {
+    calls.add(tmdbId);
+    return const [];
+  }
 }
 
 Widget _buildSwipeSubject(
@@ -263,6 +275,53 @@ void main() {
 
       expect(find.byType(JournalingScreen), findsOneWidget);
       expect(find.text('Discard Changes'), findsNothing);
+    });
+  });
+
+  group('JournalingScreen achievements prefetch', () {
+    testWidgets('create mode prefetches insights for the journal tmdbId', (
+      tester,
+    ) async {
+      final api = _RecordingInsightsApi();
+      final container = ProviderContainer(
+        overrides: [
+          journalInsightsApiProvider.overrideWithValue(api),
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal()),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(_buildSwipeSubject(container));
+      await _openEditor(tester);
+
+      expect(api.calls, [550], reason: 'makeJournal defaults to tmdbId 550');
+      // The family instance is warm: the complete screen reads this cache.
+      expect(
+        container.read(journalInsightsControllerProvider(550)).hasValue,
+        isTrue,
+      );
+    });
+
+    testWidgets('edit mode does not prefetch', (tester) async {
+      final api = _RecordingInsightsApi();
+      final container = ProviderContainer(
+        overrides: [
+          journalInsightsApiProvider.overrideWithValue(api),
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(makeJournal(rating: 3)),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        _buildSwipeSubject(container, editJournalId: 'journal-1'),
+      );
+      await _openEditor(tester);
+
+      expect(api.calls, isEmpty);
     });
   });
 

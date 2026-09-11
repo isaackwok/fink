@@ -1,15 +1,47 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:movie_journal/features/emotion/emotion.dart';
 import 'package:movie_journal/features/home/widgets/journal_card.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
+import 'package:movie_journal/features/journal/controllers/journals.dart';
+import 'package:movie_journal/features/journal/controllers/journal_insights.dart';
+import 'package:movie_journal/features/journal/data/journal_insights_api.dart';
 import 'package:movie_journal/features/journal/screens/journal_complete.dart';
+import 'package:movie_journal/features/journal/widgets/achievement_card.dart';
+import 'package:movie_journal/features/journal/widgets/emotion_echo_card.dart';
 import 'package:movie_journal/features/share/share_flow.dart';
 import 'package:movie_journal/features/share/screens/ticket_poster_picker_screen.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../helpers/fake_journals_controller.dart';
 import '../../../helpers/test_journal.dart';
 import '../../../helpers/localized_test_app.dart';
 import '../../../helpers/widget_test_setup.dart';
+
+/// Returns a fixed achievements list; a null list means never complete
+/// (drives the skeleton branch).
+class _FixedInsightsApi extends JournalInsightsApi {
+  _FixedInsightsApi(this.result);
+
+  final List<Achievement>? result;
+
+  @override
+  Future<List<Achievement>> fetchAchievements(int tmdbId) {
+    final r = result;
+    if (r == null) return Completer<List<Achievement>>().future;
+    return Future.value(r);
+  }
+}
+
+class _ThrowingInsightsApi extends JournalInsightsApi {
+  @override
+  Future<List<Achievement>> fetchAchievements(int tmdbId) async {
+    throw Exception('function unreachable');
+  }
+}
 
 // Note: journal_complete.dart now logs a screen view in initState via AnalyticsManager.
 // The call is safely wrapped and is a no-op without Firebase — no test changes needed.
@@ -113,6 +145,8 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
+      // Top-anchored layout: the buttons sit below the 600px test viewport.
+      await tester.ensureVisible(find.text('Share Ticket'));
       await tester.tap(find.text('Share Ticket'));
       await tester.pumpAndSettle();
       // No exception = handler ran without crash (currently a TODO stub)
@@ -124,6 +158,8 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
+      // Top-anchored layout: the buttons sit below the 600px test viewport.
+      await tester.ensureVisible(find.text('Share Ticket'));
       await tester.tap(find.text('Share Ticket'));
       await tester.pumpAndSettle();
 
@@ -149,6 +185,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      // Top-anchored layout: the buttons sit below the 600px test viewport.
+      await tester.ensureVisible(find.text('Share Ticket'));
       await tester.tap(find.text('Share Ticket'));
       await tester.pumpAndSettle();
 
@@ -239,6 +277,173 @@ void main() {
 
       expect(find.byType(JournalCompleteScreen), findsNothing);
       expect(find.text('open-complete-sentinel'), findsOneWidget);
+    });
+  });
+
+  group('JournalCompleteScreen insights sections', () {
+    final joyful = emotionList[EmotionType.joyful]!;
+    final funny = emotionList[EmotionType.funny]!;
+
+    late JournalState journal;
+
+    setUp(() {
+      journal = makeJournal(
+        id: 'current',
+        tmdbId: 550,
+        movieTitle: 'Fight Club',
+        moviePoster: '/poster.jpg',
+        emotions: [joyful, funny],
+      );
+    });
+
+    Widget buildSubject({
+      required JournalInsightsApi api,
+      List<JournalState> journals = const [],
+    }) {
+      return ProviderScope(
+        overrides: [
+          journalInsightsApiProvider.overrideWithValue(api),
+          journalsControllerProvider.overrideWith(
+            () => FakeJournalsController([journal, ...journals]),
+          ),
+        ],
+        child: localizedTestApp(home: JournalCompleteScreen(journal: journal)),
+      );
+    }
+
+    const fincher = Achievement(
+      kind: AchievementKind.director,
+      key: '7467',
+      name: 'David Fincher',
+      count: 3,
+    );
+    const nineties = Achievement(
+      kind: AchievementKind.decade,
+      key: '1990',
+      name: '1990',
+      count: 2,
+    );
+
+    testWidgets('both sections hidden when empty — base layout intact', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject(api: _FixedInsightsApi(const [])));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AchievementCard), findsNothing);
+      expect(find.byType(EmotionEchoCard), findsNothing);
+      expect(find.byIcon(Icons.check), findsOneWidget);
+      expect(find.text('Share Ticket'), findsOneWidget);
+    });
+
+    testWidgets('achievements section hidden on error', (tester) async {
+      await tester.pumpWidget(buildSubject(api: _ThrowingInsightsApi()));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AchievementCard), findsNothing);
+      expect(
+        find.byWidgetPredicate((w) => w is Skeletonizer, skipOffstage: false),
+        findsNothing,
+      );
+    });
+
+    testWidgets('achievement cards render with a bold-count header', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(api: _FixedInsightsApi(const [fincher, nineties])),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byType(AchievementCard, skipOffstage: false),
+        findsNWidgets(2),
+      );
+      expect(find.text('Your achievements'), findsOneWidget);
+      expect(
+        find.text('David Fincher', findRichText: true, skipOffstage: false),
+        findsOneWidget,
+      );
+      // Era bucket below 2020 renders as a decade label.
+      expect(
+        find.text('the 90s', findRichText: true, skipOffstage: false),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('skeleton grid shows while insights load', (tester) async {
+      await tester.pumpWidget(buildSubject(api: _FixedInsightsApi(null)));
+      // The shimmer loops forever — fixed pumps only, never pumpAndSettle.
+      await tester.pump(const Duration(milliseconds: 1300));
+
+      // Skeletonizer.zone builds a private Skeletonizer subclass, so byType
+      // (exact runtimeType) misses it — match on the public supertype.
+      expect(
+        find.byWidgetPredicate((w) => w is Skeletonizer, skipOffstage: false),
+        findsOneWidget,
+      );
+      await tester.pump(const Duration(seconds: 1));
+    });
+
+    testWidgets('echo cards render for the shared emotion group', (
+      tester,
+    ) async {
+      final echo1 = makeJournal(
+        id: 'echo-1',
+        tmdbId: 680,
+        movieTitle: 'Se7en',
+        emotions: [joyful, funny],
+        selectedScenes: [SceneItem(path: '/scene1.jpg')],
+        thoughts: 'Unforgettable.',
+      );
+      final echo2 = makeJournal(
+        id: 'echo-2',
+        tmdbId: 681,
+        movieTitle: 'Alien',
+        emotions: [joyful, funny],
+        selectedScenes: [SceneItem(path: '/scene2.jpg')],
+      );
+      await tester.pumpWidget(
+        buildSubject(
+          api: _FixedInsightsApi(const []),
+          journals: [echo1, echo2],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byType(EmotionEchoCard, skipOffstage: false),
+        findsNWidgets(2),
+      );
+      // Header bolds each shared group name, joined with the same localized
+      // separators as EmotionsSelectorButton on JournalContent.
+      expect(
+        find.textContaining('joyful and funny', findRichText: true),
+        findsOneWidget,
+      );
+      // The thought-less journal shows the italic prompt + Fill in memory.
+      expect(
+        find.text('No thoughts for this movie yet', skipOffstage: false),
+        findsOneWidget,
+      );
+      expect(find.text('Fill in memory', skipOffstage: false), findsOneWidget);
+    });
+
+    testWidgets('a single shared emotion produces no echo section', (
+      tester,
+    ) async {
+      final oneShared = makeJournal(
+        id: 'one',
+        tmdbId: 680,
+        emotions: [joyful],
+        selectedScenes: [SceneItem(path: '/scene.jpg')],
+      );
+      await tester.pumpWidget(
+        buildSubject(api: _FixedInsightsApi(const []), journals: [oneShared]),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EmotionEchoCard, skipOffstage: false), findsNothing);
     });
   });
 }

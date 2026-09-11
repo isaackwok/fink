@@ -10,7 +10,15 @@ enum MoreOptionsItem { delete, edit }
 class JournalContentMoreMenu extends ConsumerWidget {
   final String journalId;
 
-  const JournalContentMoreMenu({super.key, required this.journalId});
+  /// False drops the Delete item, leaving Edit alone (see
+  /// `JournalContent.showShareAndDelete`).
+  final bool showDelete;
+
+  const JournalContentMoreMenu({
+    super.key,
+    required this.journalId,
+    this.showDelete = true,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,14 +37,18 @@ class JournalContentMoreMenu extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Text(l10n.commonEdit),
             ),
-            PopupMenuItem<MoreOptionsItem>(
-              value: MoreOptionsItem.delete,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                l10n.commonDelete,
-                style: const TextStyle(color: StatusColors.error),
+            if (showDelete)
+              PopupMenuItem<MoreOptionsItem>(
+                value: MoreOptionsItem.delete,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Text(
+                  l10n.commonDelete,
+                  style: const TextStyle(color: StatusColors.error),
+                ),
               ),
-            ),
           ],
     );
   }

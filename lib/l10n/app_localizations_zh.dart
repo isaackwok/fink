@@ -353,6 +353,57 @@ class AppLocalizationsZh extends AppLocalizations {
   String get viewJournal => '查看日記';
 
   @override
+  String get achievementsHeader => '你的成就';
+
+  @override
+  String achievementOrdinal({required String ordinal}) {
+    return '第 $ordinal 部';
+  }
+
+  @override
+  String get achievementConnectorDirector => '執導作品';
+
+  @override
+  String get achievementConnectorActor => '參演作品';
+
+  @override
+  String get achievementConnectorCountry => '來自';
+
+  @override
+  String get achievementConnectorGenre => '類型電影';
+
+  @override
+  String get achievementConnectorDecade => '上映於';
+
+  @override
+  String get achievementConnectorYear => '上映於';
+
+  @override
+  String decadeLabel({required int decade, required String shortDecade}) {
+    return '$decade 年代';
+  }
+
+  @override
+  String yearLabel({required int year}) {
+    return '$year 年';
+  }
+
+  @override
+  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到 ';
+
+  @override
+  String get emotionEchoHeaderSuffix => '';
+
+  @override
+  String get emotionEchoNoThoughts => '這部電影還沒寫下想法';
+
+  @override
+  String get emotionEchoFillInMemory => '補上回憶';
+
+  @override
+  String get emotionEchoMore => '…更多';
+
+  @override
   String get journalUpdated => '日記已更新。';
 
   @override
@@ -798,6 +849,57 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get viewJournal => '查看日記';
+
+  @override
+  String get achievementsHeader => '你的成就';
+
+  @override
+  String achievementOrdinal({required String ordinal}) {
+    return '第 $ordinal 部';
+  }
+
+  @override
+  String get achievementConnectorDirector => '執導作品';
+
+  @override
+  String get achievementConnectorActor => '參演作品';
+
+  @override
+  String get achievementConnectorCountry => '來自';
+
+  @override
+  String get achievementConnectorGenre => '類型電影';
+
+  @override
+  String get achievementConnectorDecade => '上映於';
+
+  @override
+  String get achievementConnectorYear => '上映於';
+
+  @override
+  String decadeLabel({required int decade, required String shortDecade}) {
+    return '$decade 年代';
+  }
+
+  @override
+  String yearLabel({required int year}) {
+    return '$year 年';
+  }
+
+  @override
+  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到 ';
+
+  @override
+  String get emotionEchoHeaderSuffix => '';
+
+  @override
+  String get emotionEchoNoThoughts => '這部電影還沒寫下想法';
+
+  @override
+  String get emotionEchoFillInMemory => '補上回憶';
+
+  @override
+  String get emotionEchoMore => '…更多';
 
   @override
   String get journalUpdated => '日記已更新。';

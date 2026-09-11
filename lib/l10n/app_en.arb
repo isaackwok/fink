@@ -477,6 +477,84 @@
   "@viewJournal": {
     "description": "Action to open a saved journal"
   },
+  "achievementsHeader": "Your achievements",
+  "@achievementsHeader": {
+    "description": "Header above the achievements grid on the journal complete screen"
+  },
+  "achievementOrdinal": "{ordinal}",
+  "@achievementOrdinal": {
+    "description": "Bold ordinal on an achievement card; zh wraps it as 第 N 部",
+    "placeholders": {
+      "ordinal": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementConnectorDirector": "film by",
+  "@achievementConnectorDirector": {
+    "description": "Grey connector after the ordinal on a director card; the name renders on the next line"
+  },
+  "achievementConnectorActor": "film with",
+  "@achievementConnectorActor": {
+    "description": "Grey connector after the ordinal on an actor card"
+  },
+  "achievementConnectorCountry": "film from",
+  "@achievementConnectorCountry": {
+    "description": "Grey connector after the ordinal on a country card"
+  },
+  "achievementConnectorGenre": "film in",
+  "@achievementConnectorGenre": {
+    "description": "Grey connector after the ordinal on a genre card"
+  },
+  "achievementConnectorDecade": "film from",
+  "@achievementConnectorDecade": {
+    "description": "Grey connector after the ordinal on a pre-2020 era card; the decadeLabel (\"the 90s\") renders on the next line"
+  },
+  "achievementConnectorYear": "film from",
+  "@achievementConnectorYear": {
+    "description": "Grey connector after the ordinal on a 2020+ era card; the yearLabel renders on the next line"
+  },
+  "decadeLabel": "the {shortDecade}s",
+  "@decadeLabel": {
+    "description": "Display label for a pre-2020 decade era bucket. English uses the two-digit form (\"the 90s\"); other locales may use the full start year via {decade}.",
+    "placeholders": {
+      "decade": {
+        "type": "int"
+      },
+      "shortDecade": {
+        "type": "String"
+      }
+    }
+  },
+  "yearLabel": "{year}",
+  "@yearLabel": {
+    "description": "Display label for a single-year era bucket (2020 or later)",
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "emotionEchoHeaderPrefix": "You also felt ",
+  "@emotionEchoHeaderPrefix": {
+    "description": "Emotion echoes header text before the bolded emotion names"
+  },
+  "emotionEchoHeaderSuffix": " when watching…",
+  "@emotionEchoHeaderSuffix": {
+    "description": "Emotion echoes header text after the bolded emotion names"
+  },
+  "emotionEchoNoThoughts": "No thoughts for this movie yet",
+  "@emotionEchoNoThoughts": {
+    "description": "Shown on an echo card when the previous journal has no thoughts text"
+  },
+  "emotionEchoFillInMemory": "Fill in memory",
+  "@emotionEchoFillInMemory": {
+    "description": "Action on a thought-less echo card (Figma 7369:29163) that opens the editor directly"
+  },
+  "emotionEchoMore": "…more",
+  "@emotionEchoMore": {
+    "description": "Trailing link after the truncated thoughts excerpt on an echo card"
+  },
   "journalUpdated": "Your journal has been updated.",
   "@journalUpdated": {
     "description": "Success toast after updating a journal"

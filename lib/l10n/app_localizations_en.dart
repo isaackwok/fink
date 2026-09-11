@@ -374,6 +374,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewJournal => 'View Journal';
 
   @override
+  String get achievementsHeader => 'Your achievements';
+
+  @override
+  String achievementOrdinal({required String ordinal}) {
+    return '$ordinal';
+  }
+
+  @override
+  String get achievementConnectorDirector => 'film by';
+
+  @override
+  String get achievementConnectorActor => 'film with';
+
+  @override
+  String get achievementConnectorCountry => 'film from';
+
+  @override
+  String get achievementConnectorGenre => 'film in';
+
+  @override
+  String get achievementConnectorDecade => 'film from';
+
+  @override
+  String get achievementConnectorYear => 'film from';
+
+  @override
+  String decadeLabel({required int decade, required String shortDecade}) {
+    return 'the ${shortDecade}s';
+  }
+
+  @override
+  String yearLabel({required int year}) {
+    return '$year';
+  }
+
+  @override
+  String get emotionEchoHeaderPrefix => 'You also felt ';
+
+  @override
+  String get emotionEchoHeaderSuffix => ' when watching…';
+
+  @override
+  String get emotionEchoNoThoughts => 'No thoughts for this movie yet';
+
+  @override
+  String get emotionEchoFillInMemory => 'Fill in memory';
+
+  @override
+  String get emotionEchoMore => '…more';
+
+  @override
   String get journalUpdated => 'Your journal has been updated.';
 
   @override

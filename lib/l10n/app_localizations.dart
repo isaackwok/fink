@@ -730,6 +730,96 @@ abstract class AppLocalizations {
   /// **'View Journal'**
   String get viewJournal;
 
+  /// Header above the achievements grid on the journal complete screen
+  ///
+  /// In en, this message translates to:
+  /// **'Your achievements'**
+  String get achievementsHeader;
+
+  /// Bold ordinal on an achievement card; zh wraps it as 第 N 部
+  ///
+  /// In en, this message translates to:
+  /// **'{ordinal}'**
+  String achievementOrdinal({required String ordinal});
+
+  /// Grey connector after the ordinal on a director card; the name renders on the next line
+  ///
+  /// In en, this message translates to:
+  /// **'film by'**
+  String get achievementConnectorDirector;
+
+  /// Grey connector after the ordinal on an actor card
+  ///
+  /// In en, this message translates to:
+  /// **'film with'**
+  String get achievementConnectorActor;
+
+  /// Grey connector after the ordinal on a country card
+  ///
+  /// In en, this message translates to:
+  /// **'film from'**
+  String get achievementConnectorCountry;
+
+  /// Grey connector after the ordinal on a genre card
+  ///
+  /// In en, this message translates to:
+  /// **'film in'**
+  String get achievementConnectorGenre;
+
+  /// Grey connector after the ordinal on a pre-2020 era card; the decadeLabel ("the 90s") renders on the next line
+  ///
+  /// In en, this message translates to:
+  /// **'film from'**
+  String get achievementConnectorDecade;
+
+  /// Grey connector after the ordinal on a 2020+ era card; the yearLabel renders on the next line
+  ///
+  /// In en, this message translates to:
+  /// **'film from'**
+  String get achievementConnectorYear;
+
+  /// Display label for a pre-2020 decade era bucket. English uses the two-digit form ("the 90s"); other locales may use the full start year via {decade}.
+  ///
+  /// In en, this message translates to:
+  /// **'the {shortDecade}s'**
+  String decadeLabel({required int decade, required String shortDecade});
+
+  /// Display label for a single-year era bucket (2020 or later)
+  ///
+  /// In en, this message translates to:
+  /// **'{year}'**
+  String yearLabel({required int year});
+
+  /// Emotion echoes header text before the bolded emotion names
+  ///
+  /// In en, this message translates to:
+  /// **'You also felt '**
+  String get emotionEchoHeaderPrefix;
+
+  /// Emotion echoes header text after the bolded emotion names
+  ///
+  /// In en, this message translates to:
+  /// **' when watching…'**
+  String get emotionEchoHeaderSuffix;
+
+  /// Shown on an echo card when the previous journal has no thoughts text
+  ///
+  /// In en, this message translates to:
+  /// **'No thoughts for this movie yet'**
+  String get emotionEchoNoThoughts;
+
+  /// Action on a thought-less echo card (Figma 7369:29163) that opens the editor directly
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in memory'**
+  String get emotionEchoFillInMemory;
+
+  /// Trailing link after the truncated thoughts excerpt on an echo card
+  ///
+  /// In en, this message translates to:
+  /// **'…more'**
+  String get emotionEchoMore;
+
   /// Success toast after updating a journal
   ///
   /// In en, this message translates to:

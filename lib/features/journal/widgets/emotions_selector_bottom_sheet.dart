@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/features/emotion/emotion.dart';
+import 'package:movie_journal/features/emotion/emotion_group_colors.dart';
 import 'package:movie_journal/features/toast/custom_toast.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
@@ -137,7 +138,7 @@ class _EmotionsSelectorBottomSheetState
       "sections": [
         {
           "label": "Uplifting",
-          "color": const Color(0xFFFADD9E),
+          "color": EmotionGroupColors.uplifting,
           "emotions": [
             EmotionType.joyful,
             EmotionType.funny,
@@ -149,7 +150,7 @@ class _EmotionsSelectorBottomSheetState
         },
         {
           "label": "Intense",
-          "color": const Color(0xFFFC8885),
+          "color": EmotionGroupColors.intense,
           "emotions": [
             EmotionType.shocked,
             EmotionType.angry,
@@ -167,7 +168,7 @@ class _EmotionsSelectorBottomSheetState
       "sections": [
         {
           "label": "Soothing",
-          "color": const Color(0xFF87C997),
+          "color": EmotionGroupColors.soothing,
           "emotions": [
             EmotionType.heartwarming,
             EmotionType.touched,
@@ -179,7 +180,7 @@ class _EmotionsSelectorBottomSheetState
         },
         {
           "label": "Quiet",
-          "color": const Color(0xFF9ADCFF),
+          "color": EmotionGroupColors.quiet,
           "emotions": [
             EmotionType.melancholic,
             EmotionType.confused,
@@ -198,8 +199,8 @@ class _EmotionsSelectorBottomSheetState
         {
           // This card has no subsection label in the Figma design.
           "label": null,
-          "color": const Color(0xFF8F8E8E),
-          "borderColor": const Color(0xFF8F8E8E),
+          "color": EmotionGroupColors.perspectives,
+          "borderColor": EmotionGroupColors.perspectives,
           "emotions": [
             EmotionType.cheesy,
             EmotionType.cinematic,

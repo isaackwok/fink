@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
+import 'package:movie_journal/features/journal/controllers/journal_insights.dart';
 import 'package:movie_journal/features/journal/screens/journal_complete.dart';
 import 'package:movie_journal/features/journal/widgets/emotions_selector_button.dart';
 import 'package:movie_journal/features/journal/widgets/rating_selector.dart';
@@ -45,6 +46,16 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
     super.initState();
     _initialJournal = ref.read(journalControllerProvider);
     _scrollController.addListener(_onScroll);
+    // Prefetch achievements while the user writes: the insights call is keyed
+    // on tmdb_id and idempotent to whether the journal row exists yet, so by
+    // save time JournalCompleteScreen reads a warm cache. Create mode only —
+    // editing never shows the complete screen.
+    if (!_isEditMode) {
+      final tmdbId = _initialJournal.tmdbId;
+      if (tmdbId > 0) {
+        ref.read(journalInsightsControllerProvider(tmdbId).future).ignore();
+      }
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(journalModeProvider.notifier)
