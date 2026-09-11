@@ -114,7 +114,7 @@
   "achievementConnectorYear": "上映於",
   "decadeLabel": "{decade} 年代",
   "yearLabel": "{year} 年",
-  "emotionEchoHeaderPrefix": "看這些電影時，你也感受到",
+  "emotionEchoHeaderPrefix": "看這些電影時，你也感受到 ",
   "emotionEchoHeaderSuffix": "",
   "emotionEchoNoThoughts": "這部電影還沒寫下想法",
   "emotionEchoFillInMemory": "補上回憶",

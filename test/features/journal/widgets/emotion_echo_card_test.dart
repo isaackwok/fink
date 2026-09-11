@@ -110,13 +110,33 @@ void main() {
       expect(excerpt.top - open.top, 8);
     });
 
-    testWidgets('a long excerpt is cut and ends with the teal "…more" link', (
+    testWidgets('a long excerpt is capped at 5 lines and ends with "…more"', (
       tester,
     ) async {
       await tester.pumpWidget(subject(journalWith(thoughts: longThoughts)));
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('…more', findRichText: true), findsOneWidget);
+      final excerpt = find.textContaining('…more', findRichText: true);
+      expect(excerpt, findsOneWidget);
+      // Re-lay the rendered span out at its rendered width to count lines.
+      final rich = tester.widget<RichText>(excerpt);
+      final width = tester.getSize(excerpt).width;
+      final painter = TextPainter(
+        text: rich.text,
+        textAlign: rich.textAlign,
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: width);
+      expect(painter.computeLineMetrics().length, 5);
+      painter.dispose();
+      // The link is the visible tail — nothing is ellipsized past it.
+      expect(rich.text.toPlainText(), endsWith('…more'));
+    });
+
+    testWidgets('a short excerpt shows in full with no link', (tester) async {
+      await tester.pumpWidget(subject(journalWith()));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('…more', findRichText: true), findsNothing);
     });
 
     group('thought-less journal (Figma 7369:29163)', () {

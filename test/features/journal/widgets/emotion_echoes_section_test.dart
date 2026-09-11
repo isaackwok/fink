@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/emotion/emotion.dart';
+import 'package:movie_journal/features/emotion/emotion_group_colors.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/controllers/journals.dart';
 import 'package:movie_journal/features/journal/screens/journal_content.dart';
 import 'package:movie_journal/features/journal/widgets/emotion_echo_card.dart';
+import 'package:movie_journal/features/journal/widgets/emotion_echo_header_icon.dart';
 import 'package:movie_journal/features/journal/widgets/emotion_echoes_section.dart';
 
 import '../../../helpers/fake_journals_controller.dart';
@@ -70,7 +71,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final section = tester.getRect(find.byType(EmotionEchoesSection));
-      final header = tester.getRect(find.byType(SvgPicture));
+      final header = tester.getRect(find.byType(EmotionEchoHeaderIcon));
       expect(header.top - section.top, 112);
       expect(header.size, const Size(24, 24));
 
@@ -92,7 +93,7 @@ void main() {
       await tester.pumpWidget(subject([current, echo1, echo2]));
       await tester.pumpAndSettle();
 
-      final header = tester.getRect(find.byType(SvgPicture));
+      final header = tester.getRect(find.byType(EmotionEchoHeaderIcon));
       final cards = find.byType(EmotionEchoCard, skipOffstage: false);
       expect(cards, findsNWidgets(2));
 
@@ -121,13 +122,29 @@ void main() {
       expect(page.showShareAndDelete, isFalse);
     });
 
+    testWidgets('header circles take the shared emotions\' group colors', (
+      tester,
+    ) async {
+      await tester.pumpWidget(subject([current, echo1, echo2]));
+      await tester.pumpAndSettle();
+
+      final icon = tester.widget<EmotionEchoHeaderIcon>(
+        find.byType(EmotionEchoHeaderIcon),
+      );
+      // joyful + funny are both Uplifting.
+      expect(icon.colors, [
+        EmotionGroupColors.of(joyful.group),
+        EmotionGroupColors.of(funny.group),
+      ]);
+    });
+
     testWidgets('renders nothing when no previous journal qualifies', (
       tester,
     ) async {
       await tester.pumpWidget(subject([current]));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SvgPicture), findsNothing);
+      expect(find.byType(EmotionEchoHeaderIcon), findsNothing);
       expect(find.byType(EmotionEchoCard), findsNothing);
     });
   });

@@ -389,7 +389,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到';
+  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到 ';
 
   @override
   String get emotionEchoHeaderSuffix => '';
@@ -887,7 +887,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   }
 
   @override
-  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到';
+  String get emotionEchoHeaderPrefix => '看這些電影時，你也感受到 ';
 
   @override
   String get emotionEchoHeaderSuffix => '';

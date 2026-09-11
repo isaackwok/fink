@@ -23,8 +23,11 @@ class JournalInsightsController extends AsyncNotifier<List<Achievement>> {
   final int tmdbId;
 
   @override
-  Future<List<Achievement>> build() =>
-      ref.read(journalInsightsApiProvider).fetchAchievements(tmdbId);
+  Future<List<Achievement>> build() => _fetch();
+
+  Future<List<Achievement>> _fetch() async => onePerKind(
+    await ref.read(journalInsightsApiProvider).fetchAchievements(tmdbId),
+  );
 
   /// Refetches while keeping any cached value visible. Guards against
   /// same-session staleness: the family instance survives across journals
@@ -34,10 +37,19 @@ class JournalInsightsController extends AsyncNotifier<List<Achievement>> {
     // Riverpod merges this with the current state (copyWithPrevious under the
     // hood), so a cached list stays visible while the refetch is in flight.
     state = const AsyncLoading();
-    state = await AsyncValue.guard(
-      () => ref.read(journalInsightsApiProvider).fetchAchievements(tmdbId),
-    );
+    state = await AsyncValue.guard(_fetch);
   }
+}
+
+/// One card per dimension: the server may emit several achievements of the
+/// same kind (co-directors, two top-billed actors); the UI shows only the
+/// first of each, in the server's order.
+List<Achievement> onePerKind(List<Achievement> achievements) {
+  final seen = <AchievementKind>{};
+  return [
+    for (final a in achievements)
+      if (seen.add(a.kind)) a,
+  ];
 }
 
 Duration? _noRetry(int retryCount, Object error) => null;

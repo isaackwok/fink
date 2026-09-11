@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/features/journal/controllers/journal_insights.dart';
 import 'package:movie_journal/features/journal/screens/journal_content.dart';
 import 'package:movie_journal/features/journal/widgets/emotion_echo_card.dart';
+import 'package:movie_journal/features/journal/widgets/emotion_echo_header_icon.dart';
 import 'package:movie_journal/features/journal/widgets/journal_actions.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
 
@@ -46,11 +46,8 @@ class EmotionEchoesSection extends ConsumerWidget {
         const SizedBox(height: 112),
         Row(
           children: [
-            SvgPicture.asset(
-              'assets/images/emotion_echo_header.svg',
-              width: 24,
-              height: 24,
-            ),
+            // Circles tinted by the shared emotions' groups (max two).
+            EmotionEchoHeaderIcon(emotions: echoes.headerEmotions),
             const SizedBox(width: 8),
             Expanded(
               child: Text.rich(

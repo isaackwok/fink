@@ -67,6 +67,40 @@ void main() {
     expect(api.calls, [550]);
   });
 
+  test(
+    'keeps only the first achievement of each kind (server order)',
+    () async {
+      const coDirector = Achievement(
+        kind: AchievementKind.director,
+        key: '999',
+        name: 'Co-Director',
+        count: 2,
+      );
+      const actor = Achievement(
+        kind: AchievementKind.actor,
+        key: '287',
+        name: 'Brad Pitt',
+        count: 4,
+      );
+      api.queue().complete([_fincher, coDirector, actor, _nineties]);
+      final result = await container.read(
+        journalInsightsControllerProvider(550).future,
+      );
+      expect(result, [_fincher, actor, _nineties]);
+    },
+  );
+
+  test('onePerKind is a pure, order-preserving dedupe', () {
+    const second = Achievement(
+      kind: AchievementKind.decade,
+      key: '2000',
+      name: '2000',
+      count: 2,
+    );
+    expect(onePerKind([_nineties, _fincher, second]), [_nineties, _fincher]);
+    expect(onePerKind(const []), isEmpty);
+  });
+
   test('a failed fetch settles as AsyncError (no retry hang)', () async {
     api.queue().completeError(Exception('function unreachable'));
     await expectLater(
