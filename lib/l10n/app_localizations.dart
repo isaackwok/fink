@@ -766,10 +766,10 @@ abstract class AppLocalizations {
   /// **'film in'**
   String get achievementConnectorGenre;
 
-  /// Grey connector after the ordinal on a pre-2020 era card; the decadeLabel renders on the next line
+  /// Grey connector after the ordinal on a pre-2020 era card; the decadeLabel ("the 90s") renders on the next line
   ///
   /// In en, this message translates to:
-  /// **'film from the'**
+  /// **'film from'**
   String get achievementConnectorDecade;
 
   /// Grey connector after the ordinal on a 2020+ era card; the yearLabel renders on the next line
@@ -778,11 +778,11 @@ abstract class AppLocalizations {
   /// **'film from'**
   String get achievementConnectorYear;
 
-  /// Display label for a decade era bucket (e.g. 1990s)
+  /// Display label for a pre-2020 decade era bucket. English uses the two-digit form ("the 90s"); other locales may use the full start year via {decade}.
   ///
   /// In en, this message translates to:
-  /// **'{decade}s'**
-  String decadeLabel({required int decade});
+  /// **'the {shortDecade}s'**
+  String decadeLabel({required int decade, required String shortDecade});
 
   /// Display label for a single-year era bucket (2020 or later)
   ///

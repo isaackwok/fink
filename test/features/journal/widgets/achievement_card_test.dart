@@ -98,8 +98,8 @@ void main() {
         ),
       ),
     );
-    expect(find.text('film from the'), findsOneWidget);
-    expect(find.text('1990s'), findsOneWidget);
+    expect(find.text('film from'), findsOneWidget);
+    expect(find.text('the 90s'), findsOneWidget);
   });
 
   testWidgets('2020+ era key renders as a bare year', (tester) async {

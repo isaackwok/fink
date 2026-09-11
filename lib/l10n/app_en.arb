@@ -506,20 +506,23 @@
   "@achievementConnectorGenre": {
     "description": "Grey connector after the ordinal on a genre card"
   },
-  "achievementConnectorDecade": "film from the",
+  "achievementConnectorDecade": "film from",
   "@achievementConnectorDecade": {
-    "description": "Grey connector after the ordinal on a pre-2020 era card; the decadeLabel renders on the next line"
+    "description": "Grey connector after the ordinal on a pre-2020 era card; the decadeLabel (\"the 90s\") renders on the next line"
   },
   "achievementConnectorYear": "film from",
   "@achievementConnectorYear": {
     "description": "Grey connector after the ordinal on a 2020+ era card; the yearLabel renders on the next line"
   },
-  "decadeLabel": "{decade}s",
+  "decadeLabel": "the {shortDecade}s",
   "@decadeLabel": {
-    "description": "Display label for a decade era bucket (e.g. 1990s)",
+    "description": "Display label for a pre-2020 decade era bucket. English uses the two-digit form (\"the 90s\"); other locales may use the full start year via {decade}.",
     "placeholders": {
       "decade": {
         "type": "int"
+      },
+      "shortDecade": {
+        "type": "String"
       }
     }
   },

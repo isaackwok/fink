@@ -379,7 +379,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get achievementConnectorYear => '上映於';
 
   @override
-  String decadeLabel({required int decade}) {
+  String decadeLabel({required int decade, required String shortDecade}) {
     return '$decade 年代';
   }
 
@@ -877,7 +877,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get achievementConnectorYear => '上映於';
 
   @override
-  String decadeLabel({required int decade}) {
+  String decadeLabel({required int decade, required String shortDecade}) {
     return '$decade 年代';
   }
 

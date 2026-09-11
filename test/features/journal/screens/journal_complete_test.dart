@@ -366,7 +366,7 @@ void main() {
       );
       // Era bucket below 2020 renders as a decade label.
       expect(
-        find.text('1990s', findRichText: true, skipOffstage: false),
+        find.text('the 90s', findRichText: true, skipOffstage: false),
         findsOneWidget,
       );
     });

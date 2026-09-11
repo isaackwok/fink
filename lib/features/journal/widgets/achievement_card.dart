@@ -50,7 +50,11 @@ class AchievementCard extends StatelessWidget {
         if (value == null) return achievement.name;
         return _isYearBucket(achievement.key)
             ? l10n.yearLabel(year: value)
-            : l10n.decadeLabel(decade: value);
+            : l10n.decadeLabel(
+              decade: value,
+              // "the 90s" / "the 00s": two-digit form for English.
+              shortDecade: (value % 100).toString().padLeft(2, '0'),
+            );
     }
   }
 
@@ -80,16 +84,17 @@ class AchievementCard extends StatelessWidget {
         height: 20,
       ),
     ),
+    // Genre: 22.5px coral tag in a 6.75px-padded, radius-9 box (36px total).
     AchievementKind.genre => Container(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(6.75),
       decoration: BoxDecoration(
-        color: const Color(0x14FFECD1),
-        borderRadius: BorderRadius.circular(8),
+        color: const Color(0x14FF615D),
+        borderRadius: BorderRadius.circular(9),
       ),
       child: SvgPicture.asset(
         'assets/images/achievement_genre_glyph.svg',
-        width: 20,
-        height: 20,
+        width: 22.5,
+        height: 22.5,
       ),
     ),
     // Era ships as a complete 36px asset too (Figma 7504:13171).

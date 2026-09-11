@@ -126,13 +126,13 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
           child: Stack(
             children: [
               // Top-anchored flow (Figma 6782:6554): the success block starts
-              // 88pt below the safe area (52pt app-bar row + 36pt), so the
-              // insights sections below it begin above the fold instead of
-              // after a full viewport-height slot.
+              // at y=133 on the 390x844 frame, i.e. 79pt below its 54pt
+              // status bar, so the insights sections below it begin above
+              // the fold instead of after a full viewport-height slot.
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: 88),
+                    const SizedBox(height: 79),
                     Column(
                       children: [
                         // Checkmark icon

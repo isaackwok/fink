@@ -394,14 +394,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get achievementConnectorGenre => 'film in';
 
   @override
-  String get achievementConnectorDecade => 'film from the';
+  String get achievementConnectorDecade => 'film from';
 
   @override
   String get achievementConnectorYear => 'film from';
 
   @override
-  String decadeLabel({required int decade}) {
-    return '${decade}s';
+  String decadeLabel({required int decade, required String shortDecade}) {
+    return 'the ${shortDecade}s';
   }
 
   @override
