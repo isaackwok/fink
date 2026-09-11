@@ -29,6 +29,13 @@ class EmotionEchoesSection extends ConsumerWidget {
       fontWeight: FontWeight.w500,
       color: const Color(0xFFB1B1B1),
     );
+    final emotionNameStyle = GoogleFonts.inter(
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      color: Colors.white,
+    );
+    final names =
+        echoes.headerEmotions.map((e) => e.name.toLowerCase()).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,18 +59,20 @@ class EmotionEchoesSection extends ConsumerWidget {
                   style: greyStyle,
                   children: [
                     TextSpan(text: l10n.emotionEchoHeaderPrefix),
-                    TextSpan(
-                      // The winning shared-emotion group, bolded — built from
-                      // headerEmotions, never by splitting a sentence.
-                      text: echoes.headerEmotions
-                          .map((e) => e.name.toLowerCase())
-                          .join(' '),
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                    // The winning shared-emotion group — built from
+                    // headerEmotions, never by splitting a sentence. Each name
+                    // is bolded individually with the same localized
+                    // separators as EmotionsSelectorButton on JournalContent.
+                    TextSpan(text: names.first, style: emotionNameStyle),
+                    for (var i = 1; i < names.length; i++) ...[
+                      TextSpan(
+                        text:
+                            i == names.length - 1
+                                ? l10n.emotionsListFinalSeparator
+                                : l10n.emotionsListSeparator,
                       ),
-                    ),
+                      TextSpan(text: names[i], style: emotionNameStyle),
+                    ],
                     TextSpan(text: l10n.emotionEchoHeaderSuffix),
                   ],
                 ),

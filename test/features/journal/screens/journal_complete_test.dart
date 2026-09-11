@@ -413,9 +413,10 @@ void main() {
         find.byType(EmotionEchoCard, skipOffstage: false),
         findsNWidgets(2),
       );
-      // Header bolds the shared group names, built from headerEmotions.
+      // Header bolds each shared group name, joined with the same localized
+      // separators as EmotionsSelectorButton on JournalContent.
       expect(
-        find.textContaining('joyful funny', findRichText: true),
+        find.textContaining('joyful and funny', findRichText: true),
         findsOneWidget,
       );
       // The thought-less journal shows the italic nudge + Add now link.
