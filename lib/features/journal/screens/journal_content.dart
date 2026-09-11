@@ -16,7 +16,18 @@ import 'package:movie_journal/l10n/app_localizations.dart';
 
 class JournalContent extends ConsumerStatefulWidget {
   final String journalId;
-  const JournalContent({super.key, required this.journalId});
+
+  /// False hides the share button and the Delete menu item (Edit stays).
+  /// Used when the page is reached from an emotion echo on JournalComplete:
+  /// the share flow's close-back target and delete's pop-to-caller both
+  /// assume the Home → JournalContent stack.
+  final bool showShareAndDelete;
+
+  const JournalContent({
+    super.key,
+    required this.journalId,
+    this.showShareAndDelete = true,
+  });
 
   @override
   ConsumerState<JournalContent> createState() => _JournalContentState();
@@ -123,24 +134,28 @@ class _JournalContentState extends ConsumerState<JournalContent> {
                 ),
               ),
               actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        settings: const RouteSettings(
-                          name: kShareFlowRouteName,
+                if (widget.showShareAndDelete)
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          settings: const RouteSettings(
+                            name: kShareFlowRouteName,
+                          ),
+                          builder:
+                              (_) => TicketPosterPickerScreen(
+                                journal: journal,
+                                entry: ShareTicketEntry.journalContent,
+                              ),
                         ),
-                        builder:
-                            (_) => TicketPosterPickerScreen(
-                              journal: journal,
-                              entry: ShareTicketEntry.journalContent,
-                            ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.ios_share, color: Colors.white),
+                      );
+                    },
+                    icon: const Icon(Icons.ios_share, color: Colors.white),
+                  ),
+                JournalContentMoreMenu(
+                  journalId: widget.journalId,
+                  showDelete: widget.showShareAndDelete,
                 ),
-                JournalContentMoreMenu(journalId: widget.journalId),
               ],
               leading: CircledIconButton(
                 icon: Icons.arrow_back_ios_new,

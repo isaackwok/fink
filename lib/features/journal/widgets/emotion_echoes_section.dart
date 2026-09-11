@@ -40,16 +40,15 @@ class EmotionEchoesSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 48px gap + hairline + 48px gap, owned by the section so an empty
-        // section collapses entirely (mirrors AchievementsSection).
-        const SizedBox(height: 48),
-        Container(height: 0.5, color: Colors.white12),
-        const SizedBox(height: 48),
+        // Plain 112pt gap, no divider (Figma 7363:24722 — the section's
+        // header sits 112 below the achievements grid). Owned by the section
+        // so an empty section collapses entirely (mirrors AchievementsSection).
+        const SizedBox(height: 112),
         Row(
           children: [
             SvgPicture.asset(
               'assets/images/emotion_echo_header.svg',
-              width: 36,
+              width: 24,
               height: 24,
             ),
             const SizedBox(width: 8),
@@ -82,16 +81,24 @@ class EmotionEchoesSection extends ConsumerWidget {
         ),
         const SizedBox(height: 32),
         for (final (index, echo) in echoes.echoes.indexed) ...[
-          if (index > 0) const SizedBox(height: 32),
+          if (index > 0) const SizedBox(height: 24),
           EmotionEchoCard(
             journal: echo.journal,
+            // Opened from the complete screen, the journal page hides share
+            // and delete: both assume the Home → JournalContent stack.
             onOpen:
                 () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => JournalContent(journalId: echo.journal.id),
+                    builder:
+                        (_) => JournalContent(
+                          journalId: echo.journal.id,
+                          showShareAndDelete: false,
+                        ),
                   ),
                 ),
+            // "Fill in memory" goes straight to the editor (no view page in
+            // between); the editor has no share/delete of its own.
             onAddNow: () => editJournal(context, ref, echo.journal),
           ),
         ],

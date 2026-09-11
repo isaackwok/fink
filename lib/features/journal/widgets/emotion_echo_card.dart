@@ -1,10 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
-import 'package:movie_journal/features/movie/movie_providers.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
 import 'package:movie_journal/themes.dart';
@@ -14,19 +12,22 @@ import 'package:movie_journal/themes.dart';
 const _kExcerptLength = 160;
 
 /// A previous journal resurfaced on the complete screen because it shares
-/// emotions with the just-saved one (Figma 6944:8906 / 7168:9534).
+/// emotions with the just-saved one (Figma 7363:24722, card 7487:9770;
+/// thought-less variant 7369:29163).
 ///
-/// Centered title + handwritten date, a landscape still (first selected
-/// scene; falls back to the movie's first TMDB backdrop), then a quoted
-/// thoughts excerpt — or, with no thoughts, an italic nudge whose "Add now"
-/// opens the edit flow.
-class EmotionEchoCard extends ConsumerStatefulWidget {
+/// Centered title + handwritten date, then — only when the journal has a
+/// selected scene — a 207pt still of its first scene (no TMDB backdrop
+/// fallback: a scene-less journal simply has no image row), then either the
+/// thoughts excerpt centered between a pair of oversized Flavors quote marks
+/// or, with no thoughts, the italic "No thoughts…" line with a bold
+/// "Fill in memory" action that opens the editor directly.
+class EmotionEchoCard extends StatefulWidget {
   final JournalState journal;
 
   /// Opens the journal (tap anywhere on the card, or "…more").
   final VoidCallback onOpen;
 
-  /// Opens the edit flow ("Add now" on a thought-less journal).
+  /// Opens the edit flow ("Fill in memory" on a thought-less journal).
   final VoidCallback onAddNow;
 
   const EmotionEchoCard({
@@ -37,114 +38,96 @@ class EmotionEchoCard extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<EmotionEchoCard> createState() => _EmotionEchoCardState();
+  State<EmotionEchoCard> createState() => _EmotionEchoCardState();
 }
 
-class _EmotionEchoCardState extends ConsumerState<EmotionEchoCard> {
-  late final TapGestureRecognizer _linkRecognizer;
+class _EmotionEchoCardState extends State<EmotionEchoCard> {
+  late final TapGestureRecognizer _moreRecognizer;
 
   bool get _hasScene => widget.journal.selectedScenes.isNotEmpty;
+  bool get _hasThoughts => widget.journal.thoughts.trim().isNotEmpty;
 
   @override
   void initState() {
     super.initState();
-    _linkRecognizer =
-        TapGestureRecognizer()
-          ..onTap =
-              widget.journal.thoughts.trim().isEmpty
-                  ? widget.onAddNow
-                  : widget.onOpen;
-
-    // No scene to show: fetch this movie's backdrops. Post-frame because
-    // mutating a provider during build is illegal; skipped when another flow
-    // already populated the family instance.
-    if (!_hasScene) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        final images = ref.read(
-          movieImagesControllerProvider(widget.journal.tmdbId),
-        );
-        if (images.isLoading) {
-          ref
-              .read(
-                movieImagesControllerProvider(widget.journal.tmdbId).notifier,
-              )
-              .getMovieImages();
-        }
-      });
-    }
+    _moreRecognizer = TapGestureRecognizer()..onTap = widget.onOpen;
   }
 
   @override
   void dispose() {
-    _linkRecognizer.dispose();
+    _moreRecognizer.dispose();
     super.dispose();
   }
 
   Widget _image() {
-    String? path;
-    if (_hasScene) {
-      path = widget.journal.selectedScenes.first.path;
-    } else {
-      final images = ref.watch(
-        movieImagesControllerProvider(widget.journal.tmdbId),
-      );
-      final backdrops = images.value?.backdrops;
-      if (backdrops != null && backdrops.isNotEmpty) {
-        path = backdrops.first.filePath;
-      }
-    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: SizedBox(
         height: 207,
         width: double.infinity,
-        child:
-            path == null
-                ? const ColoredBox(color: DarkSurfaces.imagePlaceholder)
-                : TmdbImage(
-                  path: path,
-                  size: TmdbImageSize.w500,
-                  fit: BoxFit.cover,
-                ),
+        child: TmdbImage(
+          path: widget.journal.selectedScenes.first.path,
+          size: TmdbImageSize.w500,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
 
-  Widget _thoughtsBlock(BuildContext context) {
+  /// Thought-less state (Figma 7369:29163): italic prompt over a bold
+  /// "Fill in memory" + pencil row. Only the action row is the edit target;
+  /// the rest of the card still opens the journal.
+  Widget _fillInNudge(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final primary = Theme.of(context).colorScheme.primary;
-    final thoughts = widget.journal.thoughts.trim();
-
-    if (thoughts.isEmpty) {
-      return Text.rich(
-        TextSpan(
+    return Column(
+      children: [
+        Text(
+          l10n.emotionEchoNoThoughts,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: GoogleFonts.inter(
             fontSize: 14,
             fontStyle: FontStyle.italic,
             color: const Color(0xFFD8D8D8),
             letterSpacing: 0.28,
-            height: 1.6,
+            height: 1.8,
           ),
-          children: [
-            TextSpan(text: l10n.emotionEchoNoThoughts),
-            TextSpan(
-              text: l10n.emotionEchoAddNow,
-              recognizer: _linkRecognizer,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                fontStyle: FontStyle.normal,
-                color: primary,
-                height: 1.6,
-              ),
-            ),
-          ],
         ),
-        textAlign: TextAlign.center,
-      );
-    }
+        const SizedBox(height: 4),
+        GestureDetector(
+          onTap: widget.onAddNow,
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                l10n.emotionEchoFillInMemory,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: 0.28,
+                  height: 1.8,
+                ),
+              ),
+              const SizedBox(width: 4),
+              const SizedBox.square(
+                dimension: 24,
+                child: Icon(Icons.edit, size: 16, color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
+  Widget _quotedExcerpt(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final primary = Theme.of(context).colorScheme.primary;
+    final thoughts = widget.journal.thoughts.trim();
     final truncated = thoughts.length > _kExcerptLength;
     final excerpt =
         truncated
@@ -153,43 +136,54 @@ class _EmotionEchoCardState extends ConsumerState<EmotionEchoCard> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '“',
-          style: GoogleFonts.inter(
-            fontSize: 32,
-            height: 1.0,
-            color: const Color(0xFFFFFEFE),
-          ),
-        ),
-        const SizedBox(width: 12),
+        _quoteMark('“'),
+        const SizedBox(width: 16),
         Expanded(
-          child: Text.rich(
-            TextSpan(
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: const Color(0xFFB7B7B7),
-                letterSpacing: 0.28,
-                height: 1.4,
-              ),
-              children: [
-                TextSpan(text: excerpt),
-                if (truncated)
-                  TextSpan(
-                    text: l10n.emotionEchoMore,
-                    recognizer: _linkRecognizer,
-                    style: TextStyle(
-                      fontFamily: 'AvenirNext',
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.primary,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text.rich(
+              TextSpan(
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: const Color(0xFFB7B7B7),
+                  letterSpacing: 0.28,
+                  height: 1.4,
+                ),
+                children: [
+                  TextSpan(text: excerpt),
+                  if (truncated)
+                    TextSpan(
+                      text: l10n.emotionEchoMore,
+                      recognizer: _moreRecognizer,
+                      style: TextStyle(
+                        fontFamily: 'AvenirNext',
+                        fontWeight: FontWeight.w600,
+                        color: primary,
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
+        const SizedBox(width: 16),
+        _quoteMark('”'),
       ],
     );
   }
+
+  /// The decorative curly quote flanking the excerpt: Flavors 36 in the warm
+  /// off-white the design uses only here (Figma 7487:9780 / 7487:9783).
+  Widget _quoteMark(String glyph) => Text(
+    glyph,
+    style: GoogleFonts.flavors(
+      fontSize: 36,
+      height: 1.4,
+      letterSpacing: 0.72,
+      color: const Color(0xFFFFF1D7),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -215,15 +209,15 @@ class _EmotionEchoCardState extends ConsumerState<EmotionEchoCard> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontFamily: 'AvenirNext',
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   fontSize: 20,
                   color: Colors.white,
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
-              journal.createdAt.format(pattern: 'yyyy MMMM'),
+              journal.createdAt.format(pattern: 'MMM, yyyy'),
               textAlign: TextAlign.center,
               style: GoogleFonts.nothingYouCouldDo(
                 fontSize: 14,
@@ -231,10 +225,11 @@ class _EmotionEchoCardState extends ConsumerState<EmotionEchoCard> {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 20),
-            _image(),
-            const SizedBox(height: 16),
-            _thoughtsBlock(context),
+            if (_hasScene) ...[const SizedBox(height: 20), _image()],
+            // The quoted excerpt sits 12 below the still; the thought-less
+            // nudge 16 (Figma 7487:9772 vs 7369:29164).
+            SizedBox(height: _hasThoughts ? 12 : 16),
+            _hasThoughts ? _quotedExcerpt(context) : _fillInNudge(context),
           ],
         ),
       ),

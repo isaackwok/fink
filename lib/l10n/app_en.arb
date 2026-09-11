@@ -543,13 +543,13 @@
   "@emotionEchoHeaderSuffix": {
     "description": "Emotion echoes header text after the bolded emotion names"
   },
-  "emotionEchoNoThoughts": "You felt something but had no words at the time. ",
+  "emotionEchoNoThoughts": "No thoughts for this movie yet",
   "@emotionEchoNoThoughts": {
     "description": "Shown on an echo card when the previous journal has no thoughts text"
   },
-  "emotionEchoAddNow": "Add now",
-  "@emotionEchoAddNow": {
-    "description": "Action on a thought-less echo card that opens the edit flow"
+  "emotionEchoFillInMemory": "Fill in memory",
+  "@emotionEchoFillInMemory": {
+    "description": "Action on a thought-less echo card (Figma 7369:29163) that opens the editor directly"
   },
   "emotionEchoMore": "…more",
   "@emotionEchoMore": {

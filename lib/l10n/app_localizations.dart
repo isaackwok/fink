@@ -805,14 +805,14 @@ abstract class AppLocalizations {
   /// Shown on an echo card when the previous journal has no thoughts text
   ///
   /// In en, this message translates to:
-  /// **'You felt something but had no words at the time. '**
+  /// **'No thoughts for this movie yet'**
   String get emotionEchoNoThoughts;
 
-  /// Action on a thought-less echo card that opens the edit flow
+  /// Action on a thought-less echo card (Figma 7369:29163) that opens the editor directly
   ///
   /// In en, this message translates to:
-  /// **'Add now'**
-  String get emotionEchoAddNow;
+  /// **'Fill in memory'**
+  String get emotionEchoFillInMemory;
 
   /// Trailing link after the truncated thoughts excerpt on an echo card
   ///

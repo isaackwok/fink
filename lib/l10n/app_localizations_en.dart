@@ -416,11 +416,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emotionEchoHeaderSuffix => ' when watching…';
 
   @override
-  String get emotionEchoNoThoughts =>
-      'You felt something but had no words at the time. ';
+  String get emotionEchoNoThoughts => 'No thoughts for this movie yet';
 
   @override
-  String get emotionEchoAddNow => 'Add now';
+  String get emotionEchoFillInMemory => 'Fill in memory';
 
   @override
   String get emotionEchoMore => '…more';

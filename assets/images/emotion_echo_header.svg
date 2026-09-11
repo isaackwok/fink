@@ -1,7 +1,6 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="36" height="24" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Frame 1430106106">
-<circle id="Ellipse 317" cx="24.1915" cy="13.4181" r="9.19149" fill="#FF615D"/>
-<circle id="Ellipse 316" cx="16.1915" cy="13.4181" r="9.19149" fill="#FCBF49"/>
-<circle id="Ellipse 315" cx="10.1915" cy="13.8321" r="9.19149" fill="#9ADCFF"/>
+<circle id="Ellipse 315" cx="10.1915" cy="13.8321" r="9.19149" fill="#9ADCFF" fill-opacity="0.7"/>
+<circle id="Ellipse 316" cx="13.8087" cy="10.1915" r="9.19149" fill="#FCBF49" fill-opacity="0.7"/>
 </g>
 </svg>

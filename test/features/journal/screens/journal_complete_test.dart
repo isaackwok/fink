@@ -421,15 +421,12 @@ void main() {
         find.textContaining('joyful and funny', findRichText: true),
         findsOneWidget,
       );
-      // The thought-less journal shows the italic nudge + Add now link.
+      // The thought-less journal shows the italic prompt + Fill in memory.
       expect(
-        find.textContaining(
-          'You felt something but had no words',
-          findRichText: true,
-          skipOffstage: false,
-        ),
+        find.text('No thoughts for this movie yet', skipOffstage: false),
         findsOneWidget,
       );
+      expect(find.text('Fill in memory', skipOffstage: false), findsOneWidget);
     });
 
     testWidgets('a single shared emotion produces no echo section', (

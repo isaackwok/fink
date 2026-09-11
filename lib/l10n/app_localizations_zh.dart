@@ -395,10 +395,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get emotionEchoHeaderSuffix => '';
 
   @override
-  String get emotionEchoNoThoughts => '當時你有些感受，卻沒留下文字。';
+  String get emotionEchoNoThoughts => '這部電影還沒寫下想法';
 
   @override
-  String get emotionEchoAddNow => '立即補寫';
+  String get emotionEchoFillInMemory => '補上回憶';
 
   @override
   String get emotionEchoMore => '…更多';
@@ -893,10 +893,10 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get emotionEchoHeaderSuffix => '';
 
   @override
-  String get emotionEchoNoThoughts => '當時你有些感受，卻沒留下文字。';
+  String get emotionEchoNoThoughts => '這部電影還沒寫下想法';
 
   @override
-  String get emotionEchoAddNow => '立即補寫';
+  String get emotionEchoFillInMemory => '補上回憶';
 
   @override
   String get emotionEchoMore => '…更多';
