@@ -7,7 +7,7 @@ import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-/// "Your N achievements of this film" on the journal complete screen.
+/// "Your achievements" on the journal complete screen.
 ///
 /// Renders nothing on error or a resolved-empty list (the rest of the screen
 /// is unaffected by an unreachable insights function); shows a skeleton grid
@@ -25,40 +25,23 @@ class AchievementsSection extends ConsumerWidget {
     final achievements = insights.value;
     if (achievements == null) {
       if (insights.hasError) return const SizedBox.shrink();
-      return const _WithTopDivider(child: _SkeletonSection());
+      return const _WithTopGap(child: _SkeletonSection());
     }
     if (achievements.isEmpty) return const SizedBox.shrink();
 
     final l10n = AppLocalizations.of(context);
-    return _WithTopDivider(
+    return _WithTopGap(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text.rich(
-              TextSpan(
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFFB1B1B1),
-                ),
-                children: [
-                  TextSpan(text: l10n.achievementsHeaderPrefix),
-                  TextSpan(
-                    text: '${achievements.length}',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  TextSpan(
-                    text: l10n.achievementsHeaderSuffix(
-                      count: achievements.length,
-                    ),
-                  ),
-                ],
+            child: Text(
+              l10n.achievementsHeader,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFFB1B1B1),
               ),
             ),
           ),
@@ -74,23 +57,19 @@ class AchievementsSection extends ConsumerWidget {
   }
 }
 
-/// The 48px gap + hairline divider + 48px gap that precedes each insights
-/// section, owned by the section so a hidden section collapses entirely.
-class _WithTopDivider extends StatelessWidget {
+/// The 56pt gap between the success block's buttons and this section's
+/// header (Figma 6782:6554 — no divider, so the header sits above the fold).
+/// Owned by the section so a hidden section collapses entirely.
+class _WithTopGap extends StatelessWidget {
   final Widget child;
 
-  const _WithTopDivider({required this.child});
+  const _WithTopGap({required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 48),
-        Container(height: 0.5, color: Colors.white12),
-        const SizedBox(height: 48),
-        child,
-      ],
+      children: [const SizedBox(height: 56), child],
     );
   }
 }

@@ -477,18 +477,9 @@
   "@viewJournal": {
     "description": "Action to open a saved journal"
   },
-  "achievementsHeaderPrefix": "Your ",
-  "@achievementsHeaderPrefix": {
-    "description": "Achievements header text before the bolded count"
-  },
-  "achievementsHeaderSuffix": "{count, plural, =1{ achievement of this film} other{ achievements of this film}}",
-  "@achievementsHeaderSuffix": {
-    "description": "Achievements header text after the bolded count",
-    "placeholders": {
-      "count": {
-        "type": "num"
-      }
-    }
+  "achievementsHeader": "Your achievements",
+  "@achievementsHeader": {
+    "description": "Header above the achievements grid on the journal complete screen"
   },
   "achievementOrdinal": "{ordinal}",
   "@achievementOrdinal": {

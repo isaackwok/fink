@@ -353,17 +353,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get viewJournal => '查看日記';
 
   @override
-  String get achievementsHeaderPrefix => '這部電影的 ';
-
-  @override
-  String achievementsHeaderSuffix({required num count}) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: ' 項成就',
-    );
-    return '$_temp0';
-  }
+  String get achievementsHeader => '你的成就';
 
   @override
   String achievementOrdinal({required String ordinal}) {
@@ -861,17 +851,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   String get viewJournal => '查看日記';
 
   @override
-  String get achievementsHeaderPrefix => '這部電影的 ';
-
-  @override
-  String achievementsHeaderSuffix({required num count}) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: ' 項成就',
-    );
-    return '$_temp0';
-  }
+  String get achievementsHeader => '你的成就';
 
   @override
   String achievementOrdinal({required String ordinal}) {

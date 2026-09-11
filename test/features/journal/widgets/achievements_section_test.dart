@@ -38,12 +38,12 @@ void main() {
       ),
     ],
     child: localizedTestApp(
-      home: Scaffold(
+      home: const Scaffold(
         body: SingleChildScrollView(
           child: Center(
             child: SizedBox(
               width: sectionWidth,
-              child: const AchievementsSection(tmdbId: 550),
+              child: AchievementsSection(tmdbId: 550),
             ),
           ),
         ),

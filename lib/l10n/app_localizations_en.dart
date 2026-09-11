@@ -374,18 +374,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewJournal => 'View Journal';
 
   @override
-  String get achievementsHeaderPrefix => 'Your ';
-
-  @override
-  String achievementsHeaderSuffix({required num count}) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: ' achievements of this film',
-      one: ' achievement of this film',
-    );
-    return '$_temp0';
-  }
+  String get achievementsHeader => 'Your achievements';
 
   @override
   String achievementOrdinal({required String ordinal}) {

@@ -730,17 +730,11 @@ abstract class AppLocalizations {
   /// **'View Journal'**
   String get viewJournal;
 
-  /// Achievements header text before the bolded count
+  /// Header above the achievements grid on the journal complete screen
   ///
   /// In en, this message translates to:
-  /// **'Your '**
-  String get achievementsHeaderPrefix;
-
-  /// Achievements header text after the bolded count
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{ achievement of this film} other{ achievements of this film}}'**
-  String achievementsHeaderSuffix({required num count});
+  /// **'Your achievements'**
+  String get achievementsHeader;
 
   /// Bold ordinal on an achievement card; zh wraps it as 第 N 部
   ///

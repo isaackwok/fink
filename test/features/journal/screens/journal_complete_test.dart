@@ -145,6 +145,8 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
+      // Top-anchored layout: the buttons sit below the 600px test viewport.
+      await tester.ensureVisible(find.text('Share Ticket'));
       await tester.tap(find.text('Share Ticket'));
       await tester.pumpAndSettle();
       // No exception = handler ran without crash (currently a TODO stub)
@@ -156,6 +158,8 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
+      // Top-anchored layout: the buttons sit below the 600px test viewport.
+      await tester.ensureVisible(find.text('Share Ticket'));
       await tester.tap(find.text('Share Ticket'));
       await tester.pumpAndSettle();
 
@@ -181,6 +185,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      // Top-anchored layout: the buttons sit below the 600px test viewport.
+      await tester.ensureVisible(find.text('Share Ticket'));
       await tester.tap(find.text('Share Ticket'));
       await tester.pumpAndSettle();
 
@@ -353,11 +359,7 @@ void main() {
         find.byType(AchievementCard, skipOffstage: false),
         findsNWidgets(2),
       );
-      // Header spans: grey prefix + bold count + plural suffix.
-      expect(
-        find.textContaining('achievements of this film', findRichText: true),
-        findsOneWidget,
-      );
+      expect(find.text('Your achievements'), findsOneWidget);
       expect(
         find.text('David Fincher', findRichText: true, skipOffstage: false),
         findsOneWidget,
