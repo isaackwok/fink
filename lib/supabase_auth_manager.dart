@@ -292,11 +292,14 @@ class SupabaseAuthManager {
   /// presence UX is the point, and because cancelling must abort the delete —
   /// matching the existing Firebase flow exactly.
   /// Returns `true` if the user re-authenticated, `false` if they backed out
-  /// of the provider prompt. Real failures still throw.
+  /// of the provider prompt. A different selected account throws and must
+  /// never authorize deletion. Real failures still throw.
   static Future<bool> reauthenticate({
+    required String expectedUserId,
     String? iosClientId,
     String? webClientId,
   }) async {
+    _requireCurrentUser(expectedUserId);
     final provider = signInMethod;
     if (provider != 'apple' && provider != 'google') {
       // Anonymous/migrated accounts have no provider to re-auth against, so
@@ -305,14 +308,21 @@ class SupabaseAuthManager {
     }
 
     final confirmed = await cancellable(
-      () => provider == 'apple'
-          ? signInWithApple()
-          : signInWithGoogle(
-              iosClientId: iosClientId,
-              webClientId: webClientId,
-            ),
+      () =>
+          provider == 'apple'
+              ? signInWithApple()
+              : signInWithGoogle(
+                iosClientId: iosClientId,
+                webClientId: webClientId,
+              ),
     );
-    return confirmed != null;
+    if (confirmed == null) return false;
+    // Native sign-in can replace the session with a different selected account.
+    _requireCurrentUser(expectedUserId);
+    if (confirmed.user?.id != expectedUserId) {
+      throw const AuthException('Confirm with the same account to delete it.');
+    }
+    return true;
   }
 
   /// Runs a native provider flow, mapping a dismissed system prompt to `null`.
@@ -338,18 +348,31 @@ class SupabaseAuthManager {
     }
   }
 
+  static void _requireCurrentUser(String expectedUserId) {
+    if (currentUser?.id != expectedUserId) {
+      throw const AuthException('Confirm with the same account to delete it.');
+    }
+  }
+
   /// Deletes the account server-side. Returns the deleted journal ids so the
   /// caller can log per-journal analytics, preserving the Firebase behaviour.
   ///
   /// The edge function deletes the auth user, which cascades to profiles and
   /// journals and fires the tombstone triggers — so unlike the old client-side
   /// flow there is no window in which data is gone but the account remains.
-  static Future<List<String>> deleteAccount() async {
-    final res = await _client.functions.invoke('delete-account');
+  static Future<List<String>> deleteAccount({
+    required String expectedUserId,
+  }) async {
+    _requireCurrentUser(expectedUserId);
+    final res = await _client.functions.invoke(
+      'delete-account',
+      body: {'expectedUserId': expectedUserId},
+    );
     final data = res.data;
-    final ids = (data is Map && data['deletedJournalIds'] is List)
-        ? (data['deletedJournalIds'] as List).cast<String>()
-        : const <String>[];
+    final ids =
+        (data is Map && data['deletedJournalIds'] is List)
+            ? (data['deletedJournalIds'] as List).cast<String>()
+            : const <String>[];
 
     // The function deletes the user server-side, but this device still holds
     // the issued session. Firebase's client-side `currentUser.delete()` used

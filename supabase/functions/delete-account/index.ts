@@ -36,6 +36,21 @@ Deno.serve(async (req) => {
   const { data: { user }, error } = await userClient.auth.getUser();
   if (error || !user) return new Response("Unauthorized", { status: 401 });
 
+  // Require the identity captured before the native sign-in prompt. Older
+  // clients without this guard must update before deleting an account.
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return new Response("Expected account identity required", { status: 400 });
+  }
+  if (
+    !body || typeof body !== "object" ||
+    !("expectedUserId" in body) || body.expectedUserId !== user.id
+  ) {
+    return new Response("Account identity changed or missing", { status: 409 });
+  }
+
   const admin = createClient(SUPABASE_URL, SECRET_KEY);
 
   // service_role has BYPASSRLS, so this sees the user's rows without needing
@@ -47,7 +62,10 @@ Deno.serve(async (req) => {
   // delete because an analytics read failed is the wrong trade. Log it so the
   // gap is visible instead of silently returning an empty id list.
   if (selErr) {
-    console.error(`journal id collection failed for ${user.id}:`, selErr.message);
+    console.error(
+      `journal id collection failed for ${user.id}:`,
+      selErr.message,
+    );
   }
 
   // Phase 0 verification saw a single transient 403 bad_jwt from the admin API
@@ -55,7 +73,10 @@ Deno.serve(async (req) => {
   // spurious failure to a user who is trying to delete their account.
   let delErr = (await admin.auth.admin.deleteUser(user.id)).error;
   if (delErr) {
-    console.warn(`deleteUser failed for ${user.id}, retrying once:`, delErr.message);
+    console.warn(
+      `deleteUser failed for ${user.id}, retrying once:`,
+      delErr.message,
+    );
     await new Promise((r) => setTimeout(r, 250));
     delErr = (await admin.auth.admin.deleteUser(user.id)).error;
   }

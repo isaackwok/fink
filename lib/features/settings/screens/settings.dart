@@ -400,14 +400,15 @@ class _AccountSection extends ConsumerWidget {
   }
 
   Future<void> _deleteAccount(BuildContext context, WidgetRef ref) async {
-    if (SupabaseAuthManager.currentUser == null) return;
+    final originalUserId = SupabaseAuthManager.currentUser?.id;
+    if (originalUserId == null) return;
 
-    // 1. Confirm presence before anything destructive. Supabase has no
-    //    `requires-recent-login`, so unlike the Firebase flow this is no
-    //    longer load-bearing for correctness — it is kept because backing out
-    //    of the provider prompt must still cancel the deletion.
+    // Confirm presence and the exact original identity. Native provider
+    // sign-in can replace the session if a different account is selected.
     try {
-      final confirmed = await SupabaseAuthManager.reauthenticate();
+      final confirmed = await SupabaseAuthManager.reauthenticate(
+        expectedUserId: originalUserId,
+      );
       if (!confirmed) return; // user backed out of the prompt
     } catch (e) {
       if (context.mounted) {
@@ -426,7 +427,9 @@ class _AccountSection extends ConsumerWidget {
     //    longer a window where data is gone but the account still exists —
     //    the half-deleted state the old ordering existed to avoid.
     try {
-      final deletedJournalIds = await SupabaseAuthManager.deleteAccount();
+      final deletedJournalIds = await SupabaseAuthManager.deleteAccount(
+        expectedUserId: originalUserId,
+      );
       for (final id in deletedJournalIds) {
         unawaited(AnalyticsManager.logJournalDeleted(journalId: id));
       }

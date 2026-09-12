@@ -12,6 +12,7 @@ final authStateProvider = StreamProvider<User?>((ref) {
 
 /// Provider that fetches the current user's username from `profiles`
 final currentUsernameProvider = FutureProvider<String>((ref) async {
+  await ref.watch(anonymousBridgeProvider.future);
   final authState = await ref.watch(authStateProvider.future);
   if (authState == null) {
     return 'Guest';
@@ -46,6 +47,8 @@ final anonymousBridgeProvider = FutureProvider<bool>((ref) async {
 /// The claim RPC must run at most once per sign-in; Riverpod's caching is what
 /// makes that true.
 final hasProfileProvider = FutureProvider<bool>((ref) async {
+  // Never cache a missing profile while anonymous recovery is in flight.
+  await ref.watch(anonymousBridgeProvider.future);
   final user = await ref.watch(authStateProvider.future);
   if (user == null) return false;
 

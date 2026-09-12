@@ -30,7 +30,10 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bridge = ref.watch(anonymousBridgeProvider);
     final authState = ref.watch(authStateProvider);
+    // Signing in anonymously emits before recovery has moved the profile.
+    if (bridge.isLoading) return const LoadingScaffold();
     final l10n = AppLocalizations.of(context);
 
     // Show loading while checking auth state
@@ -43,7 +46,6 @@ class HomeScreen extends ConsumerWidget {
           // reclaim its journals without ever signing in. Try that before
           // offering the login screen, since succeeding means this user should
           // never see one.
-          final bridge = ref.watch(anonymousBridgeProvider);
 
           Widget signedOutUi() {
             final splashShown = ref.watch(splashShownProvider);

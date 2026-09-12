@@ -107,25 +107,9 @@ Deno.serve(async (req) => {
     return Response.json({ error: rpcErr.message }, { status: 500 });
   }
 
-  // The placeholder auth.users row is now orphaned — the RPC already moved its
-  // profile and journals away, so this delete cascades to nothing and fires no
-  // tombstone trigger. That ordering is what keeps the delta-sync working for
-  // this user; see the migration's comment.
-  //
-  // Non-fatal: the claim has already succeeded and the user has their data.
-  // A leftover row is exactly what the freeze-day cleanup step sweeps up
-  // ("pre-created users with no profiles row").
-  const placeholderId = (data as Record<string, unknown> | null)
-    ?.placeholder_user_id;
-  if (typeof placeholderId === "string") {
-    const { error: delErr } = await admin.auth.admin.deleteUser(placeholderId);
-    if (delErr) {
-      console.warn(
-        `placeholder ${placeholderId} left behind after claim by ${user.id}:`,
-        delErr.message,
-      );
-    }
-  }
+  // Keep the orphaned auth row for freeze-day cleanup. Deleting via a second
+  // admin request races with provider linking after the RPC commits and can
+  // destroy newly attached credentials. Recovery itself is already complete.
 
   return Response.json(data);
 });

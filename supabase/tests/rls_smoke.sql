@@ -11,7 +11,7 @@
 
 begin;
 -- Explicit count (not no_plan) so a test that silently stops running is caught.
-select plan(72);
+select plan(78);
 
 -- ---------------------------------------------------------------- fixtures
 -- Two users. Fixed UUIDs so failures are reproducible.
@@ -335,6 +335,8 @@ select public.claim_anonymous_data('fb_anon1', :'user_n'::uuid) as r;
 
 select is((select r->>'status' from claim_1), 'claimed',
           'claim_anonymous_data reports claimed');
+select ok((select not (r ? 'placeholder_user_id') from claim_1),
+          'successful recovery does not authorize out-of-transaction auth deletion');
 select is((select r->>'journals_moved' from claim_1), '2',
           'both journals moved to the caller');
 select is((select count(*) from public.journals where user_id = :'user_n')::int, 2,
@@ -371,6 +373,27 @@ select is((select public.claim_anonymous_data('fb_nonexistent',
              '55555555-5555-5555-5555-555555555555'::uuid)->>'status'),
           'no_premigrated_profile',
           'an unknown firebase_uid claims nothing');
+
+-- A retained Firebase token cannot take back a secured bridge account.
+insert into auth.identities (id, user_id, provider_id, provider, identity_data)
+values ('99999999-9999-9999-9999-999999999999', :'user_n', 'secured-google', 'google',
+        '{"sub":"secured-google"}');
+create temp table secured_claim as
+select public.claim_anonymous_data('fb_anon1',
+  '55555555-5555-5555-5555-555555555555'::uuid) as r;
+select is((select r->>'status' from secured_claim), 'account_secured',
+          'recovery rejects an owner with a provider identity');
+select ok((select not (r ? 'placeholder_user_id') from secured_claim),
+          'rejected claim never authorizes deleting the secured owner');
+select is((select count(*) from public.journals where user_id = :'user_n')::int, 2,
+          'secured owner retains journals');
+select is((select id::text from public.profiles where firebase_uid = 'fb_anon1'), :'user_n',
+          'secured owner retains profile');
+-- Credential-less logout recovery must continue to work.
+delete from auth.identities where user_id = :'user_n';
+select is((select public.claim_anonymous_data('fb_anon1',
+  '55555555-5555-5555-5555-555555555555'::uuid)->>'status'), 'claimed',
+          'unsecured anonymous owner can still recover after logout');
 
 select * from finish();
 rollback;
