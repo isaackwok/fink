@@ -228,6 +228,63 @@ void main() {
   });
 
   group('SearchMovieController', () {
+    test('ending a session cancels and ignores an unfinished search', () async {
+      final repo = _ControlledMovieRepo();
+      final container = ProviderContainer(
+        overrides: [movieRepoProvider.overrideWithValue(repo)],
+      );
+      addTearDown(container.dispose);
+      final session = container.listen(
+        searchMovieControllerProvider,
+        (_, _) {},
+      );
+      final initial = container.read(searchMovieControllerProvider.future);
+      repo.pending.single.completer.complete(repo.page(1));
+      await initial;
+      final pending = container
+          .read(searchMovieControllerProvider.notifier)
+          .search('Dune');
+      final request = repo.pending.last;
+
+      session.close();
+      await container.pump();
+      expect(request.cancelToken!.isCancelled, isTrue);
+      request.completer.complete(repo.page(1, title: 'Late result'));
+      await pending;
+    });
+
+    test('a new search session starts with popular movies', () async {
+      final container = ProviderContainer(
+        overrides: [movieRepoProvider.overrideWithValue(_FakeMovieRepo())],
+      );
+      addTearDown(container.dispose);
+      final session = container.listen(
+        searchMovieControllerProvider,
+        (_, _) {},
+      );
+      await container.read(searchMovieControllerProvider.future);
+      await container
+          .read(searchMovieControllerProvider.notifier)
+          .search('Dune');
+      expect(
+        container.read(searchMovieControllerProvider).value!.query,
+        'Dune',
+      );
+
+      // Saving removes the search route without invoking its pop callback.
+      session.close();
+      await container.pump();
+      final nextSession = container.listen(
+        searchMovieControllerProvider,
+        (_, _) {},
+      );
+      addTearDown(nextSession.close);
+      final fresh = await container.read(searchMovieControllerProvider.future);
+      expect(fresh.query, isEmpty);
+      expect(fresh.mode, SearchMovieMode.popular);
+      expect(fresh.page, 2);
+    });
+
     ProviderContainer containerWith(_FakeMovieRepo repo) {
       final container = ProviderContainer(
         overrides: [movieRepoProvider.overrideWithValue(repo)],

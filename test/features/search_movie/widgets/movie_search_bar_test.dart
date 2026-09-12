@@ -48,6 +48,8 @@ void main() {
       container = ProviderContainer(
         overrides: [searchMovieControllerProvider.overrideWith(() => fake)],
       );
+      // The real screen's MovieResultList keeps the search session alive.
+      container.listen(searchMovieControllerProvider, (_, _) {});
     });
 
     tearDown(() {

@@ -81,7 +81,11 @@ class SearchMovieController extends AsyncNotifier<SearchMovieState> {
     // A dependency-triggered rebuild (notably an app-locale change) owns the
     // next state, so responses started under the previous language are stale.
     _requestId++;
-    ref.onDispose(() => _cancelToken?.cancel());
+    ref.onDispose(() {
+      // Late search/pagination responses must not write to a disposed session.
+      _requestId++;
+      _cancelToken?.cancel();
+    });
     final repo = ref.watch(movieRepoProvider);
     // Load initial popular movies
     final result = await repo.popular(page: 1);

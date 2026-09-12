@@ -17,8 +17,10 @@ final movieRepoProvider = Provider(
   dependencies: [appLocaleProvider],
 );
 
+// A search belongs to the active search route. Saving a journal removes that
+// route without a pop callback, so release its results when listeners go away.
 final searchMovieControllerProvider =
-    AsyncNotifierProvider<SearchMovieController, SearchMovieState>(
+    AsyncNotifierProvider.autoDispose<SearchMovieController, SearchMovieState>(
       SearchMovieController.new,
       dependencies: [movieRepoProvider],
     );
