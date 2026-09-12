@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/core/utils/tmdb_image_url.dart';
@@ -7,8 +6,7 @@ import 'package:movie_journal/l10n/app_localizations.dart';
 import 'package:movie_journal/shared_widgets/tmdb_image.dart';
 import 'package:movie_journal/themes.dart';
 
-/// Cap on the thoughts excerpt: past it the text is cut so that the teal
-/// "…more" link (which opens the journal) still fits on the last line.
+/// Cap on the thoughts excerpt, including its plain trailing ellipsis.
 const _kExcerptMaxLines = 5;
 
 /// A previous journal resurfaced on the complete screen because it shares
@@ -21,10 +19,10 @@ const _kExcerptMaxLines = 5;
 /// thoughts excerpt centered between a pair of oversized Flavors quote marks
 /// or, with no thoughts, the italic "No thoughts…" line with a bold
 /// "Fill in memory" action that opens the editor directly.
-class EmotionEchoCard extends StatefulWidget {
+class EmotionEchoCard extends StatelessWidget {
   final JournalState journal;
 
-  /// Opens the journal (tap anywhere on the card, or "…more").
+  /// Opens the journal when tapping anywhere on the card.
   final VoidCallback onOpen;
 
   /// Opens the edit flow ("Fill in memory" on a thought-less journal).
@@ -37,27 +35,8 @@ class EmotionEchoCard extends StatefulWidget {
     required this.onAddNow,
   });
 
-  @override
-  State<EmotionEchoCard> createState() => _EmotionEchoCardState();
-}
-
-class _EmotionEchoCardState extends State<EmotionEchoCard> {
-  late final TapGestureRecognizer _moreRecognizer;
-
-  bool get _hasScene => widget.journal.selectedScenes.isNotEmpty;
-  bool get _hasThoughts => widget.journal.thoughts.trim().isNotEmpty;
-
-  @override
-  void initState() {
-    super.initState();
-    _moreRecognizer = TapGestureRecognizer()..onTap = widget.onOpen;
-  }
-
-  @override
-  void dispose() {
-    _moreRecognizer.dispose();
-    super.dispose();
-  }
+  bool get _hasScene => journal.selectedScenes.isNotEmpty;
+  bool get _hasThoughts => journal.thoughts.trim().isNotEmpty;
 
   Widget _image() {
     return ClipRRect(
@@ -66,7 +45,7 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
         height: 207,
         width: double.infinity,
         child: TmdbImage(
-          path: widget.journal.selectedScenes.first.path,
+          path: journal.selectedScenes.first.path,
           size: TmdbImageSize.w500,
           fit: BoxFit.cover,
         ),
@@ -96,7 +75,7 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
         ),
         const SizedBox(height: 4),
         GestureDetector(
-          onTap: widget.onAddNow,
+          onTap: onAddNow,
           behavior: HitTestBehavior.opaque,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -125,26 +104,14 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
   }
 
   Widget _quotedExcerpt(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final primary = Theme.of(context).colorScheme.primary;
-    final thoughts = widget.journal.thoughts.trim();
+    final thoughts = journal.thoughts.trim();
     final bodyStyle = GoogleFonts.inter(
       fontSize: 14,
       color: const Color(0xFFB7B7B7),
       letterSpacing: 0.28,
       height: 1.4,
     );
-    final moreSpan = TextSpan(
-      text: l10n.emotionEchoMore,
-      recognizer: _moreRecognizer,
-      // Same line height as the body so the last line's strut doesn't grow.
-      style: TextStyle(
-        fontFamily: 'AvenirNext',
-        fontWeight: FontWeight.w600,
-        color: primary,
-        height: 1.4,
-      ),
-    );
+    const ellipsisSpan = TextSpan(text: '...');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +128,7 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
                   context,
                   thoughts,
                   bodyStyle,
-                  moreSpan,
+                  ellipsisSpan,
                   constraints.maxWidth,
                 );
                 return Text.rich(
@@ -169,7 +136,7 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
                     style: bodyStyle,
                     children: [
                       TextSpan(text: excerpt ?? thoughts),
-                      if (excerpt != null) moreSpan,
+                      if (excerpt != null) ellipsisSpan,
                     ],
                   ),
                   textAlign: TextAlign.center,
@@ -186,14 +153,14 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
     );
   }
 
-  /// Returns the longest prefix of [thoughts] that, followed by [moreSpan],
+  /// Returns the longest prefix of [thoughts] that, followed by [ellipsisSpan],
   /// fits in [_kExcerptMaxLines] at [maxWidth] — or null when the whole text
-  /// already fits and no link is needed.
+  /// already fits and no ellipsis is needed.
   String? _fitExcerpt(
     BuildContext context,
     String thoughts,
     TextStyle bodyStyle,
-    TextSpan moreSpan,
+    TextSpan ellipsisSpan,
     double maxWidth,
   ) {
     final direction = Directionality.of(context);
@@ -204,32 +171,33 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
       textScaler: scaler,
       maxLines: _kExcerptMaxLines,
     );
-    bool fits(String body, {bool withMore = true}) {
+    bool fits(String body, {bool withEllipsis = true}) {
       painter.text = TextSpan(
         style: bodyStyle,
-        children: [TextSpan(text: body), if (withMore) moreSpan],
+        children: [TextSpan(text: body), if (withEllipsis) ellipsisSpan],
       );
       painter.layout(maxWidth: maxWidth);
       return !painter.didExceedMaxLines;
     }
 
     try {
-      if (fits(thoughts, withMore: false)) return null;
+      if (fits(thoughts, withEllipsis: false)) return null;
 
-      // Start from where line 5 ends, leaving room for the link, then back
+      // Start from where line 5 ends, leaving room for the ellipsis, then back
       // off word by word until the pair fits.
       painter.text = TextSpan(text: thoughts, style: bodyStyle);
       painter.layout(maxWidth: maxWidth);
-      final moreWidth =
-          (TextPainter(
-            text: moreSpan,
-            textDirection: direction,
-            textScaler: scaler,
-          )..layout()).width;
+      final ellipsisPainter = TextPainter(
+        text: TextSpan(style: bodyStyle, children: [ellipsisSpan]),
+        textDirection: direction,
+        textScaler: scaler,
+      )..layout();
+      final ellipsisWidth = ellipsisPainter.width;
+      ellipsisPainter.dispose();
       var cut =
           painter
               .getPositionForOffset(
-                Offset(painter.width - moreWidth, painter.height - 1),
+                Offset(painter.width - ellipsisWidth, painter.height - 1),
               )
               .offset;
       cut = cut.clamp(0, thoughts.length);
@@ -262,9 +230,8 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
 
   @override
   Widget build(BuildContext context) {
-    final journal = widget.journal;
     return GestureDetector(
-      onTap: widget.onOpen,
+      onTap: onOpen,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
@@ -292,7 +259,7 @@ class _EmotionEchoCardState extends State<EmotionEchoCard> {
             ),
             const SizedBox(height: 12),
             Text(
-              journal.createdAt.format(pattern: 'MMM, yyyy'),
+              journal.watchedAt.format(pattern: 'MMM, yyyy'),
               textAlign: TextAlign.center,
               style: GoogleFonts.nothingYouCouldDo(
                 fontSize: 14,

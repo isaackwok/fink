@@ -57,7 +57,7 @@ class AchievementsSection extends ConsumerWidget {
   }
 }
 
-/// The 112pt gap between the success block's buttons and this section's
+/// The 60pt gap between the success block's buttons and this section's
 /// header (Figma 7363:24722, with no divider).
 /// Owned by the section so a hidden section collapses entirely.
 class _WithTopGap extends StatelessWidget {
@@ -69,7 +69,7 @@ class _WithTopGap extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [const SizedBox(height: 112), child],
+      children: [const SizedBox(height: 60), child],
     );
   }
 }

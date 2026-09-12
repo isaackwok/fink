@@ -49,6 +49,7 @@ class SupabaseDbManager {
       'movieTitle': row['movie_title'] ?? '',
       'moviePoster': row['movie_poster'] ?? '',
       'rating': row['rating'] ?? 0,
+      'watchedAt': row['watched_at'],
       // text[] arrives as List<dynamic>; jsonb columns as decoded JSON.
       // fromJson already handles the legacy string-vs-object shapes for
       // scenes and refs, so they are passed through untouched.
@@ -83,6 +84,7 @@ class SupabaseDbManager {
       'movie_title': journal.movieTitle,
       'movie_poster': journal.moviePoster,
       'rating': journal.rating,
+      'watched_at': journal.watchedAt.format(pattern: 'yyyy-MM-dd'),
       'emotions': journal.emotions.map((e) => e.id).toList(),
       'selected_scenes': journal.selectedScenes.map((s) => s.toMap()).toList(),
       'selected_refs': journal.selectedRefs.map((r) => r.toMap()).toList(),

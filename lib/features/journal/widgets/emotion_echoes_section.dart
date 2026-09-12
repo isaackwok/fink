@@ -40,10 +40,10 @@ class EmotionEchoesSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Plain 128pt gap, no divider (Figma 7363:24722 — the section's
-        // header sits 128 below the achievements grid). Owned by the section
+        // Plain 60pt gap, no divider (Figma 7363:24722 — the section's
+        // header sits 60 below the achievements grid). Owned by the section
         // so an empty section collapses entirely (mirrors AchievementsSection).
-        const SizedBox(height: 128),
+        const SizedBox(height: 60),
         Row(
           children: [
             // Circles tinted by the shared emotions' groups (max two).

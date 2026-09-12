@@ -15,6 +15,7 @@ JournalState makeJournal({
   List<SceneItem> selectedScenes = const [],
   List<Review>? selectedRefs,
   String thoughts = '',
+  Jiffy? watchedAt,
   Jiffy? createdAt,
   Jiffy? updatedAt,
 }) {
@@ -28,6 +29,7 @@ JournalState makeJournal({
     selectedScenes: selectedScenes,
     selectedRefs: selectedRefs,
     thoughts: thoughts,
+    watchedAt: watchedAt,
     createdAt: createdAt,
     updatedAt: updatedAt,
   );

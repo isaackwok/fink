@@ -95,11 +95,11 @@ final groupedJournalsProvider = Provider<
   final grouped = <String, List<JournalState>>{};
   for (final journal in journals) {
     grouped
-        .putIfAbsent(journal.createdAt.format(pattern: 'yyyy-MM'), () => [])
+        .putIfAbsent(journal.watchedAt.format(pattern: 'yyyy-MM'), () => [])
         .add(journal);
   }
   for (final group in grouped.values) {
-    group.sort((a, b) => b.createdAt.dateTime.compareTo(a.createdAt.dateTime));
+    group.sort((a, b) => b.watchedAt.dateTime.compareTo(a.watchedAt.dateTime));
   }
   return grouped.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
 });

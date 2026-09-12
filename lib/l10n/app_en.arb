@@ -1,4 +1,5 @@
 {
+  "watchDatePickerTitle": "Watch date",
   "@@locale": "en",
   "appTitle": "Movie Journal",
   "@appTitle": {

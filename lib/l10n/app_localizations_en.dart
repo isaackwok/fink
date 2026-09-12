@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get watchDatePickerTitle => 'Watch date';
+
+  @override
   String get appTitle => 'Movie Journal';
 
   @override

@@ -75,6 +75,28 @@ void main() {
       expect(find.byIcon(Icons.check), findsOneWidget);
     });
 
+    testWidgets('scroll viewport extends through the bottom safe area', (
+      tester,
+    ) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.padding = const FakeViewPadding(top: 54, bottom: 34);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetPadding);
+
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      final scroll = find.byType(SingleChildScrollView);
+      expect(tester.getRect(scroll).bottom, 844);
+      expect(tester.getRect(scroll).top, 54);
+      expect(
+        tester.widget<SingleChildScrollView>(scroll).padding,
+        const EdgeInsets.only(bottom: 34),
+      );
+    });
+
     testWidgets('renders success message text', (tester) async {
       await tester.pumpWidget(buildSubject());
       expect(find.text("You've saved a journal"), findsOneWidget);

@@ -59,6 +59,7 @@ class JournalState {
   final List<SceneItem> selectedScenes;
   final List<Review> selectedRefs;
   final String thoughts;
+  final Jiffy watchedAt;
   final Jiffy createdAt;
   final Jiffy updatedAt;
 
@@ -75,6 +76,7 @@ class JournalState {
     List<SceneItem> selectedScenes = const [],
     List<Review>? selectedRefs,
     String thoughts = '',
+    Jiffy? watchedAt,
     Jiffy? createdAt,
     Jiffy? updatedAt,
   }) {
@@ -89,6 +91,9 @@ class JournalState {
       selectedScenes: selectedScenes,
       selectedRefs: selectedRefs ?? [],
       thoughts: thoughts,
+      watchedAt: Jiffy.parse(
+        (watchedAt ?? resolvedCreatedAt).format(pattern: 'yyyy-MM-dd'),
+      ),
       createdAt: resolvedCreatedAt,
       updatedAt: updatedAt ?? resolvedCreatedAt,
     );
@@ -104,6 +109,7 @@ class JournalState {
     required this.selectedScenes,
     required this.selectedRefs,
     required this.thoughts,
+    required this.watchedAt,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -118,6 +124,7 @@ class JournalState {
     List<SceneItem>? selectedScenes,
     List<Review>? selectedRefs,
     String? thoughts,
+    Jiffy? watchedAt,
     Jiffy? createdAt,
     Jiffy? updatedAt,
   }) {
@@ -131,6 +138,7 @@ class JournalState {
       selectedScenes: selectedScenes ?? this.selectedScenes,
       selectedRefs: selectedRefs ?? this.selectedRefs,
       thoughts: thoughts ?? this.thoughts,
+      watchedAt: watchedAt ?? this.watchedAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -153,6 +161,7 @@ class JournalState {
           listEquals(selectedScenes, other.selectedScenes) &&
           listEquals(selectedRefs, other.selectedRefs) &&
           thoughts == other.thoughts &&
+          watchedAt == other.watchedAt &&
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt;
 
@@ -167,6 +176,7 @@ class JournalState {
     Object.hashAll(selectedScenes),
     Object.hashAll(selectedRefs),
     thoughts,
+    watchedAt,
     createdAt,
     updatedAt,
   );
@@ -181,6 +191,7 @@ class JournalState {
       'selectedScenes': selectedScenes.map((scene) => scene.toMap()).toList(),
       'selectedRefs': selectedRefs.map((r) => r.toMap()).toList(),
       'thoughts': thoughts,
+      'watchedAt': watchedAt.format(pattern: 'yyyy-MM-dd'),
       'createdAt': createdAt.toString(),
       'updatedAt': updatedAt.toString(),
     };
@@ -197,6 +208,7 @@ class JournalState {
       'selectedScenes': selectedScenes.map((scene) => scene.toMap()).toList(),
       'selectedRefs': selectedRefs.map((r) => r.toMap()).toList(),
       'thoughts': thoughts,
+      'watchedAt': watchedAt.format(pattern: 'yyyy-MM-dd'),
       'createdAt': createdAt.toString(),
       'updatedAt': updatedAt.toString(),
     });
@@ -260,6 +272,8 @@ class JournalState {
       selectedScenes: parseSelectedScenes(map['selectedScenes']),
       selectedRefs: parseSelectedRefs(map['selectedRefs']),
       thoughts: map['thoughts'] ?? '',
+      watchedAt:
+          map['watchedAt'] == null ? null : Jiffy.parse(map['watchedAt']),
       createdAt:
           map['createdAt'] != null
               ? Jiffy.parse(map['createdAt'])

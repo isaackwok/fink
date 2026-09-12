@@ -9,6 +9,9 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get watchDatePickerTitle => '觀影日期';
+
+  @override
   String get appTitle => '電影日記';
 
   @override
@@ -505,6 +508,9 @@ class AppLocalizationsZh extends AppLocalizations {
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
 class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   AppLocalizationsZhHantTw() : super('zh_Hant_TW');
+
+  @override
+  String get watchDatePickerTitle => '觀影日期';
 
   @override
   String get appTitle => '電影日記';

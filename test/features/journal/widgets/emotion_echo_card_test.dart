@@ -41,7 +41,7 @@ void main() {
     movieTitle: 'Sentimental Value',
     selectedScenes: [SceneItem(path: '/scene.jpg')],
     thoughts: thoughts,
-    createdAt: Jiffy.parseFromDateTime(DateTime(2025, 10, 20)),
+    watchedAt: Jiffy.parseFromDateTime(DateTime(2025, 10, 20)),
   );
 
   Text textWidget(WidgetTester tester, String data) =>
@@ -110,13 +110,13 @@ void main() {
       expect(excerpt.top - open.top, 8);
     });
 
-    testWidgets('a long excerpt is capped at 5 lines and ends with "…more"', (
+    testWidgets('a long excerpt is capped at 5 lines and ends with "..."', (
       tester,
     ) async {
       await tester.pumpWidget(subject(journalWith(thoughts: longThoughts)));
       await tester.pumpAndSettle();
 
-      final excerpt = find.textContaining('…more', findRichText: true);
+      final excerpt = find.textContaining('...', findRichText: true);
       expect(excerpt, findsOneWidget);
       // Re-lay the rendered span out at its rendered width to count lines.
       final rich = tester.widget<RichText>(excerpt);
@@ -128,15 +128,27 @@ void main() {
       )..layout(maxWidth: width);
       expect(painter.computeLineMetrics().length, 5);
       painter.dispose();
-      // The link is the visible tail — nothing is ellipsized past it.
-      expect(rich.text.toPlainText(), endsWith('…more'));
+      // The plain ellipsis inherits the body styling and has no separate action.
+      expect(rich.text.toPlainText(), endsWith('...'));
+      final text = tester.widget<Text>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Text &&
+              (widget.textSpan?.toPlainText().endsWith('...') ?? false),
+        ),
+      );
+      final tail = (text.textSpan as TextSpan).children!.last as TextSpan;
+      expect(tail.style, isNull);
+      expect(tail.recognizer, isNull);
     });
 
-    testWidgets('a short excerpt shows in full with no link', (tester) async {
+    testWidgets('a short excerpt shows in full with no ellipsis', (
+      tester,
+    ) async {
       await tester.pumpWidget(subject(journalWith()));
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('…more', findRichText: true), findsNothing);
+      expect(find.textContaining('...', findRichText: true), findsNothing);
     });
 
     group('thought-less journal (Figma 7369:29163)', () {
@@ -208,7 +220,7 @@ void main() {
         id: 'no-scene',
         movieTitle: 'Past Lives',
         thoughts: 'Quiet and devastating.',
-        createdAt: Jiffy.parseFromDateTime(DateTime(2023, 3, 1)),
+        watchedAt: Jiffy.parseFromDateTime(DateTime(2023, 3, 1)),
       );
       await tester.pumpWidget(subject(journal));
       await tester.pumpAndSettle();

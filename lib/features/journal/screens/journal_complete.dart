@@ -122,12 +122,19 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: SafeArea(
+          bottom: false,
           child: Stack(
+            fit: StackFit.expand,
             children: [
               // Top-anchored flow (Figma 7363:24722): the success block starts
               // at y=133 on the 390x844 frame, i.e. 79pt below its 54pt
               // status bar, independent of the scrollable content height.
               SingleChildScrollView(
+                // Let content scroll behind the home indicator; reserve its
+                // inset inside the content rather than clipping the viewport.
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.paddingOf(context).bottom,
+                ),
                 child: Column(
                   children: [
                     const SizedBox(height: 79),

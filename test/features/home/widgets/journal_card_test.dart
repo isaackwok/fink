@@ -19,13 +19,13 @@ void main() {
   Widget buildSubject({
     String movieTitle = 'Fight Club',
     String moviePoster = '/poster.jpg',
-    Jiffy? updatedAt,
+    Jiffy? watchedAt,
     Locale locale = const Locale('en'),
   }) {
     final journal = makeJournal(
       movieTitle: movieTitle,
       moviePoster: moviePoster,
-      updatedAt: updatedAt ?? Jiffy.parseFromDateTime(DateTime(2024, 3, 15)),
+      watchedAt: watchedAt ?? Jiffy.parseFromDateTime(DateTime(2024, 3, 15)),
     );
 
     return ProviderScope(
@@ -44,7 +44,7 @@ void main() {
 
     testWidgets('displays formatted date', (tester) async {
       await tester.pumpWidget(
-        buildSubject(updatedAt: Jiffy.parseFromDateTime(DateTime(2024, 3, 15))),
+        buildSubject(watchedAt: Jiffy.parseFromDateTime(DateTime(2024, 3, 15))),
       );
       // Jiffy formats 'MMM. do yyyy' → "Mar. 15th 2024"
       expect(find.textContaining('Mar'), findsOneWidget);
@@ -55,7 +55,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         buildSubject(
-          updatedAt: Jiffy.parseFromDateTime(DateTime(2024, 3, 15)),
+          watchedAt: Jiffy.parseFromDateTime(DateTime(2024, 3, 15)),
           locale: const Locale.fromSubtags(
             languageCode: 'zh',
             scriptCode: 'Hant',

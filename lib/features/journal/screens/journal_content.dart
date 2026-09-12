@@ -190,7 +190,7 @@ class _JournalContentState extends ConsumerState<JournalContent> {
                       child: Row(
                         children: [
                           Text(
-                            journal.updatedAt.format(pattern: 'MMM do yyyy'),
+                            journal.watchedAt.format(pattern: 'MMM do yyyy'),
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,

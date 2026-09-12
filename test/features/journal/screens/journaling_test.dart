@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:movie_journal/features/journal/widgets/watch_date_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
@@ -99,6 +101,42 @@ Future<void> _swipeRight(
 void main() {
   setUpAll(() => setUpWidgetTests());
   tearDownAll(() => tearDownWidgetTests());
+
+  for (final editMode in [false, true]) {
+    testWidgets('watch date updates in ${editMode ? "edit" : "create"} mode', (
+      tester,
+    ) async {
+      final initial = makeJournal(watchedAt: Jiffy.parse('2025-05-27'));
+      final container = ProviderContainer(
+        overrides: [
+          journalControllerProvider.overrideWith(
+            () => _InitialJournalController(initial),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        _buildSwipeSubject(
+          container,
+          editJournalId: editMode ? initial.id : null,
+        ),
+      );
+      await _openEditor(tester);
+      final selector = tester.widget<WatchDateSelector>(
+        find.byType(WatchDateSelector),
+      );
+      expect(selector.date, DateTime(2025, 5, 27));
+      selector.onChanged(DateTime(2025, 5, 15));
+      await tester.pump();
+      expect(find.text('May 15th 2025'), findsOneWidget);
+      expect(
+        container.read(journalControllerProvider).createdAt,
+        initial.createdAt,
+      );
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(seconds: 1));
+    });
+  }
 
   group('JournalingScreen edge swipe', () {
     late ProviderContainer container;

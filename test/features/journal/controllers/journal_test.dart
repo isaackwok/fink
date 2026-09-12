@@ -13,6 +13,36 @@ import '../../../helpers/test_journal.dart';
 // These are no-ops without Firebase and don't affect model/state tests below.
 
 void main() {
+  test('watch date round-trips independently of audit timestamps', () {
+    final journal = makeJournal(createdAt: Jiffy.parse('2026-09-12 15:30:00'));
+    expect(journal.watchedAt.format(pattern: 'yyyy-MM-dd'), '2026-09-12');
+    final changed = journal.copyWith(
+      watchedAt: Jiffy.parse('2025-05-27 18:00:00'),
+    );
+    expect(changed.createdAt, journal.createdAt);
+    expect(changed.updatedAt, journal.updatedAt);
+    expect(changed, isNot(journal));
+    expect(changed.copyWith(), changed);
+    expect(changed.toMap()['watchedAt'], '2025-05-27');
+    expect(JournalState.fromJson(changed.toJson()), changed);
+    final legacy = Map<String, dynamic>.from(journal.toMap())
+      ..remove('watchedAt');
+    expect(JournalState.fromMap(legacy).watchedAt, journal.watchedAt);
+  });
+
+  test('setting a watch date preserves creation and modification times', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final before = container.read(journalControllerProvider);
+    container
+        .read(journalControllerProvider.notifier)
+        .setWatchedAt(DateTime(2025, 5, 27));
+    final after = container.read(journalControllerProvider);
+    expect(after.watchedAt.format(pattern: 'yyyy-MM-dd'), '2025-05-27');
+    expect(after.createdAt, before.createdAt);
+    expect(after.updatedAt, before.updatedAt);
+  });
+
   // ── JournalState (data model) ──────────────────────────────────────
 
   group('JournalState', () {

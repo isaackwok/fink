@@ -45,6 +45,11 @@ class JournalController extends Notifier<JournalState> {
     return this;
   }
 
+  JournalController setWatchedAt(DateTime date) {
+    state = state.copyWith(watchedAt: Jiffy.parseFromDateTime(date));
+    return this;
+  }
+
   JournalController setRating(int rating) {
     if (rating < 0 || rating > 10) {
       throw RangeError.range(rating, 0, 10, 'rating');

@@ -76,7 +76,7 @@ void main() {
       id: 'rated-journal',
       movieTitle: 'Lost in Translation',
       rating: 2,
-      updatedAt: Jiffy.parse('2025-05-27 10:00:00'),
+      watchedAt: Jiffy.parse('2025-05-27'),
     );
 
     await tester.pumpWidget(buildSubject(journal));

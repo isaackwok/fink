@@ -11,7 +11,7 @@
 
 begin;
 -- Explicit count (not no_plan) so a test that silently stops running is caught.
-select plan(78);
+select plan(80);
 
 -- ---------------------------------------------------------------- fixtures
 -- Two users. Fixed UUIDs so failures are reproducible.
@@ -143,6 +143,10 @@ select ok(not has_column_privilege('authenticated','public.journals','created_at
           'authenticated cannot UPDATE journals.created_at');
 select ok(has_column_privilege('authenticated','public.journals','created_at','INSERT'),
           'authenticated CAN INSERT journals.created_at (addJournal sends it)');
+select ok(has_column_privilege('authenticated','public.journals','watched_at','INSERT'),
+          'authenticated CAN INSERT journals.watched_at');
+select ok(has_column_privilege('authenticated','public.journals','watched_at','UPDATE'),
+          'authenticated CAN UPDATE journals.watched_at');
 select ok(has_column_privilege('authenticated','public.journals','rating','INSERT'),
           'authenticated CAN INSERT journals.rating');
 select ok(has_column_privilege('authenticated','public.journals','rating','UPDATE'),

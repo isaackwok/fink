@@ -64,7 +64,7 @@ void main() {
   );
 
   group('EmotionEchoesSection (Figma 7369:26245)', () {
-    testWidgets('opens with a plain 128pt gap — no hairline divider', (
+    testWidgets('opens with a plain 60pt gap — no hairline divider', (
       tester,
     ) async {
       await tester.pumpWidget(subject([current, echo1, echo2]));
@@ -72,7 +72,7 @@ void main() {
 
       final section = tester.getRect(find.byType(EmotionEchoesSection));
       final header = tester.getRect(find.byType(EmotionEchoHeaderIcon));
-      expect(header.top - section.top, 128);
+      expect(header.top - section.top, 60);
       expect(header.size, const Size(24, 24));
 
       // The old 0.5pt hairline between achievements and echoes is gone.

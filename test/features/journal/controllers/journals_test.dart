@@ -114,7 +114,12 @@ void main() {
 
     JournalState journalOn(String id, String date) {
       final t = Jiffy.parse('$date 10:00:00');
-      return makeJournal(id: id, createdAt: t, updatedAt: t);
+      return makeJournal(
+        id: id,
+        watchedAt: t,
+        createdAt: Jiffy.parse('2026-09-12'),
+        updatedAt: t,
+      );
     }
 
     test(

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/analytics_manager.dart';
-import 'package:jiffy/jiffy.dart';
+import 'package:movie_journal/features/journal/widgets/watch_date_selector.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/controllers/journal_insights.dart';
 import 'package:movie_journal/features/journal/screens/journal_complete.dart';
@@ -323,18 +323,12 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            Text(
-                              _isEditMode
-                                  ? journal.createdAt.format(
-                                    pattern: 'MMM do yyyy',
-                                  )
-                                  : Jiffy.now().format(pattern: 'MMM do yyyy'),
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white.withAlpha(179),
-                                fontFamily: 'AvenirNext',
-                              ),
+                            WatchDateSelector(
+                              date: journal.watchedAt.dateTime,
+                              onChanged:
+                                  (date) => ref
+                                      .read(journalControllerProvider.notifier)
+                                      .setWatchedAt(date),
                             ),
                           ],
                         ),

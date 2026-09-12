@@ -55,6 +55,10 @@ void main() {
     await tester.pumpWidget(subject([_achievement(0), _achievement(1)]));
     await tester.pumpAndSettle();
 
+    final section = tester.getRect(find.byType(AchievementsSection));
+    final header = tester.getRect(find.text('Your achievements'));
+    expect(header.top - section.top, 60);
+
     final cards = find.byType(AchievementCard);
     expect(cards, findsNWidgets(2));
     final left = tester.getRect(cards.at(0));

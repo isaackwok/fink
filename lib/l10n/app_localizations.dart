@@ -103,6 +103,12 @@ abstract class AppLocalizations {
     ),
   ];
 
+  /// No description provided for @watchDatePickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch date'**
+  String get watchDatePickerTitle;
+
   /// The application title used by the operating system
   ///
   /// In en, this message translates to:

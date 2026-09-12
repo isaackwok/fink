@@ -173,7 +173,7 @@ class _JournalCardVisual extends StatelessWidget {
                       ),
                       SizedBox(height: isCompletionPreview ? 10 : 8),
                       Text(
-                        journal.updatedAt.format(pattern: 'MMM. do yyyy'),
+                        journal.watchedAt.format(pattern: 'MMM. do yyyy'),
                         style: GoogleFonts.nothingYouCouldDo(
                           fontSize: isCompletionPreview ? 13 : 12,
                           fontWeight: FontWeight.w700,

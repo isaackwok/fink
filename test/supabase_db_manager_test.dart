@@ -14,6 +14,26 @@ import 'helpers/test_journal.dart';
 /// Asia/Taipei would be worse than no test. The invariants asserted hold in
 /// every zone.
 void main() {
+  test(
+    'watch date survives insert and update translation without timezone conversion',
+    () {
+      final journal = makeJournal(watchedAt: Jiffy.parse('2025-05-27'));
+      for (final creating in [true, false]) {
+        final row = SupabaseDbManager.journalToRow(
+          journal,
+          userId: 'user',
+          includeCreatedAt: creating,
+        );
+        expect(row['watched_at'], '2025-05-27');
+        expect(row.containsKey('created_at'), creating);
+        expect(
+          SupabaseDbManager.rowToJournal(row).watchedAt,
+          journal.watchedAt,
+        );
+      }
+    },
+  );
+
   group('pgTimestampToLocalNaive', () {
     test('converts a Postgres timestamptz to the equivalent LOCAL wall time', () {
       // The bug this guards: JournalState.fromJson feeds this string straight
