@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_journal/features/journal/widgets/watch_date_selector.dart';
+import 'package:movie_journal/themes.dart';
 
 import '../../../helpers/localized_test_app.dart';
 
@@ -11,6 +12,7 @@ void main() {
     DateTime? selected;
     await tester.pumpWidget(
       localizedTestApp(
+        theme: Themes.dark,
         home: Scaffold(
           body: WatchDateSelector(
             date: DateTime(2025, 5, 27),
@@ -29,6 +31,19 @@ void main() {
           .initialDate,
       DateTime(2025, 5, 27),
     );
+    final theme = DatePickerTheme.of(
+      tester.element(find.byType(DatePickerDialog)),
+    );
+    expect(theme.backgroundColor, DarkSurfaces.card);
+    expect(theme.headerHeadlineStyle?.fontFamily, 'AvenirNext');
+    expect(
+      theme.dayBackgroundColor?.resolve({WidgetState.selected}),
+      Themes.dark.colorScheme.primary,
+    );
+    expect(
+      theme.dayForegroundColor?.resolve({WidgetState.selected}),
+      Colors.black,
+    );
     await tester.tap(find.text('15'));
     await tester.tap(find.text('OK'));
     await tester.pumpAndSettle();
@@ -39,6 +54,7 @@ void main() {
     DateTime? selected;
     await tester.pumpWidget(
       localizedTestApp(
+        theme: Themes.dark,
         home: Scaffold(
           body: WatchDateSelector(
             date: DateTime(2025, 5, 27),

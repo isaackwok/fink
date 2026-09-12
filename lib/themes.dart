@@ -49,6 +49,22 @@ class DarkSurfaces {
 }
 
 class Themes {
+  static final _calendarForeground = WidgetStateProperty.resolveWith<Color>(
+    (states) =>
+        states.contains(WidgetState.disabled)
+            ? Colors.white38
+            : states.contains(WidgetState.selected)
+            ? Colors.black
+            : Colors.white,
+  );
+
+  static final _calendarSelection = WidgetStateProperty.resolveWith<Color>(
+    (states) =>
+        states.contains(WidgetState.selected)
+            ? _darkPrimary
+            : Colors.transparent,
+  );
+
   static ThemeData dark = ThemeData(
     useMaterial3: true,
     scaffoldBackgroundColor: _darkSurface,
@@ -65,6 +81,59 @@ class Themes {
     ),
 
     textSelectionTheme: const TextSelectionThemeData(cursorColor: _darkPrimary),
+
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: DarkSurfaces.card,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      headerBackgroundColor: DarkSurfaces.card,
+      headerForegroundColor: Colors.white,
+      headerHeadlineStyle: const TextStyle(
+        fontFamily: 'AvenirNext',
+        fontSize: 28,
+        fontWeight: FontWeight.w600,
+      ),
+      headerHelpStyle: const TextStyle(
+        fontFamily: 'AvenirNext',
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Color(0xFFDDDDDD),
+      ),
+      weekdayStyle: const TextStyle(
+        fontFamily: 'AvenirNext',
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: Colors.white60,
+      ),
+      dayStyle: const TextStyle(fontFamily: 'AvenirNext', fontSize: 14),
+      yearStyle: const TextStyle(fontFamily: 'AvenirNext', fontSize: 14),
+      toggleButtonTextStyle: const TextStyle(
+        fontFamily: 'AvenirNext',
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+      subHeaderForegroundColor: Colors.white,
+      dayForegroundColor: _calendarForeground,
+      yearForegroundColor: _calendarForeground,
+      dayBackgroundColor: _calendarSelection,
+      yearBackgroundColor: _calendarSelection,
+      todayForegroundColor: WidgetStateProperty.resolveWith(
+        (states) =>
+            states.contains(WidgetState.selected) ? Colors.black : _darkPrimary,
+      ),
+      todayBorder: const BorderSide(color: _darkPrimary),
+      dividerColor: Colors.white12,
+      cancelButtonStyle: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      ),
+      confirmButtonStyle: TextButton.styleFrom(
+        backgroundColor: _darkPrimary,
+        foregroundColor: Colors.black,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+    ),
 
     appBarTheme: const AppBarTheme(
       surfaceTintColor: Colors.transparent,
