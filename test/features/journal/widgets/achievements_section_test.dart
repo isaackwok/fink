@@ -76,6 +76,7 @@ void main() {
     final first = tester.getRect(cards.at(0));
     final last = tester.getRect(cards.at(2));
     expect(last.width, closeTo(sectionWidth, 0.01), reason: 'full row');
+    expect(last.height, 132);
     expect(last.top - first.bottom, closeTo(12, 0.01), reason: '12px row gap');
     expect(last.height, first.height, reason: 'same tile height');
   });

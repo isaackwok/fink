@@ -45,7 +45,7 @@ class AchievementsSection extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
           _AchievementGrid(
             children: [
               for (final a in achievements) AchievementCard(achievement: a),
@@ -57,8 +57,8 @@ class AchievementsSection extends ConsumerWidget {
   }
 }
 
-/// The 56pt gap between the success block's buttons and this section's
-/// header (Figma 6782:6554 — no divider, so the header sits above the fold).
+/// The 112pt gap between the success block's buttons and this section's
+/// header (Figma 7363:24722, with no divider).
 /// Owned by the section so a hidden section collapses entirely.
 class _WithTopGap extends StatelessWidget {
   final Widget child;
@@ -69,13 +69,13 @@ class _WithTopGap extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [const SizedBox(height: 56), child],
+      children: [const SizedBox(height: 112), child],
     );
   }
 }
 
 /// Two cards per row with 12px gutters; an odd trailing card stretches to
-/// the full row (Figma 7504:13171). Rows carry a fixed height so every card
+/// the full row. Rows carry a fixed height so every card
 /// in the section reads as the same tile regardless of its text length.
 class _AchievementGrid extends StatelessWidget {
   final List<Widget> children;
@@ -83,7 +83,7 @@ class _AchievementGrid extends StatelessWidget {
   const _AchievementGrid({required this.children});
 
   static const _gap = 12.0;
-  static const _rowHeight = 140.0;
+  static const _rowHeight = 132.0;
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +124,7 @@ class _SkeletonSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Bone.text(words: 4, fontSize: 14),
           ),
-          SizedBox(height: 32),
+          SizedBox(height: 16),
           _AchievementGrid(children: [_SkeletonCard(), _SkeletonCard()]),
         ],
       ),

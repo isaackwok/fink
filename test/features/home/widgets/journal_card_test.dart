@@ -146,6 +146,41 @@ void main() {
     // If you change these values, update that constant too or the grid cells
     // will leave a trailing gap or trip an overflow assertion.
     group('layout spec', () {
+      testWidgets('completion preview uses its own rounded spacing', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            child: localizedTestApp(
+              home: Scaffold(
+                body: Center(
+                  child: SizedBox(
+                    width: 224,
+                    child: JournalCard.completionPreview(
+                      journal: makeJournal(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        final container = tester
+            .widgetList<Container>(find.byType(Container))
+            .firstWhere(
+              (c) =>
+                  c.decoration is BoxDecoration &&
+                  (c.decoration as BoxDecoration).color == DarkSurfaces.tile,
+            );
+        expect(container.padding, const EdgeInsets.fromLTRB(10, 10, 10, 16));
+        expect(find.byType(CupertinoContextMenu), findsNothing);
+        final poster = tester.getRect(find.byType(TmdbImage));
+        final title = tester.getRect(find.text('Fight Club'));
+        expect(poster.size, const Size(204, 268));
+        expect(title.top - poster.bottom, 16);
+        expect(title.left - poster.left, 6);
+      });
+
       testWidgets('outer container uses fromLTRB(8, 8, 8, 12) padding', (
         tester,
       ) async {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/home/widgets/journal_card.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
@@ -125,10 +124,9 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
         body: SafeArea(
           child: Stack(
             children: [
-              // Top-anchored flow (Figma 6782:6554): the success block starts
+              // Top-anchored flow (Figma 7363:24722): the success block starts
               // at y=133 on the 390x844 frame, i.e. 79pt below its 54pt
-              // status bar, so the insights sections below it begin above
-              // the fold instead of after a full viewport-height slot.
+              // status bar, independent of the scrollable content height.
               SingleChildScrollView(
                 child: Column(
                   children: [
@@ -164,7 +162,9 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
                             opacity: _textFade,
                             child: Text(
                               l10n.journalSaved,
-                              style: GoogleFonts.inter(
+                              style: const TextStyle(
+                                fontFamily: 'AvenirNext',
+                                height: 1.5,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -180,14 +180,16 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
                           child: FadeTransition(
                             opacity: _cardFade,
                             child: SizedBox(
-                              width: 200,
+                              width: 224,
                               child: IgnorePointer(
-                                child: JournalCard(journal: widget.journal),
+                                child: JournalCard.completionPreview(
+                                  journal: widget.journal,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 32),
 
                         // Share Ticket button
                         FadeTransition(
@@ -209,11 +211,13 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
                               );
                             },
                             style: ElevatedButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               backgroundColor: primaryColor,
                               foregroundColor: Colors.black,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
-                                vertical: 12,
+                                vertical: 8,
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
@@ -222,12 +226,13 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'AvenirNext',
+                                height: 10 / 7,
                               ),
                             ),
                             child: Text(l10n.shareTicket),
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 16),
 
                         // View Journal button
                         FadeTransition(
@@ -245,12 +250,16 @@ class _JournalCompleteScreenState extends ConsumerState<JournalCompleteScreen>
                               );
                             },
                             style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: const EdgeInsets.all(4),
                               foregroundColor:
                                   Theme.of(context).colorScheme.primary,
                               textStyle: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'AvenirNext',
+                                height: 10 / 7,
                               ),
                             ),
                             child: Text(l10n.viewJournal),

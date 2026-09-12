@@ -12,7 +12,13 @@ import 'package:movie_journal/l10n/app_localizations.dart';
 
 class JournalCard extends ConsumerStatefulWidget {
   final JournalState journal;
-  const JournalCard({super.key, required this.journal});
+  final bool isCompletionPreview;
+
+  const JournalCard({super.key, required this.journal})
+    : isCompletionPreview = false;
+
+  const JournalCard.completionPreview({super.key, required this.journal})
+    : isCompletionPreview = true;
 
   @override
   ConsumerState<JournalCard> createState() => _JournalCardState();
@@ -44,6 +50,9 @@ class _JournalCardState extends ConsumerState<JournalCard> {
   Widget build(BuildContext context) {
     final journal = widget.journal;
     final l10n = AppLocalizations.of(context);
+    if (widget.isCompletionPreview) {
+      return _JournalCardVisual(journal: journal, isCompletionPreview: true);
+    }
     return CupertinoContextMenu.builder(
       enableHapticFeedback: true,
       actions: [
@@ -101,40 +110,52 @@ class _JournalCardState extends ConsumerState<JournalCard> {
 class _JournalCardVisual extends StatelessWidget {
   final JournalState journal;
   final VoidCallback? onTap;
+  final bool isCompletionPreview;
 
-  const _JournalCardVisual({required this.journal, this.onTap});
+  const _JournalCardVisual({
+    required this.journal,
+    this.onTap,
+    this.isCompletionPreview = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(isCompletionPreview ? 16 : 12),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(isCompletionPreview ? 16 : 12),
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
+          padding:
+              isCompletionPreview
+                  ? const EdgeInsets.fromLTRB(10, 10, 10, 16)
+                  : const EdgeInsets.fromLTRB(8, 8, 8, 12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(isCompletionPreview ? 16 : 12),
             color: DarkSurfaces.tile,
           ),
           child: Column(
+            mainAxisSize:
+                isCompletionPreview ? MainAxisSize.min : MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: AspectRatio(
-                  aspectRatio: 150 / 215,
+                  aspectRatio: isCompletionPreview ? 204 / 268 : 150 / 215,
                   child: TmdbImage(
                     path: journal.moviePoster,
                     size: TmdbImageSize.w342,
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: isCompletionPreview ? 16 : 12),
               Flexible(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isCompletionPreview ? 6 : 4,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,21 +163,21 @@ class _JournalCardVisual extends StatelessWidget {
                       Text(
                         journal.movieTitle,
                         style: GoogleFonts.inter(
-                          fontSize: 14,
+                          fontSize: isCompletionPreview ? 21 : 14,
                           fontWeight: FontWeight.w700,
-                          height: 1.1,
+                          height: isCompletionPreview ? 1 : 1.1,
                         ),
                         textAlign: TextAlign.start,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: isCompletionPreview ? 10 : 8),
                       Text(
                         journal.updatedAt.format(pattern: 'MMM. do yyyy'),
                         style: GoogleFonts.nothingYouCouldDo(
-                          fontSize: 12,
+                          fontSize: isCompletionPreview ? 13 : 12,
                           fontWeight: FontWeight.w700,
-                          height: 1.1,
+                          height: isCompletionPreview ? 14 / 13 : 1.1,
                         ),
                         textAlign: TextAlign.start,
                         maxLines: 1,

@@ -114,9 +114,26 @@ void main() {
       expect(find.widgetWithText(TextButton, 'View Journal'), findsOneWidget);
     });
 
-    testWidgets('reuses JournalCard widget from home', (tester) async {
+    testWidgets('completion preview and buttons match rounded Figma spacing', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
-      expect(find.byType(JournalCard), findsOneWidget);
+      await tester.pumpAndSettle();
+      final card = tester.getRect(find.byType(JournalCard));
+      final share = tester.getRect(find.byType(ElevatedButton));
+      final view = tester.getRect(find.byType(TextButton));
+      expect(
+        tester
+            .widget<JournalCard>(find.byType(JournalCard))
+            .isCompletionPreview,
+        isTrue,
+      );
+      expect(card.width, 224);
+      expect(card.height, closeTo(355, 1));
+      expect(share.top - card.bottom, 32);
+      expect(share.height, closeTo(36, 1));
+      expect(view.top - share.bottom, 16);
+      expect(view.height, closeTo(28, 1));
     });
 
     testWidgets('wraps JournalCard in IgnorePointer to disable tap', (
