@@ -330,12 +330,23 @@ class _JournalRatingBadge extends StatelessWidget {
             height: 20,
           ),
           const SizedBox(width: 4),
-          Text(
-            '$rating',
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '$rating',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                const TextSpan(
+                  text: '/10',
+                  style: TextStyle(color: Color(0xFFB1B1B1)),
+                ),
+              ],
+            ),
             style: const TextStyle(
               color: Colors.white,
               fontFamily: 'AvenirNext',
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
               height: 1.5,
               letterSpacing: -0.154,

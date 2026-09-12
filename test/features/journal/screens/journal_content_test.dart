@@ -84,7 +84,7 @@ void main() {
 
     expect(find.text('May 27th 2025'), findsOneWidget);
     expect(find.byKey(const ValueKey('journal-rating-badge')), findsOneWidget);
-    expect(find.text('2'), findsOneWidget);
+    expect(find.text('2/10', findRichText: true), findsOneWidget);
 
     final icon = tester.widget<SvgPicture>(find.byType(SvgPicture));
     expect(
