@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_journal/themes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/widgets/reviews_bottom_sheet.dart';
@@ -7,7 +8,9 @@ import 'package:movie_journal/features/quesgen/provider.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
 
 class ReviewsFloatingButton extends ConsumerStatefulWidget {
-  const ReviewsFloatingButton({super.key});
+  const ReviewsFloatingButton({super.key, this.inline = false});
+
+  final bool inline;
 
   @override
   ConsumerState<ReviewsFloatingButton> createState() =>
@@ -83,21 +86,21 @@ class _ReviewsFloatingButtonState extends ConsumerState<ReviewsFloatingButton> {
                 ),
               )
               : SizedBox(
-                width: 44,
+                width: widget.inline ? 37 : 44,
                 child: Stack(
                   children: [
                     Image.asset(
                       'assets/images/reddit_icon.png',
-                      width: 24,
-                      height: 24,
+                      width: widget.inline ? 20 : 24,
+                      height: widget.inline ? 20 : 24,
                       filterQuality: FilterQuality.high,
                     ),
                     Positioned(
-                      left: 20,
+                      left: widget.inline ? 17 : 20,
                       child: Image.asset(
                         'assets/images/letterboxd_icon.png',
-                        width: 24,
-                        height: 24,
+                        width: widget.inline ? 20 : 24,
+                        height: widget.inline ? 20 : 24,
                         filterQuality: FilterQuality.high,
                       ),
                     ),
@@ -106,22 +109,36 @@ class _ReviewsFloatingButtonState extends ConsumerState<ReviewsFloatingButton> {
               ),
       label: Text(
         AppLocalizations.of(context).reviewsLabel,
-        style: const TextStyle(color: Colors.white, fontFamily: 'AvenirNext'),
+        style: TextStyle(
+          color: Colors.white,
+          fontFamily: 'AvenirNext',
+          fontSize: widget.inline ? 12 : 14,
+        ),
       ),
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        minimumSize: const Size(0, 44),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(widget.inline ? 12 : 999),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: widget.inline ? 12 : 16,
+          vertical: 12,
+        ),
         textStyle: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),
         overlayColor: Theme.of(context).colorScheme.primary,
-        backgroundColor: Colors.black,
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.primary,
-          width: 1,
-        ),
+        backgroundColor: widget.inline ? DarkSurfaces.sheet : Colors.black,
+        side:
+            widget.inline
+                ? BorderSide.none
+                : BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 1,
+                ),
       ),
       onPressed: _onPressed,
     );

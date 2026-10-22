@@ -133,6 +133,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           body: CustomScrollView(
             controller: _scrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             slivers: [
               SliverAppBar(
                 backgroundColor: Theme.of(context).colorScheme.surface,
@@ -146,9 +147,9 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                   duration: const Duration(milliseconds: 200),
                   child: Text(
                     widget.movieTitle,
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
+                    style: GoogleFonts.nothingYouCouldDo(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -306,7 +307,7 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: Column(
                     children: [
                       SizedBox(
@@ -352,12 +353,15 @@ class _JournalingScreenState extends ConsumerState<JournalingScreen> {
                         },
                       ),
                       const SizedBox(height: 36),
-
-                      ScenesSelector(movieId: movieId),
-                      const SizedBox(height: 36),
-                      const ThoughtsEditor(),
                     ],
                   ),
+                ),
+              ),
+              SliverToBoxAdapter(child: ScenesSelector(movieId: movieId)),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 36, 16, 16),
+                  child: ThoughtsEditor(),
                 ),
               ),
             ],

@@ -199,56 +199,58 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
 
   Widget _buildSelectedScenesView(List<SceneItem> selectedScenes) {
     final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 16,
-      children: [
-        SizedBox(
-          height: 175,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: selectedScenes.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 8),
-            itemBuilder: (context, index) {
-              final scene = selectedScenes[index];
-              return SelectedSceneCard(
-                imagePath: scene.path,
-                sceneIndex: index,
-                caption: scene.caption,
-                onRemove: () {
-                  ref
-                      .read(journalControllerProvider.notifier)
-                      .removeScene(scene.path);
-                },
-              );
-            },
-          ),
-        ),
-        OutlinedButton.icon(
-          onPressed: _navigateToScenesSelectSheet,
-          icon: const Icon(Icons.add, color: Colors.white, size: 20),
-          label: Text(
-            l10n.sceneAdd,
-            style: const TextStyle(
-              color: Colors.white,
-              fontFamily: 'AvenirNext',
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          style: OutlinedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
-              width: 1,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(_borderRadius),
-            ),
-          ),
-        ),
-      ],
+    return SizedBox(
+      height: 175,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: selectedScenes.length + 1,
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          if (index == selectedScenes.length) {
+            return SizedBox(
+              width: 149,
+              child: Material(
+                color: DarkSurfaces.card,
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  key: const ValueKey('add-scene'),
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: _navigateToScenesSelectSheet,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add, color: Colors.white, size: 20),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          l10n.sceneAdd,
+                          style: const TextStyle(
+                            fontFamily: 'AvenirNext',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          final scene = selectedScenes[index];
+          return SelectedSceneCard(
+            imagePath: scene.path,
+            sceneIndex: index,
+            caption: scene.caption,
+            onRemove:
+                () => ref
+                    .read(journalControllerProvider.notifier)
+                    .removeScene(scene.path),
+          );
+        },
+      ),
     );
   }
 
@@ -301,6 +303,11 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
     );
   }
 
+  Widget _inset(Widget child) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: child,
+  );
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -316,37 +323,42 @@ class _ScenesSelectorState extends ConsumerState<ScenesSelector> {
       spacing: 16,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.scenesPrompt,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'AvenirNext',
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            l10n.scenesPrompt,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'AvenirNext',
+            ),
           ),
         ),
         movieImagesAsync.when(
           data: (movieImages) {
             final backdrops = movieImages.backdrops;
             if (backdrops.isEmpty) {
-              return _buildEmptyBackdropsState();
+              return _inset(_buildEmptyBackdropsState());
             }
 
             return selectedScenes.isEmpty
-                ? _buildEmptyScenesView(backdrops[0].filePath)
+                ? _inset(_buildEmptyScenesView(backdrops[0].filePath))
                 : _buildSelectedScenesView(selectedScenes);
           },
           loading:
-              () => Skeletonizer(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: _minMaxHeight,
-                    maxHeight: _minMaxHeight,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(_borderRadius),
-                    child: const Bone(
-                      width: double.infinity,
-                      height: _minMaxHeight,
+              () => _inset(
+                Skeletonizer(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: _minMaxHeight,
+                      maxHeight: _minMaxHeight,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(_borderRadius),
+                      child: const Bone(
+                        width: double.infinity,
+                        height: _minMaxHeight,
+                      ),
                     ),
                   ),
                 ),

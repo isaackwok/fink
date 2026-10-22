@@ -1,40 +1,114 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
-import 'package:movie_journal/features/journal/screens/thoughts.dart';
-import 'package:movie_journal/features/journal/widgets/ai_references_accordion.dart';
+import 'package:movie_journal/features/journal/widgets/selected_reviews.dart';
+import 'package:movie_journal/features/journal/widgets/movie_info_sheet.dart';
+import 'package:movie_journal/features/journal/widgets/reviews_floating_button.dart';
 import 'package:movie_journal/themes.dart';
 import 'package:movie_journal/l10n/app_localizations.dart';
 
-class ThoughtsEditor extends ConsumerWidget {
+class ThoughtsEditor extends ConsumerStatefulWidget {
   const ThoughtsEditor({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ThoughtsEditor> createState() => _ThoughtsEditorState();
+}
+
+class _ThoughtsEditorState extends ConsumerState<ThoughtsEditor>
+    with WidgetsBindingObserver {
+  late final TextEditingController _controller;
+  final _focusNode = FocusNode();
+  final _sectionKey = GlobalKey();
+  final _fieldKey = GlobalKey();
+  static const _textStyle = TextStyle(
+    fontFamily: 'AvenirNext',
+    fontSize: 14,
+    height: 1.6,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: ref.read(journalControllerProvider).thoughts,
+    );
+    _focusNode.addListener(_onFocusChanged);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _onFocusChanged() {
+    setState(() {});
+    if (_focusNode.hasFocus) _revealEditor();
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (_focusNode.hasFocus) {
+      setState(() {});
+      _revealEditor();
+    }
+  }
+
+  void _revealEditor() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final sectionContext = _sectionKey.currentContext;
+      if (!mounted || !_focusNode.hasFocus || sectionContext == null) return;
+      final fieldContext = _fieldKey.currentContext;
+      final box = fieldContext?.findRenderObject() as RenderBox?;
+      if (fieldContext == null || box == null || !box.hasSize) return;
+      final painter = TextPainter(
+        text: TextSpan(text: _controller.text, style: _textStyle),
+        textDirection: Directionality.of(fieldContext),
+        textScaler: MediaQuery.textScalerOf(fieldContext),
+      )..layout(maxWidth: box.size.width - 32);
+      final hasGrown = painter.computeLineMetrics().length > 10;
+      painter.dispose();
+      // EditableText reveals the selected caret on focus and keyboard resize.
+      // Aligning the whole section would override that for longer entries.
+      if (hasGrown) return;
+      Scrollable.ensureVisible(
+        sectionContext,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _focusNode.removeListener(_onFocusChanged);
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    // Field-level selects: this widget only cares about thoughts and
-    // selectedRefs, so scene/emotion edits shouldn't rebuild it.
     final thoughts = ref.watch(
       journalControllerProvider.select((j) => j.thoughts),
     );
     final selectedRefs = ref.watch(
       journalControllerProvider.select((j) => j.selectedRefs),
     );
-    final hasThoughts = thoughts.isNotEmpty;
-
-    void openEditor() {
-      showModalBottomSheet(
-        useSafeArea: true,
-        enableDrag: false,
-        context: context,
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        builder: (context) => const ThoughtsScreen(),
-      );
-    }
+    final isEditMode = ref.watch(journalModeProvider) == JournalMode.edit;
+    ref.listen(journalControllerProvider.select((j) => j.thoughts), (_, next) {
+      // Echoes of typing must not reset selection or an IME composing range.
+      if (_controller.text != next) {
+        _controller.value = TextEditingValue(
+          text: next,
+          selection: TextSelection.collapsed(offset: next.length),
+        );
+      }
+    });
+    final focused = _focusNode.hasFocus;
+    final filled = focused || thoughts.isNotEmpty;
 
     return Column(
+      key: _sectionKey,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
@@ -48,47 +122,82 @@ class ThoughtsEditor extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            splashColor: Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            onTap: openEditor,
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 299),
-              padding: const EdgeInsets.fromLTRB(20, 20, 12, 20),
-              decoration: BoxDecoration(
-                color: hasThoughts ? DarkSurfaces.card : Colors.transparent,
-                border:
-                    hasThoughts
-                        ? null
-                        : Border.all(color: Colors.white.withAlpha(26)),
+        KeyedSubtree(
+          key: _fieldKey,
+          child: TextField(
+            key: const ValueKey('inline-thoughts'),
+            controller: _controller,
+            focusNode: _focusNode,
+            minLines: 10,
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            textCapitalization: TextCapitalization.sentences,
+            style: _textStyle,
+            scrollPadding: const EdgeInsets.only(bottom: 80),
+            onTapOutside: (_) => _focusNode.unfocus(),
+            onChanged:
+                (value) => ref
+                    .read(journalControllerProvider.notifier)
+                    .setThoughts(value),
+            decoration: InputDecoration(
+              hintText: l10n.thoughtsHint,
+              hintStyle: _textStyle.copyWith(color: const Color(0xFF8F8E8E)),
+              filled: true,
+              fillColor: filled ? DarkSurfaces.card : Colors.transparent,
+              contentPadding: const EdgeInsets.all(16),
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
+                borderSide:
+                    filled
+                        ? BorderSide.none
+                        : BorderSide(color: Colors.white.withAlpha(26)),
               ),
-              child: Text(
-                hasThoughts ? thoughts : l10n.thoughtsHint,
-                style:
-                    hasThoughts
-                        ? GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          height: 1.4,
-                          color: Colors.white.withAlpha(204),
-                        )
-                        : GoogleFonts.nothingYouCouldDo(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          height: 1.25,
-                          color: Colors.white.withAlpha(128),
-                        ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
               ),
             ),
           ),
         ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            TextButton.icon(
+              onPressed: () {
+                _focusNode.unfocus();
+                MovieInfoSheet.show(
+                  context,
+                  movieId: ref.read(journalControllerProvider).tmdbId,
+                );
+              },
+              icon: const Icon(Icons.local_movies_outlined, size: 16),
+              label: Text(l10n.movieInfoLabel),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: DarkSurfaces.sheet,
+                minimumSize: const Size(0, 44),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                textStyle: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            if (!isEditMode) const ReviewsFloatingButton(inline: true),
+          ],
+        ),
         if (selectedRefs.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          AiReferencesAccordion(
-            defaultExpanded: true,
+          const SizedBox(height: 36),
+          SelectedReviews(
+            onRemove:
+                (review) => ref
+                    .read(journalControllerProvider.notifier)
+                    .removeSelectedReview(review),
             references: selectedRefs,
           ),
         ],

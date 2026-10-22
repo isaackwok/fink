@@ -430,11 +430,11 @@
   "@thoughtsTitle": {
     "description": "Title of the thoughts editor"
   },
-  "thoughtsPrompt": "Write down your thoughts & feelings.",
+  "thoughtsPrompt": "Write down your thoughts",
   "@thoughtsPrompt": {
     "description": "Prompt above the thoughts editor"
   },
-  "thoughtsHint": "Enter your text here...",
+  "thoughtsHint": "Enter text here...",
   "@thoughtsHint": {
     "description": "Hint in the thoughts editor"
   },
@@ -686,5 +686,27 @@
   "ticketTime": "Time",
   "@ticketTime": {
     "description": "Journal time field label on a journal ticket"
-  }
+  },
+  "movieInfoLabel": "Movie Info",
+  "movieInfoCast": "Cast",
+  "movieInfoCrew": "Crew",
+  "movieInfoNoCredits": "No credits available.",
+  "movieInfoCastCount": "{count, plural, =1{1 cast member} other{{count} cast members}}",
+  "movieInfoCrewCount": "{count, plural, =1{1 crew credit} other{{count} crew credits}}",
+  "@movieInfoCastCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@movieInfoCrewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewsResonatedWith": "You resonated with",
+  "commonRemove": "Remove"
 }

@@ -673,13 +673,13 @@ abstract class AppLocalizations {
   /// Prompt above the thoughts editor
   ///
   /// In en, this message translates to:
-  /// **'Write down your thoughts & feelings.'**
+  /// **'Write down your thoughts'**
   String get thoughtsPrompt;
 
   /// Hint in the thoughts editor
   ///
   /// In en, this message translates to:
-  /// **'Enter your text here...'**
+  /// **'Enter text here...'**
   String get thoughtsHint;
 
   /// Action to add a generated review to thoughts
@@ -1017,6 +1017,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Time'**
   String get ticketTime;
+
+  /// No description provided for @movieInfoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Movie Info'**
+  String get movieInfoLabel;
+
+  /// No description provided for @movieInfoCast.
+  ///
+  /// In en, this message translates to:
+  /// **'Cast'**
+  String get movieInfoCast;
+
+  /// No description provided for @movieInfoCrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Crew'**
+  String get movieInfoCrew;
+
+  /// No description provided for @movieInfoNoCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'No credits available.'**
+  String get movieInfoNoCredits;
+
+  /// No description provided for @movieInfoCastCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 cast member} other{{count} cast members}}'**
+  String movieInfoCastCount({required int count});
+
+  /// No description provided for @movieInfoCrewCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 crew credit} other{{count} crew credits}}'**
+  String movieInfoCrewCount({required int count});
+
+  /// No description provided for @reviewsResonatedWith.
+  ///
+  /// In en, this message translates to:
+  /// **'You resonated with'**
+  String get reviewsResonatedWith;
+
+  /// No description provided for @commonRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get commonRemove;
 }
 
 class _AppLocalizationsDelegate

@@ -8,6 +8,8 @@ import 'package:movie_journal/features/journal/controllers/journals.dart';
 import 'package:movie_journal/features/journal/screens/journal_content.dart';
 import 'package:movie_journal/features/journal/widgets/journal_content_more_menu.dart';
 import 'package:movie_journal/themes.dart';
+import 'package:movie_journal/features/quesgen/review.dart';
+import 'package:movie_journal/features/journal/widgets/selected_reviews.dart';
 
 import '../../../helpers/test_journal.dart';
 import '../../../helpers/localized_test_app.dart';
@@ -42,6 +44,30 @@ void main() {
       ),
     );
   }
+
+  testWidgets(
+    'saved selected reviews are expanded, untruncated and read only',
+    (tester) async {
+      final review = Review(text: 'A moving story. ' * 40, source: 'reddit');
+      await tester.pumpWidget(
+        buildSubject(makeJournal(id: 'reviewed', selectedRefs: [review])),
+      );
+      await tester.pump();
+      await tester.ensureVisible(find.byType(SelectedReviews));
+      expect(find.text('You resonated with'), findsOneWidget);
+      final text = tester.widget<Text>(find.text(review.text));
+      expect(text.maxLines, isNull);
+      expect(text.overflow, isNot(TextOverflow.ellipsis));
+      expect(find.byTooltip('Remove'), findsNothing);
+      expect(
+        tester.widget<SelectedReviews>(find.byType(SelectedReviews)).onRemove,
+        isNull,
+      );
+      await tester.tap(find.text('You resonated with'));
+      await tester.pump();
+      expect(find.text(review.text), findsOneWidget);
+    },
+  );
 
   group('share and delete actions', () {
     testWidgets('are shown by default', (tester) async {

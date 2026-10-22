@@ -334,7 +334,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get reviewsTitle => '電影評論';
+  String get reviewsTitle => '評論';
 
   @override
   String get reviewsLabel => '評論';
@@ -503,6 +503,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ticketTime => '時間';
+
+  @override
+  String get movieInfoLabel => '電影資訊';
+
+  @override
+  String get movieInfoCast => '演員';
+
+  @override
+  String get movieInfoCrew => '工作人員';
+
+  @override
+  String get movieInfoNoCredits => '暫無演職員資料。';
+
+  @override
+  String movieInfoCastCount({required int count}) {
+    return '$count 位演員';
+  }
+
+  @override
+  String movieInfoCrewCount({required int count}) {
+    return '$count 筆工作人員資料';
+  }
+
+  @override
+  String get reviewsResonatedWith => '讓你產生共鳴的評論';
+
+  @override
+  String get commonRemove => '移除';
 }
 
 /// The translations for Chinese, as used in Taiwan, using the Han script (`zh_Hant_TW`).
@@ -835,7 +863,7 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
   }
 
   @override
-  String get reviewsTitle => '電影評論';
+  String get reviewsTitle => '評論';
 
   @override
   String get reviewsLabel => '評論';
@@ -1004,4 +1032,32 @@ class AppLocalizationsZhHantTw extends AppLocalizationsZh {
 
   @override
   String get ticketTime => '時間';
+
+  @override
+  String get movieInfoLabel => '電影資訊';
+
+  @override
+  String get movieInfoCast => '演員';
+
+  @override
+  String get movieInfoCrew => '工作人員';
+
+  @override
+  String get movieInfoNoCredits => '暫無演職員資料。';
+
+  @override
+  String movieInfoCastCount({required int count}) {
+    return '$count 位演員';
+  }
+
+  @override
+  String movieInfoCrewCount({required int count}) {
+    return '$count 筆工作人員資料';
+  }
+
+  @override
+  String get reviewsResonatedWith => '讓你產生共鳴的評論';
+
+  @override
+  String get commonRemove => '移除';
 }

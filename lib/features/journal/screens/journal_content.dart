@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_journal/analytics_manager.dart';
 import 'package:movie_journal/features/journal/controllers/journals.dart';
-import 'package:movie_journal/features/journal/widgets/ai_references_accordion.dart';
+import 'package:movie_journal/features/journal/widgets/selected_reviews.dart';
 import 'package:movie_journal/features/journal/widgets/emotions_selector_button.dart';
 import 'package:movie_journal/features/journal/widgets/journal_content_more_menu.dart';
 import 'package:movie_journal/features/journal/widgets/scene_card.dart';
@@ -292,8 +292,18 @@ class _JournalContentState extends ConsumerState<JournalContent> {
                       child:
                           journal.selectedRefs.isEmpty
                               ? const SizedBox.shrink()
-                              : AiReferencesAccordion(
-                                references: journal.selectedRefs,
+                              : Column(
+                                children: [
+                                  Divider(
+                                    height: 12,
+                                    thickness: 0.5,
+                                    color: Colors.white.withAlpha(26),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  SelectedReviews(
+                                    references: journal.selectedRefs,
+                                  ),
+                                ],
                               ),
                     ),
                   ],

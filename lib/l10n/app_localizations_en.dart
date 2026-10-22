@@ -341,10 +341,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thoughtsTitle => 'Thoughts';
 
   @override
-  String get thoughtsPrompt => 'Write down your thoughts & feelings.';
+  String get thoughtsPrompt => 'Write down your thoughts';
 
   @override
-  String get thoughtsHint => 'Enter your text here...';
+  String get thoughtsHint => 'Enter text here...';
 
   @override
   String get thoughtsAdd => 'Add';
@@ -528,4 +528,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ticketTime => 'Time';
+
+  @override
+  String get movieInfoLabel => 'Movie Info';
+
+  @override
+  String get movieInfoCast => 'Cast';
+
+  @override
+  String get movieInfoCrew => 'Crew';
+
+  @override
+  String get movieInfoNoCredits => 'No credits available.';
+
+  @override
+  String movieInfoCastCount({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cast members',
+      one: '1 cast member',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String movieInfoCrewCount({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count crew credits',
+      one: '1 crew credit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewsResonatedWith => 'You resonated with';
+
+  @override
+  String get commonRemove => 'Remove';
 }

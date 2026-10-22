@@ -102,6 +102,48 @@ void main() {
   setUpAll(() => setUpWidgetTests());
   tearDownAll(() => tearDownWidgetTests());
 
+  testWidgets('inline draft enables save and tools stay above keyboard', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(410, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetViewInsets);
+    final container = ProviderContainer(
+      overrides: [
+        journalInsightsApiProvider.overrideWithValue(_RecordingInsightsApi()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(_buildSwipeSubject(container));
+    await _openEditor(tester);
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -650));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.enterText(
+      find.byKey(const ValueKey('inline-thoughts')),
+      'Inline draft',
+    );
+    tester.view.viewInsets = const FakeViewPadding(bottom: 336);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(container.read(journalControllerProvider).thoughts, 'Inline draft');
+    expect(find.byType(BottomSheet), findsNothing);
+    expect(tester.getBottomLeft(find.text('Reviews')).dy, lessThan(508));
+    expect(
+      tester.getTopLeft(find.byKey(const ValueKey('inline-thoughts'))).dy,
+      greaterThan(56),
+    );
+    expect(
+      tester
+          .widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Save'))
+          .onPressed,
+      isNotNull,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   for (final editMode in [false, true]) {
     testWidgets('watch date updates in ${editMode ? "edit" : "create"} mode', (
       tester,

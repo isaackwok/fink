@@ -98,7 +98,7 @@
   "thoughtsHint": "在這裡輸入文字...",
   "thoughtsAdd": "新增",
   "itemPosition": "{current} / {total}",
-  "reviewsTitle": "電影評論",
+  "reviewsTitle": "評論",
   "reviewsLabel": "評論",
   "reviewsDescription": "我們使用 AI 整理了 Letterboxd 和 Reddit 的評論，把這些觀點加入你的筆記吧！",
   "reviewsEmpty": "尚未產生評論",
@@ -151,5 +151,27 @@
   "ticketCast": "演員",
   "ticketEmotion": "情緒",
   "ticketDate": "日期",
-  "ticketTime": "時間"
+  "ticketTime": "時間",
+  "movieInfoLabel": "電影資訊",
+  "movieInfoCast": "演員",
+  "movieInfoCrew": "工作人員",
+  "movieInfoNoCredits": "暫無演職員資料。",
+  "movieInfoCastCount": "{count} 位演員",
+  "movieInfoCrewCount": "{count} 筆工作人員資料",
+  "@movieInfoCastCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@movieInfoCrewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewsResonatedWith": "讓你產生共鳴的評論",
+  "commonRemove": "移除"
 }
