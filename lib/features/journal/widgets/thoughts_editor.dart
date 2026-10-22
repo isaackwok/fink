@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_journal/features/journal/controllers/journal.dart';
 import 'package:movie_journal/features/journal/widgets/selected_reviews.dart';
@@ -172,7 +173,12 @@ class _ThoughtsEditorState extends ConsumerState<ThoughtsEditor>
                   movieId: ref.read(journalControllerProvider).tmdbId,
                 );
               },
-              icon: const Icon(Icons.local_movies_outlined, size: 16),
+              icon: SvgPicture.asset(
+                'assets/images/film.svg',
+                width: 16,
+                height: 16,
+                excludeFromSemantics: true,
+              ),
               label: Text(l10n.movieInfoLabel),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
