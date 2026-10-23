@@ -1,5 +1,7 @@
 # English and Traditional Chinese Localization Implementation Plan
 
+> **Status:** Historical plan. The steps below describe the work as specified on 2026-08-16, not the app today. Since then, `lib/features/journal/widgets/ai_references_accordion.dart` was removed and replaced by `SelectedReviews` (`lib/features/journal/widgets/selected_reviews.dart`), and `lib/features/journal/screens/thoughts.dart` is unused. Settings now has in-app Interface and AI Reviews language pickers (`lib/features/settings/controllers/language_settings.dart`); the "no in-app language selector" constraint below is the constraint for this phase, not current behavior.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Localize every app-owned user-facing Fink string into English and Taiwan Traditional Chinese, expose both languages through iOS per-app Settings, and preserve English emotion terminology and all current date formatting.
