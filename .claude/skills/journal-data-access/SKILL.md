@@ -140,15 +140,15 @@ ref.read(journalModeProvider.notifier).set(JournalMode.create);
 `journalModeProvider` is a lightweight enum provider (`JournalMode.create` | `JournalMode.edit`).
 
 - Set in `JournalingScreen.initState()` based on whether `editJournalId` is non-null
-- Read by widgets to conditionally hide UI (e.g., ThoughtsScreen hides the Reviews FAB and "Add" card in edit mode)
+- Read by `ThoughtsEditor` to hide the inline Reviews button in edit mode. Selected reviews stay on the entry and can still be removed. Thoughts are edited inline on `JournalingScreen`. `lib/features/journal/screens/thoughts.dart` (`ThoughtsScreen`) is unused and is not part of the flow.
 - Reset to `JournalMode.create` during cleanup
 
-Pattern for conditional UI:
+Pattern for conditional UI, from the row under the thoughts field (`Movie Info` stays in both modes):
 
 ```dart
 final isEditMode = ref.watch(journalModeProvider) == JournalMode.edit;
 // ...
-floatingActionButton: isEditMode ? null : const ReviewsFloatingButton(),
+if (!isEditMode) const ReviewsFloatingButton(inline: true),
 ```
 
 ## AsyncValue Handling for Journal Lists

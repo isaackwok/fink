@@ -4,14 +4,21 @@ A Flutter movie journal app for capturing how films make you feel. Search for mo
 
 ## Features
 
-- **Movie Search** — Search TMDB's database and view detailed movie information. Results update as you type (300ms debounce), so there's no need to press a search button; clearing the field returns to popular picks.
-- **Emotion Journaling** — Choose from 35 curated emotions across 5 groups (Uplifting, Intense, Soothing, Quiet, Perspectives) to describe your experience
-- **Scene Selection** — Pick memorable scenes from movie stills
-- **Thoughts & Captions** — Write freeform reflections about the film. The caption editor auto-focuses the input on entry and keeps the keyboard attached as you swipe between scenes, so you can caption multiple scenes in a single pass.
-- **AI-Curated Reviews** — Browse reviews from Letterboxd and Reddit to spark your own thoughts. The Reviews button lives in a sticky bar pinned to the bottom of the thoughts editor, so it never overlaps your text as you type.
-- **Shareable Movie Tickets** — Generate flippable movie ticket images with high-res poster front and details back, peek hint animation on entry. Tap the ticket to flip, then use the bottom action row to save to gallery or open the share sheet (Instagram Stories, Threads, or native share). The close (X) in the top-right is entry-aware: from the just-saved celebration screen it returns to home; when sharing an existing journal it returns to that journal's content page.
+- **Movie Search** — Search TMDB's database. Results update as you type (300ms debounce), so there's no need to press a search button; clearing the field returns to popular picks. Opening a result shows the poster, director, release year, country, and synopsis. Pull down, or tap close, to dismiss it.
+- **Rating** — Score a film from 1 to 10 hearts. Tap the same score again to clear it. An empty score is unrated, and Save stays off until the entry has a rating, an emotion, a scene, or some thoughts.
+- **Emotion Journaling** — Choose up to 5 of 35 curated emotions across 5 groups (Uplifting, Intense, Soothing, Quiet, Perspectives).
+- **Watch Date** — Record the day you watched the film. The calendar does not offer future dates.
+- **Scene Selection** — Pick up to 10 memorable scenes from movie stills. The caption editor auto-focuses the input on entry and keeps the keyboard attached as you swipe between scenes, so you can caption multiple scenes in a single pass.
+- **Thoughts** — Write reflections on the journaling screen itself, under the rating, emotions, and scenes. Movie Info and Reviews sit below the field.
+- **AI-Curated Reviews** — Browse reviews from Letterboxd and Reddit to spark your own thoughts. The Reviews button appears only while you are creating a journal. Reviews you keep stay on the entry, always expanded under "You resonated with", including when you edit it later.
+- **Movie Info** — From the journaling screen, open cast and crew: who played whom, and each crew member's job. That sheet is separate from the movie preview.
+- **Saved Journal** — A saved entry shows the title, watch date, rating when you set one, emotions, swipeable scene stills with captions, your thoughts, and any reviews you kept. Share it, or use the menu to edit or delete it. The title fades into the header as you scroll. A journal opened from an emotion echo can still be edited, and hides share and delete.
+- **Achievements & Emotion Echoes** — After you save, the celebration screen can show achievements for films that share a director, actor, era, country, or genre with this one, and up to two earlier journals that share its emotions.
+- **Unsaved Changes** — The back button and a rightward swipe from the left edge both ask before leaving an entry you have changed. If nothing changed, you leave immediately.
+- **Shareable Movie Tickets** — Generate flippable movie ticket images with high-res poster front and details back, peek hint animation on entry. Tap the ticket to flip, then use the bottom action row to save to gallery or open the share sheet. The sheet offers Instagram Stories, Threads, and Others (the system share sheet). When the journal has thoughts, it also shows them with a Copy Text action. The close (X) in the top-right is entry-aware: from the just-saved celebration screen it returns to home; when sharing an existing journal it returns to that journal's content page.
 - **Poster Picker** — Choose ticket posters in multiple languages (Original, English, 繁體中文, 日本語). Tapping a poster moves you straight to the ticket preview — no Next button — and the close (X) follows the same entry-aware navigation as the ticket screen.
-- **Account Management** — Sign in with Apple or Google, then pick a username during onboarding that appears on your home screen. Deleting your account performs a fresh re-authentication and then permanently removes all your journals and account data — no orphaned records left behind.
+- **Language** — In Settings, choose the interface language and the language of AI reviews. Each can follow the system, English, or Traditional Chinese (Taiwan). The interface language also sets the language of movie information from TMDB; the AI-reviews language only affects generated reviews.
+- **Account Management** — The login screen offers Apple and Google only. After signing in, pick a username during onboarding that appears on your home screen. Deleting your account performs a fresh re-authentication and then permanently removes all your journals and account data — no orphaned records left behind.
 - **Secure Your Account** — Journals recovered from a pre-migration account arrive on a session with no sign-in attached to it, which a reinstall would lose. The app prompts once to attach an Apple or Google account, then keeps a banner on the home screen until it's done; your journals stay exactly where they are, since the identity attaches to the account you're already using. Settings keeps a **Secure Account** entry for later, and warns before logging out while the account is still unattached. Users who signed in normally never see any of this.
 - **Branded Cold Start** — On a cold launch while signed out, a 3-second branded splash plays (logo, wordmark, and tagline fade in/hold/fade out, with a blurred poster marquee scrolling in opposite directions in the bottom-right corner) before handing off to the login screen. The splash is one-shot per session — signing out within an active session goes straight to login, with no replay.
 
@@ -19,7 +26,7 @@ A Flutter movie journal app for capturing how films make you feel. Search for mo
 
 ### Prerequisites
 
-- Flutter 3.29+ (Dart SDK `^3.7.2`)
+- Flutter 3.41+ (Dart SDK `^3.7.2`)
 - A [TMDB API](https://www.themoviedb.org/documentation/api) key
 - Supabase project (Postgres + Auth), with Apple and Google providers configured
 - Firebase project — for Analytics
@@ -94,7 +101,7 @@ A Flutter movie journal app for capturing how films make you feel. Search for mo
 
 ```bash
 flutter analyze    # Static analysis
-flutter test       # Run 255 tests
+flutter test       # Run the suite (603 tests)
 flutter build apk  # Android build
 flutter build ios   # iOS build
 ```

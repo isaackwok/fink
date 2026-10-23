@@ -1,5 +1,7 @@
 # English and Traditional Chinese Localization Design
 
+> **Status:** Historical spec for that phase. The app now has in-app language settings (Interface and AI Reviews) in `lib/features/settings/`. The sentence below about the operating system remaining the sole locale owner describes this phase, not the app today.
+
 ## Goal
 
 Add Flutter's first-party localization system to Fink, move all app-owned user-facing copy into generated localization resources, and support English plus Taiwan Traditional Chinese through the iOS per-app language setting.
